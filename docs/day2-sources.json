@@ -1,0 +1,120 @@
+{
+  "check_date": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "topic": "Systematic-review reporting: locating methods and comparing PRISMA versions",
+  "language": "English source documents, English demo queries; Chinese learning notes",
+  "medical_boundary": "Research assistance only; no diagnosis, prescriptions, dosage, or treatment recommendations",
+  "status": "initial corpus of three verified documents; final 10–15-document corpus and 30-case evaluation are not frozen",
+  "sources": [
+    {
+      "source_id": "prisma-2009",
+      "title": "Preferred Reporting Items for Systematic Reviews and Meta-Analyses: The PRISMA Statement",
+      "authors": "Moher D, Liberati A, Tetzlaff J, Altman DG, The PRISMA Group",
+      "doi": "10.1371/journal.pmed.1000097",
+      "publication_date": "2009-07-21",
+      "publication_year": 2009,
+      "version_label": "PRISMA 2009 (historical)",
+      "research_dates": "Development meeting: June 2005; not a clinical trial",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000097",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1000097&type=printable",
+      "license": "CC BY; attribute the original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000097",
+      "cache_file": ".cache/day1/prisma-2009.pdf",
+      "retrieved_date": "2026-10-10",
+      "verification_anchors": [
+        {
+          "pdf_page": 2,
+          "anchor": "27-item checklist"
+        },
+        {
+          "pdf_page": 4,
+          "anchor": "at least one database"
+        }
+      ],
+      "sha256": "e0b0b3717e905d9d9de18db3c9fcd3ea1a4a8de1ac743b83b27f28416ca35077",
+      "bytes": 159810,
+      "page_count": 6,
+      "characters": 36324,
+      "parser": "pypdf 6.20.0, strict=True",
+      "verified_date": "2026-10-11"
+    },
+    {
+      "source_id": "prisma-2020",
+      "title": "The PRISMA 2020 statement: An updated guideline for reporting systematic reviews",
+      "authors": "Page MJ, McKenzie JE, Bossuyt PM, et al.",
+      "doi": "10.1371/journal.pmed.1003583",
+      "publication_date": "2021-03-29",
+      "publication_year": 2021,
+      "version_label": "PRISMA 2020",
+      "research_dates": "Development meeting: September 2018; revisions during 2019 and 2020; feedback in April 2020. Not a clinical trial.",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003583",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1003583&type=printable",
+      "license": "CC BY; attribute the original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003583",
+      "cache_file": ".cache/day1/prisma-2020.pdf",
+      "retrieved_date": "2026-10-10",
+      "verification_anchors": [
+        {
+          "pdf_page": 5,
+          "anchor": "should not be used to assess"
+        },
+        {
+          "pdf_page": 6,
+          "anchor": "all databases"
+        }
+      ],
+      "sha256": "a09df7b2977b925736d0dd7bf0087d8e918a6bbdf52cb7af1246965dd06663a7",
+      "bytes": 825448,
+      "page_count": 15,
+      "characters": 61579,
+      "parser": "pypdf 6.20.0, strict=True",
+      "verified_date": "2026-10-11"
+    },
+    {
+      "source_id": "prisma-2009-explanation",
+      "title": "The PRISMA Statement for Reporting Systematic Reviews and Meta-Analyses of Studies That Evaluate Health Care Interventions: Explanation and Elaboration",
+      "authors": "Liberati A, Altman DG, Tetzlaff J, et al.",
+      "doi": "10.1371/journal.pmed.1000100",
+      "publication_date": "2009-07-21",
+      "publication_year": 2009,
+      "version_label": "PRISMA 2009 explanation (historical)",
+      "research_dates": "Methodological reporting guidance; not a clinical trial. Development context concerns PRISMA 2009.",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000100",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1000100&type=printable",
+      "license": "CC BY; attribute the original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000100",
+      "cache_file": ".cache/day2/prisma-2009-explanation.pdf",
+      "retrieved_date": "2026-10-11",
+      "verified_date": "2026-10-11",
+      "parser": "pypdf 6.20.0, strict=True",
+      "verification_anchors": [
+        {
+          "pdf_page": 8,
+          "anchor": "Item 8: SEARCH"
+        },
+        {
+          "pdf_page": 9,
+          "anchor": "at least one major database"
+        }
+      ],
+      "sha256": "89776ac85ffd59607407de6d12087e3e32094781cdaf8b8aa505e976a2bc629d",
+      "bytes": 639475,
+      "page_count": 28,
+      "characters": 182083
+    }
+  ],
+  "deferred_source": {
+    "source_id": "prisma-2020-explanation",
+    "doi": "10.1136/bmj.n160",
+    "source_url": "https://www.bmj.com/content/372/bmj.n160",
+    "official_reference": "https://www.prisma-statement.org/prisma-2020-explanation-elaboration",
+    "status": "publisher HTML and PDF downloads returned HTTPError; not counted as a verified corpus document",
+    "alternative": "prisma-2009-explanation"
+  },
+  "limitations": [
+    "PDF page numbers are one-based physical file pages, not printed journal page labels.",
+    "2020 is a version label; the 2020 statement in this corpus was published in 2021.",
+    "Whitespace and ligature extraction defects remain; matching anchors is not full PDF layout or table verification.",
+    "Historical/current reporting differences are not automatically conflicting clinical evidence."
+  ]
+}

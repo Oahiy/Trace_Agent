@@ -1,0 +1,41 @@
+{
+  "topic": "Systematic-review reporting: locating methods and comparing PRISMA versions",
+  "language": "English source documents, English demo queries; Chinese learning notes",
+  "medical_boundary": "Research assistance only; no diagnosis, prescriptions, dosage, or treatment recommendations",
+  "sources": [
+    {
+      "source_id": "prisma-2009",
+      "title": "Preferred Reporting Items for Systematic Reviews and Meta-Analyses: The PRISMA Statement",
+      "authors": "Moher D, Liberati A, Tetzlaff J, Altman DG, The PRISMA Group",
+      "doi": "10.1371/journal.pmed.1000097",
+      "publication_date": "2009-07-21",
+      "publication_year": 2009,
+      "version_label": "PRISMA 2009 (historical)",
+      "research_dates": "Development meeting: June 2005; not a clinical trial",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000097",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1000097&type=printable",
+      "license": "Creative Commons Attribution; publisher article and PDF explicitly permit redistribution with attribution",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000097",
+      "cache_file": ".cache/day1/prisma-2009.pdf",
+      "retrieved_date": "2026-10-10",
+      "verification_anchors": ["The PRISMA Statement consists", "not a quality assessment instrument"]
+    },
+    {
+      "source_id": "prisma-2020",
+      "title": "The PRISMA 2020 statement: An updated guideline for reporting systematic reviews",
+      "authors": "Page MJ, McKenzie JE, Bossuyt PM, et al.",
+      "doi": "10.1371/journal.pmed.1003583",
+      "publication_date": "2021-03-29",
+      "publication_year": 2021,
+      "version_label": "PRISMA 2020",
+      "research_dates": "Development meeting: September 2018; revisions during 2019 and 2020; feedback in April 2020. Not a clinical trial.",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003583",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1003583&type=printable",
+      "license": "Creative Commons Attribution; publisher article and PDF explicitly permit redistribution with attribution",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003583",
+      "cache_file": ".cache/day1/prisma-2020.pdf",
+      "retrieved_date": "2026-10-10",
+      "verification_anchors": ["Development of PRISMA 2020", "should not be used to assess"]
+    }
+  ]
+}

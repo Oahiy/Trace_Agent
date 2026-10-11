@@ -1,0 +1,470 @@
+{
+  "date": "2026-10-10",
+  "timezone": "Asia/Kuala_Lumpur",
+  "recorded_at": "2026-10-10T11:51:32.563354+08:00",
+  "scope": "Day 1 dependency and interface probes; no RAG or release acceptance claim",
+  "cloud_api_budget": 0,
+  "cloud_api_spend": 0,
+  "environment": {
+    "python": "3.12.14",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "packages": {
+      "fastapi": "0.141.1",
+      "pydantic": "2.13.4",
+      "starlette": "1.6.0",
+      "httpx": "0.28.1",
+      "pypdf": "6.20.0",
+      "fonttools": "4.66.1",
+      "pytest": "9.1.1"
+    }
+  },
+  "tests": {
+    "kind": "deterministic unit tests plus one real Docker integration test",
+    "command": "bash scripts/dev.sh env TRACEAGENT_CONTAINER_TESTS=1 .venv/bin/python -m pytest -q --basetemp=.cache/pytest/tmp --junitxml=.cache/day1/pytest.xml",
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "42",
+    "time": "0.407",
+    "timestamp": "2026-10-10T11:48:33.812436+08:00",
+    "hostname": "MacBook-Air.local"
+  },
+  "probes": {
+    "health": {
+      "status": "passed",
+      "success": {
+        "status": 200,
+        "body": {
+          "status": "ok"
+        }
+      },
+      "edge": {
+        "missing_route_status": 404
+      },
+      "failure": {
+        "server_stopped": "connection_failed_as_expected"
+      }
+    },
+    "container": {
+      "status": "passed",
+      "versions": {
+        "Client": {
+          "Platform": {
+            "Name": "Docker Engine - Community"
+          },
+          "Version": "29.9.0",
+          "ApiVersion": "1.54",
+          "DefaultAPIVersion": "1.56",
+          "GitCommit": "f415da838b",
+          "GoVersion": "go1.27.1",
+          "Os": "darwin",
+          "Arch": "arm64",
+          "BuildTime": "Thu Oct  8 20:29:49 2026",
+          "Context": "colima"
+        },
+        "Server": {
+          "Platform": {
+            "Name": "Docker Engine - Community"
+          },
+          "Version": "29.5.2",
+          "ApiVersion": "1.54",
+          "MinAPIVersion": "1.40",
+          "Os": "linux",
+          "Arch": "arm64",
+          "Components": [
+            {
+              "Name": "Engine",
+              "Version": "29.5.2",
+              "Details": {
+                "ApiVersion": "1.54",
+                "Arch": "arm64",
+                "BuildTime": "Wed May 20 14:39:25 2026",
+                "Experimental": "false",
+                "GitCommit": "568f755",
+                "GoVersion": "go1.26.3",
+                "KernelVersion": "6.8.0-117-generic",
+                "MinAPIVersion": "1.40",
+                "Module": "github.com/moby/moby/v2",
+                "ModuleVersion": "v2.0.0+unknown",
+                "Os": "linux"
+              }
+            },
+            {
+              "Name": "containerd",
+              "Version": "v2.2.4",
+              "Details": {
+                "GitCommit": "193637f7ee8ae5f5aa5248f49e7baa3e6164966e"
+              }
+            },
+            {
+              "Name": "runc",
+              "Version": "1.3.5",
+              "Details": {
+                "GitCommit": "v1.3.5-0-g488fc13e"
+              }
+            },
+            {
+              "Name": "docker-init",
+              "Version": "0.19.0",
+              "Details": {
+                "GitCommit": "de40ad0"
+              }
+            }
+          ],
+          "GitCommit": "568f755",
+          "GoVersion": "go1.26.3",
+          "KernelVersion": "6.8.0-117-generic",
+          "BuildTime": "2026-05-20T14:39:25.000000000+00:00"
+        }
+      },
+      "image": "alpine@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1",
+      "success": {
+        "exit_code": 0,
+        "output": "traceagent-container-ok"
+      },
+      "edge": {
+        "host_project_not_mounted": true,
+        "network": "none",
+        "exit_code": 0
+      },
+      "failure": {
+        "missing_command_exit_code": 127
+      },
+      "test_containers": "automatically_removed"
+    },
+    "models": {
+      "status": "passed",
+      "provider": "local_ollama",
+      "chat_model": "qwen3:1.7b",
+      "embedding_model": "nomic-embed-text:v1.5",
+      "generation": {
+        "role": "assistant",
+        "content": "TraceAgent is a Python tool for tracking sources in public-document research. It maintains original locations and rejects unsupported responses."
+      },
+      "tool_traces": [
+        {
+          "prompt": "Find evidence about research methods.",
+          "assistant_call": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "id": "call_hl9tse69",
+                "function": {
+                  "index": 0,
+                  "name": "search_evidence",
+                  "arguments": {
+                    "query": "research methods"
+                  }
+                }
+              }
+            ]
+          },
+          "observation": {
+            "synthetic": true,
+            "query": "research methods",
+            "source_ids": [
+              "demo-1"
+            ]
+          },
+          "final": {
+            "role": "assistant",
+            "content": "The evidence about research methods is found in the synthetic data source with ID \"demo-1\". This source provides information on various research methods, including but not limited to experimental design, qualitative and quantitative approaches, data collection techniques, and statistical analysis methods. The specific details of the evidence are contained within the synthetic data structure."
+          }
+        },
+        {
+          "prompt": "Read source demo-1.",
+          "assistant_call": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "id": "call_uabmcs6k",
+                "function": {
+                  "index": 0,
+                  "name": "read_source",
+                  "arguments": {
+                    "source_id": "demo-1"
+                  }
+                }
+              }
+            ]
+          },
+          "observation": {
+            "synthetic": true,
+            "source_id": "demo-1",
+            "text": "Synthetic engineering fixture: the methods section describes eligibility criteria."
+          },
+          "final": {
+            "role": "assistant",
+            "content": "The source \"demo-1\" is a synthetic engineering fixture. The methods section describes eligibility criteria."
+          }
+        }
+      ],
+      "greeting": {
+        "role": "assistant",
+        "content": "Hello."
+      },
+      "embedding": {
+        "texts": [
+          "search_document: FastAPI builds HTTP APIs in Python.",
+          "search_document: Python web APIs can be built with FastAPI.",
+          "search_document: A banana is a yellow fruit."
+        ],
+        "dimension": 768,
+        "same_topic_cosine": 0.9468538477451574,
+        "unrelated_cosine": 0.44933880541847576,
+        "count": 3
+      },
+      "usage": [
+        {
+          "kind": "chat",
+          "seconds": 1.416,
+          "input_tokens": 47,
+          "output_tokens": 24,
+          "cloud_cost": 0
+        },
+        {
+          "kind": "chat",
+          "seconds": 0.598,
+          "input_tokens": 219,
+          "output_tokens": 22,
+          "cloud_cost": 0
+        },
+        {
+          "kind": "chat",
+          "seconds": 1.096,
+          "input_tokens": 110,
+          "output_tokens": 65,
+          "cloud_cost": 0
+        },
+        {
+          "kind": "chat",
+          "seconds": 0.374,
+          "input_tokens": 219,
+          "output_tokens": 23,
+          "cloud_cost": 0
+        },
+        {
+          "kind": "chat",
+          "seconds": 0.421,
+          "input_tokens": 121,
+          "output_tokens": 21,
+          "cloud_cost": 0
+        },
+        {
+          "kind": "chat",
+          "seconds": 0.281,
+          "input_tokens": 192,
+          "output_tokens": 3,
+          "cloud_cost": 0
+        },
+        {
+          "kind": "embed",
+          "seconds": 4.71,
+          "input_tokens": 47,
+          "output_tokens": null,
+          "cloud_cost": 0
+        }
+      ],
+      "chat_calls": 6,
+      "embedding_calls": 1,
+      "cloud_cost": 0,
+      "limitations": [
+        "synthetic tool observations",
+        "three-text embedding smoke check"
+      ],
+      "manual_review": {
+        "tool_interface_status": "passed",
+        "search_followup_evidence_support": "failed",
+        "reason": "search_evidence returned only a synthetic source ID; the model added method categories not present in the observation",
+        "research_answer_accepted": false,
+        "interpretation": "Interface smoke checks do not constitute RAG quality or medical-safety evaluation."
+      }
+    },
+    "pdf": {
+      "status": "passed",
+      "topic": "Systematic-review reporting: locating methods and comparing PRISMA versions",
+      "sources": [
+        {
+          "source_id": "prisma-2009",
+          "title": "Preferred Reporting Items for Systematic Reviews and Meta-Analyses: The PRISMA Statement",
+          "authors": "Moher D, Liberati A, Tetzlaff J, Altman DG, The PRISMA Group",
+          "doi": "10.1371/journal.pmed.1000097",
+          "publication_date": "2009-07-21",
+          "publication_year": 2009,
+          "version_label": "PRISMA 2009 (historical)",
+          "research_dates": "Development meeting: June 2005; not a clinical trial",
+          "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000097",
+          "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1000097&type=printable",
+          "license": "Creative Commons Attribution; publisher article and PDF explicitly permit redistribution with attribution",
+          "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000097",
+          "cache_file": ".cache/day1/prisma-2009.pdf",
+          "retrieved_date": "2026-10-10",
+          "verification_anchors": [
+            "The PRISMA Statement consists",
+            "not a quality assessment instrument"
+          ],
+          "sha256": "e0b0b3717e905d9d9de18db3c9fcd3ea1a4a8de1ac743b83b27f28416ca35077",
+          "bytes": 159810,
+          "page_count": 6,
+          "characters": 36324,
+          "anchor_locations": [
+            {
+              "anchor": "The PRISMA Statement consists",
+              "pdf_pages": [
+                2
+              ]
+            },
+            {
+              "anchor": "not a quality assessment instrument",
+              "pdf_pages": [
+                2
+              ]
+            }
+          ]
+        },
+        {
+          "source_id": "prisma-2020",
+          "title": "The PRISMA 2020 statement: An updated guideline for reporting systematic reviews",
+          "authors": "Page MJ, McKenzie JE, Bossuyt PM, et al.",
+          "doi": "10.1371/journal.pmed.1003583",
+          "publication_date": "2021-03-29",
+          "publication_year": 2021,
+          "version_label": "PRISMA 2020",
+          "research_dates": "Development meeting: September 2018; revisions during 2019 and 2020; feedback in April 2020. Not a clinical trial.",
+          "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003583",
+          "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1003583&type=printable",
+          "license": "Creative Commons Attribution; publisher article and PDF explicitly permit redistribution with attribution",
+          "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003583",
+          "cache_file": ".cache/day1/prisma-2020.pdf",
+          "retrieved_date": "2026-10-10",
+          "verification_anchors": [
+            "Development of PRISMA 2020",
+            "should not be used to assess"
+          ],
+          "sha256": "a09df7b2977b925736d0dd7bf0087d8e918a6bbdf52cb7af1246965dd06663a7",
+          "bytes": 825448,
+          "page_count": 15,
+          "characters": 61579,
+          "anchor_locations": [
+            {
+              "anchor": "Development of PRISMA 2020",
+              "pdf_pages": [
+                3
+              ]
+            },
+            {
+              "anchor": "should not be used to assess",
+              "pdf_pages": [
+                5
+              ]
+            }
+          ]
+        }
+      ],
+      "parser": "pypdf 6.20.0"
+    }
+  },
+  "model_artifacts": {
+    "version": {
+      "version": "0.40.2"
+    },
+    "models": {
+      "models": [
+        {
+          "name": "qwen3:1.7b",
+          "model": "qwen3:1.7b",
+          "modified_at": "2026-10-10T11:35:01.423566353+08:00",
+          "size": 1359293444,
+          "digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "qwen3",
+            "families": [
+              "qwen3"
+            ],
+            "parameter_size": "2.0B",
+            "quantization_level": "Q4_K_M",
+            "context_length": 40960,
+            "embedding_length": 2048,
+            "runner": "ggml"
+          },
+          "capabilities": [
+            "completion",
+            "tools",
+            "thinking"
+          ]
+        },
+        {
+          "name": "nomic-embed-text:v1.5",
+          "model": "nomic-embed-text:v1.5",
+          "modified_at": "2026-10-10T11:34:54.739324583+08:00",
+          "size": 274302450,
+          "digest": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "nomic-bert",
+            "families": [
+              "nomic-bert"
+            ],
+            "parameter_size": "137M",
+            "quantization_level": "F16",
+            "context_length": 2048,
+            "embedding_length": 768,
+            "runner": "ggml"
+          },
+          "capabilities": [
+            "embedding"
+          ]
+        }
+      ]
+    }
+  },
+  "pdf_visual_review": {
+    "prisma-2009": {
+      "checked_pdf_pages": [
+        1,
+        2
+      ],
+      "anchors_verified": 2
+    },
+    "prisma-2020": {
+      "checked_pdf_pages": [
+        1,
+        3,
+        5
+      ],
+      "anchors_verified": 2
+    },
+    "method": "Rendered source pages using bundled pypdfium2, visually compared with extracted locations"
+  },
+  "review": {
+    "correctness": "API contract retained; tool validation, vector validation and PDF page provenance checked",
+    "error_handling": "bounded requests; controlled codes; failures consume budget; no automatic model retry",
+    "tests": "42 executed and passed; model mocks distinguished from real local-model probes",
+    "security": "localhost-only model endpoint; read-only tool whitelist; unknown fields and path-like IDs rejected; cache ignored and mode 0700; no patient data or API keys used",
+    "maintainability": "experiments kept separate from API; locked dependencies; centralized cache wrapper; documented replay"
+  },
+  "known_limitations": [
+    "One tool follow-up invented unsupported synthetic evidence details; not accepted as a research answer",
+    "Three-text embedding example does not measure medical retrieval quality",
+    "Two reporting-method papers are initial corpus candidates, not the final 10-15 documents",
+    "No full RAG, owner isolation, worker, database, medical refusal policy, or production PDF process limits implemented today",
+    "Model tags can change; recorded full digests must be compared before reproduction",
+    "Developer understanding must still be demonstrated by the self-check questions"
+  ],
+  "publication": {
+    "github_pushed": false,
+    "public_deployment": false
+  },
+  "delivery_runtime_state": {
+    "api_probe_process": "stopped_by_probe",
+    "ollama_probe_process": "stopped_verified_no_11434_listener",
+    "colima": "stopped_verified",
+    "models_and_cache": "retained"
+  }
+}

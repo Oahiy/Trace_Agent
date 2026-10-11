@@ -1,2 +1,16 @@
 .venv/
 .DS_Store
+.python-version
+learn.py
+__pycache__/
+*.py[cod]
+implementation-plan-30-days.html
+AGENTS.md
+
+# All development caches, local models, VM data, and temporary reports.
+.cache/
+# Explicitly ignore the single cache inventory as well as everything it manages.
+/.cache/manifest.json
+.env
+.env.*
+!.env.example

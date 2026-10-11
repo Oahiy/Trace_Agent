@@ -1,0 +1,303 @@
+{
+  "date": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "scope": "Day 2 engineering foundation, contract and initial corpus; no full RAG acceptance",
+  "status": "engineering_deliverables_verified",
+  "versions": {
+    "python": "3.12.14",
+    "uv": "0.12.24",
+    "fastapi": "0.141.1",
+    "starlette": "1.6.0",
+    "pydantic": "2.13.4",
+    "pydantic-settings": "2.15.0",
+    "httpx": "0.28.1",
+    "pytest": "9.1.1",
+    "pypdf": "6.20.0",
+    "ruff": "0.17.0"
+  },
+  "automated_checks": [
+    {
+      "name": "lock-check",
+      "command": [
+        "uv",
+        "lock",
+        "--check",
+        "--offline"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "log": ".cache/day2/lock-check.log"
+    },
+    {
+      "name": "local-checks",
+      "command": [
+        "bash",
+        "scripts/check.sh"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "log": ".cache/day2/local-checks.log"
+    },
+    {
+      "name": "isolated-sync",
+      "command": [
+        "uv",
+        "sync",
+        "--locked",
+        "--offline",
+        "--python",
+        ".venv/bin/python",
+        "--dev"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "log": ".cache/day2/isolated-sync.log",
+      "environment_overrides": {
+        "UV_PROJECT_ENVIRONMENT": ".cache/day2/ci-env"
+      }
+    },
+    {
+      "name": "isolated-checks",
+      "command": [
+        "bash",
+        "scripts/check.sh"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "log": ".cache/day2/isolated-checks.log",
+      "environment_overrides": {
+        "UV_PROJECT_ENVIRONMENT": ".cache/day2/ci-env"
+      }
+    },
+    {
+      "name": "document-demo",
+      "command": [
+        "/Users/oahiyyang/Trace_Agent/.venv/bin/python",
+        "-m",
+        "scripts.day2"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "log": ".cache/day2/document-demo.log"
+    },
+    {
+      "name": "sources-check",
+      "command": [
+        "/Users/oahiyyang/Trace_Agent/.venv/bin/python",
+        "-m",
+        "scripts.verify_sources"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "log": ".cache/day2/sources-check.log"
+    },
+    {
+      "name": "shell-syntax",
+      "command": [
+        "bash",
+        "-n",
+        "scripts/dev.sh",
+        "scripts/check.sh"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "log": ".cache/day2/shell-syntax.log"
+    },
+    {
+      "name": "diff-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "log": ".cache/day2/diff-whitespace.log"
+    }
+  ],
+  "tests": {
+    "local": {
+      "tests": 120,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 119
+    },
+    "isolated_environment": {
+      "tests": 120,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 119
+    },
+    "skip_reason": "One Day 1 real Docker integration test requires an explicitly running Docker service; not executed on Day 2",
+    "suite_note": "Includes fixed HTTPX model/download mocks; not real-model evaluation"
+  },
+  "document_demo": {
+    "status": "passed",
+    "synthetic": true,
+    "success": {
+      "id": "doc-001",
+      "title": "Python references",
+      "content": "Synthetic engineering fixture."
+    },
+    "edge": {
+      "missing_document": null
+    },
+    "failure": {
+      "error_code": "invalid_document_input",
+      "nothing_saved": true
+    },
+    "references": {
+      "mutable_alias_title": "after",
+      "stored_document_frozen": true
+    },
+    "validation": {
+      "default_numeric_coercion": 5,
+      "strict_numeric_title_rejected": true
+    },
+    "limits": {
+      "title_characters": 200,
+      "content_characters": 200000
+    }
+  },
+  "real_http_health": {
+    "status": "passed",
+    "success": {
+      "status": 200,
+      "body": {
+        "status": "ok"
+      }
+    },
+    "edge": {
+      "missing_route_status": 404
+    },
+    "failure": {
+      "server_stopped": "connection_failed_as_expected"
+    }
+  },
+  "source_verification": {
+    "status": "passed",
+    "sources": [
+      {
+        "source_id": "prisma-2009",
+        "sha256": "e0b0b3717e905d9d9de18db3c9fcd3ea1a4a8de1ac743b83b27f28416ca35077",
+        "bytes": 159810,
+        "page_count": 6,
+        "characters": 36324,
+        "anchors_checked": 2
+      },
+      {
+        "source_id": "prisma-2020",
+        "sha256": "a09df7b2977b925736d0dd7bf0087d8e918a6bbdf52cb7af1246965dd06663a7",
+        "bytes": 825448,
+        "page_count": 15,
+        "characters": 61579,
+        "anchors_checked": 2
+      },
+      {
+        "source_id": "prisma-2009-explanation",
+        "sha256": "89776ac85ffd59607407de6d12087e3e32094781cdaf8b8aa505e976a2bc629d",
+        "bytes": 639475,
+        "page_count": 28,
+        "characters": 182083,
+        "anchors_checked": 2
+      }
+    ]
+  },
+  "source_restore": {
+    "command": [
+      "bash",
+      "scripts/dev.sh",
+      ".venv/bin/python",
+      "-m",
+      "scripts.verify_sources",
+      "--download"
+    ],
+    "executed": true,
+    "status": "passed",
+    "hashes_match_pinned_sources": true
+  },
+  "evaluation_draft": {
+    "cases": 7,
+    "evidence_locations_verified": 7,
+    "real_model_calls": 0,
+    "quality_evaluation_executed": false,
+    "cloud_spend": 0,
+    "not_frozen_acceptance_set": true,
+    "human_review_status": "pending"
+  },
+  "ci": {
+    "yaml_parsed": true,
+    "official_action_refs_verified": {
+      "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "astral-sh/setup-uv": "c771a70e6277c0a99b617c7a806ffedaca235ff9"
+    },
+    "shared_command": "bash scripts/check.sh",
+    "local_isolated_execution": "passed",
+    "github_actions_executed": false,
+    "github_push_performed": false,
+    "linux_runner_verified": false
+  },
+  "preservation": {
+    "day1_non_import_ast_unchanged": {
+      "app/experiments/day1.py": true,
+      "scripts/day1.py": true,
+      "tests/test_day1.py": true
+    },
+    "unrelated_files_not_edited": [
+      "AGENTS.md",
+      "learn.py"
+    ],
+    "sources_directory_modified": false,
+    "git_index_modified_by_day2": false
+  },
+  "cache": {
+    "single_inventory": ".cache/manifest.json",
+    "directory_inventory_covers_existing_cache_directories": true,
+    "ignored_paths_verified": [
+      ".cache/manifest.json",
+      ".cache/day2/tests.xml",
+      ".cache/ruff/sample",
+      ".env"
+    ],
+    "env_example_not_ignored": true,
+    "manager": "scripts/dev.sh"
+  },
+  "issues_encountered": [
+    {
+      "issue": "First offline isolated install lacked pydantic-core and other locked wheel cache entries",
+      "resolution": "Fetched locked packages, then offline isolated sync and checks passed"
+    },
+    {
+      "issue": "BMJ 2020 explanation HTML/PDF downloads returned HTTPError",
+      "resolution": "Used licensed PLOS 2009 explanation as the third verified source; BMJ not counted as verified"
+    },
+    {
+      "issue": "URL splitting silently strips some whitespace/control characters",
+      "resolution": "Explicitly reject whitespace/C0/DEL and run six regression cases including direct NUL input"
+    },
+    {
+      "issue": "NUL cannot be stored in OS environment variables, so one initial test failed during setup",
+      "resolution": "Use a settable C0 character for environment test and a separate direct Settings constructor test for NUL"
+    },
+    {
+      "issue": "Final cache audit found the pre-existing XDG cache path missing from the inventory; nested model paths also needed parent-directory normalization in the audit",
+      "resolution": "Declared xdg/ in the single inventory, added an assertion in the wrapper regression test, and reverified every cache directory"
+    }
+  ],
+  "contract_adjustments": [
+    "Existing health/404/405 responses preserved; uniform errors apply to planned business endpoints",
+    "Pinned future full-input budget 2800 and output budget 1024 for 4096-context baseline; Day 1 standalone model parameters unchanged"
+  ],
+  "remaining_limits": [
+    "Remote GitHub Actions and Linux runner not executed",
+    "Real Docker integration skipped on Day 2",
+    "Future API endpoints, owner isolation, database, queue, RAG and clinical-boundary enforcement are not implemented",
+    "Initial corpus and seven drafts do not replace final frozen corpus and thirty evaluations",
+    "PDF anchors do not verify complex layout/tables or semantic support of model claims",
+    "Configuration and task budgets require later adapter/worker integration",
+    "Developer independent explanation has not yet been confirmed",
+    "Question draft expectations require developer human review; automatic anchor checks are not human semantic approval"
+  ]
+}

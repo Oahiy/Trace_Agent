@@ -1,0 +1,33 @@
+[project]
+name = "trace-agent"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]==0.141.1",
+    "httpx==0.28.1",
+    "pydantic==2.13.4",
+    "pydantic-settings==2.15.0",
+    "pypdf[fonts]==6.20.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "ruff==0.17.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+cache_dir = ".cache/pytest"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+cache-dir = ".cache/ruff"
+preview = false
+force-exclude = true
+extend-exclude = ["sources", ".cache", "learn.py"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

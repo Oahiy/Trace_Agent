@@ -1,0 +1,194 @@
+{
+  "date": "2026-10-12",
+  "timezone": "Asia/Kuala_Lumpur",
+  "scope": "Day 3 database foundations: four tables, migrations, atomic metadata/job registration and real verification",
+  "status": "engineering_deliverables_verified",
+  "versions": {
+    "python": "3.12.14",
+    "uv": "0.12.24",
+    "fastapi": "0.141.1",
+    "pydantic": "2.13.4",
+    "httpx": "0.28.1",
+    "sqlalchemy": "2.1.4",
+    "alembic": "1.20.0",
+    "psycopg": "3.3.6",
+    "psycopg-binary": "3.3.6",
+    "pytest": "9.1.1",
+    "ruff": "0.17.0",
+    "postgresql": "18.6 (Debian 18.6-1.pgdg12+2)",
+    "pgvector": "0.8.7"
+  },
+  "database_image": {
+    "digest": "sha256:2358fcba361ed2233a5ed81b5fe4ca779ccb304120ce531a3bf51c0ed7e2bc11",
+    "repository": "pgvector/pgvector",
+    "architecture": "arm64"
+  },
+  "schema": {
+    "revision": "0001",
+    "business_tables": [
+      "users",
+      "documents",
+      "chunks",
+      "jobs"
+    ],
+    "extension": "vector",
+    "downgrade_preserves_extension": true
+  },
+  "tests": {
+    "original_environment_full": {
+      "tests": 196,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 196,
+      "database_cases": 43,
+      "database_cases_executed": 43
+    },
+    "isolated_locked_environment_full": {
+      "tests": 196,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 196,
+      "database_cases": 43,
+      "database_cases_executed": 43
+    },
+    "isolated_environment_service_independent": {
+      "tests": 196,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 44,
+      "passed": 152,
+      "database_cases": 43,
+      "database_cases_executed": 0
+    },
+    "note": "Full suite includes 43 real database/network cases and one real Docker case. Fault injections and pre-existing HTTPX mocks are distinct from real-model evaluation."
+  },
+  "checks": {
+    "ruff_lint": "passed",
+    "ruff_format": {
+      "status": "passed",
+      "python_files": 21
+    },
+    "uv_lock_offline_check": "passed",
+    "git_diff_whitespace_check": "passed",
+    "isolated_locked_offline_install": "passed",
+    "real_model_evaluation": "not_executed",
+    "remote_github_actions": "not_executed"
+  },
+  "demo": {
+    "status": "passed",
+    "synthetic": true,
+    "versions": {
+      "postgresql": "18.6 (Debian 18.6-1.pgdg12+2)",
+      "pgvector": "0.8.7"
+    },
+    "registration": {
+      "document_id": "c95096e7-a67c-4eca-8e80-295ae6902470",
+      "job_id": "3f413be9-ac3d-4c7c-9bfa-64390d767b51",
+      "document_status": "UPLOADED",
+      "job_status": "PENDING",
+      "reused": true
+    },
+    "checks": {
+      "same_request_reuses_document_and_job": true,
+      "different_owner_has_independent_record": true,
+      "other_owner_cannot_read": true,
+      "source_metadata_conflict": true,
+      "failed_job_rolls_back_document": true,
+      "new_process_reads_committed_document": true
+    }
+  },
+  "database_restart": {
+    "status": "passed",
+    "same_document_after_database_restart": true,
+    "same_job_after_database_restart": true
+  },
+  "real_database_offline": {
+    "status": "passed",
+    "error_code": "database_unavailable",
+    "elapsed_seconds": 0.013,
+    "real_database_stopped": true
+  },
+  "security_checks": {
+    "status": "passed",
+    "checked_delivery_files": 43,
+    "credential_values_found": false,
+    "credential_file_mode": "0o600",
+    "cache_root_mode": "0o700",
+    "database_logs_contain_credentials": false,
+    "database_logs_contain_statement_or_detail": false
+  },
+  "timeouts": {
+    "connection_seconds": 3,
+    "pool_wait_seconds": 2,
+    "statement_ms": 3000,
+    "lock_ms": 1000,
+    "idle_transaction_ms": 5000,
+    "automatic_write_retries": 0,
+    "pool_size": 2,
+    "pool_overflow": 0,
+    "not_a_total_business_deadline": true
+  },
+  "cache": {
+    "manager": "scripts/dev.sh",
+    "single_inventory": ".cache/manifest.json",
+    "day3_root": ".cache/day3/",
+    "git_ignored": true,
+    "volume": "traceagent-day3-postgres",
+    "volume_location": "inside the managed Colima VM",
+    "credential_file": ".cache/day3/database.env",
+    "inventory_contains_secret_values": false,
+    "keep_credentials_when_retaining_volume": true
+  },
+  "commands": [
+    "bash scripts/dev.sh uv sync --locked --python 3.12.14 --dev",
+    "bash scripts/dev.sh .venv/bin/python -m scripts.day3 prepare",
+    "bash scripts/dev.sh .venv/bin/python -m scripts.day3 up",
+    "bash scripts/dev.sh .venv/bin/python -m scripts.day3 migrate",
+    "bash scripts/dev.sh .venv/bin/python -m scripts.day3 demo",
+    "bash scripts/dev.sh .venv/bin/python -m scripts.day3 test",
+    "bash scripts/dev.sh env UV_PROJECT_ENVIRONMENT=.cache/day3/ci-env uv sync --locked --offline --python .venv/bin/python --dev",
+    "bash scripts/dev.sh env UV_PROJECT_ENVIRONMENT=.cache/day3/ci-env bash scripts/check.sh",
+    "bash scripts/dev.sh .cache/day3/ci-env/bin/python -m scripts.day3 test",
+    "bash scripts/dev.sh .venv/bin/python -m scripts.day3 offline-check",
+    "bash scripts/dev.sh uv lock --check --offline",
+    "git diff --check",
+    "git check-ignore -v .cache/manifest.json .cache/day3/database.env .cache/day3/tests.xml .cache/day3/ci-env",
+    "bash scripts/dev.sh .venv/bin/python -m scripts.day3 down",
+    "bash scripts/dev.sh colima stop"
+  ],
+  "issues_resolved": [
+    "Sandbox VM and DNS restrictions: authorized execution succeeded; initial failures were not counted as passes.",
+    "Credential creation Path.open opener misuse: corrected to exclusive 0600 os.open; regression checks passed.",
+    "Malformed SQLAlchemy URL errors normalized to fixed configuration error.",
+    "Generated migration import formatting corrected and template adjusted.",
+    "Runtime grants narrowed to four business tables; migration version table denied.",
+    "Constraint tests assert actual failure names and remove masking uniqueness preconditions.",
+    "Service-independent integration skip omission corrected; ordinary and full entries both executed."
+  ],
+  "preservation": {
+    "pre_existing_AGENTS_change_preserved": true,
+    "sources_directory_exists": false,
+    "synced_sources_modified": false,
+    "git_commit_created": false,
+    "github_pushed": false,
+    "deployed": false
+  },
+  "final_service_state": {
+    "database_containers_stopped": true,
+    "colima_stopped": true,
+    "database_volume_preserved": true,
+    "credentials_and_models_preserved": true
+  },
+  "remaining_limits": [
+    "Internal synthetic metadata registration does not save uploaded files. Authentication and upload are Day 4.",
+    "Source location and processing-version semantics need real ingestion validation in Day 5.",
+    "Database account is shared; no per-owner RLS. Future HTTP identity must supply trusted owner filters.",
+    "Queue, worker heartbeat, total readiness deadline, task transitions and retry enforcement are later work.",
+    "Statement/connection limits do not alone implement a total business deadline; no claim of seamless long-lived pool recovery.",
+    "No real-model, retrieval quality or medical safety evaluation; synthetic vector probe only.",
+    "Independent macOS reproduction does not prove remote Ubuntu Actions execution.",
+    "Developer independent understanding must be checked by a personal demonstration and the walkthrough self-check questions."
+  ]
+}

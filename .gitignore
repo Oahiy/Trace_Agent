@@ -11,6 +11,10 @@ AGENTS.md
 .cache/
 # Explicitly ignore the single cache inventory as well as everything it manages.
 /.cache/manifest.json
+# Day 3 credentials and database verification artifacts belong to the inventory.
+/.cache/day3/
+# Day 4 uploads, API keys, logs, and verification artifacts use the same inventory.
+/.cache/day4/
 .env
 .env.*
 !.env.example

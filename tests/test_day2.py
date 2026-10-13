@@ -341,5 +341,9 @@ def test_cache_inventory_and_wrapper_failure(tmp_path):
     assert inventory["ruff"] == "ruff/"
     assert inventory["xdg_cache"] == "xdg/"
     assert inventory["day2_downloads_logs_reports_and_isolated_environment"] == "day2/"
+    assert inventory["day3_database_env_logs_reports_and_isolated_environment"] == "day3/"
+    assert inventory["database_volume"]["name"] == "traceagent-day3-postgres"
+    assert inventory["database_volume"]["disposable"] is False
+    assert (tmp_path / ".cache/day3").is_dir()
     assert (tmp_path / ".cache/day2").is_dir()
     assert (tmp_path / ".cache/ruff").is_dir()

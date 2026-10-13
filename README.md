@@ -1,6 +1,55 @@
 # TraceAgent
 
-TraceAgent 是用于可追溯资料研究的 Python 后端项目，MedEvidence 是首个证据检索场景。当前完成 Day 2 的配置、分层实验、接口定稿、本地质量检查与首批语料准备，公开 API 保留 `GET /health -> {"status":"ok"}`。数据库、上传、研究工作流与医学拒答尚未实现。
+TraceAgent 是用于可追溯资料研究的 Python 后端项目，MedEvidence 是首个证据检索场景。当前完成 Day 4：两个种子用户、API Key 摘要认证、owner 隔离、真实文件上传、哈希去重、文档状态查询与共享文件验证。公开接口为 `GET /health`、`POST /documents` 和 `GET /documents/{id}/status`；上传后为 UPLOADED/PENDING。PDF 完整解析、队列、研究工作流与医学拒答按后续阶段实现，今天没有生成真实研究答案。
+
+Day 4 完整解释见 [完成记录与开发讲解](docs/day4-walkthrough.md)，实际证据见 [验证记录](docs/day4-results.json)。在项目根目录复现：
+
+```bash
+bash scripts/dev.sh uv sync --locked --python 3.12.14 --dev
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 prepare
+bash scripts/dev.sh .venv/bin/python -m scripts.day4 prepare
+bash scripts/dev.sh colima start --cpu 2 --memory 2 --disk 10 --vm-type vz --mount "$PWD/.cache/day4/uploads:w" --ssh-config=false
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 up
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 migrate
+bash scripts/dev.sh .venv/bin/python -m scripts.day4 seed
+bash scripts/dev.sh .venv/bin/python -m scripts.day4 demo
+bash scripts/dev.sh .venv/bin/python -m scripts.day4 shared-check
+bash scripts/dev.sh .venv/bin/python -m scripts.day4 audit
+bash scripts/dev.sh .venv/bin/python -m scripts.day4 test
+bash scripts/check.sh
+```
+
+`demo` 自动启动临时本机 API，完成 TXT/PDF、权限、去重、失败、跨进程读取和 API 重启验证后关闭 API。端口 8000 已被占用时拒绝运行，不接管已有服务。手动展示用 `bash scripts/dev.sh .venv/bin/python -m scripts.day4 serve`，打开本机 `/docs`，Key 从受保护的本地凭据文件读取，勿粘贴到聊天或日志。`offline-check` 会短暂停止本项目数据库、验证业务 503 和 health 200、恢复数据库并重启临时 API验证；不要在其他操作使用该数据库时运行。
+
+所有新增运行文件统一登记于被 Git 忽略的 `.cache/manifest.json`。上传文件位于 `.cache/day4/uploads/`，原始 API Key 位于 0600 的 `.cache/day4/auth.env`；数据库仅保存摘要。保留数据库卷时也须保留对应上传文件和两份凭据，不能把整个 `.cache/` 当作可随意删除的临时目录。只把 uploads 目录挂入 Colima，不挂整个项目或凭据目录；Day 4 共享检查不能沿用历史 Day 3 的 `--mount none`。停止时用 `day3 down` 和 `colima stop`，不加删卷选项。本地验证没有 Git 提交、推送或公开部署。
+
+Day 3 完整解释见 [完成记录与开发讲解](docs/day3-walkthrough.md)，实际证据见 [验证记录](docs/day3-results.json)。本地演示不会推送 GitHub。
+
+在项目根目录复现 Day 3：
+
+```bash
+bash scripts/dev.sh uv sync --locked --python 3.12.14 --dev
+bash scripts/dev.sh colima start --cpu 2 --memory 2 --disk 10 --vm-type vz --mount none --ssh-config=false
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 prepare
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 up
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 migrate
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 demo
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 test
+bash scripts/check.sh
+```
+
+`prepare` 只在凭据文件不存在时生成随机密码，文件权限为 0600；已有数据库卷保留时不要删除或重新生成该文件。`up` 会拉取固定 digest 的镜像，首次运行需要网络。`migrate` 使用开发迁移账号，应用演示使用没有建表权限的账号。真实数据库测试仅针对 `traceagent_test`，会清理测试数据与降级测试表；不针对应用库。普通 `check.sh` 明确关闭真实数据库/容器检查，真实检查使用 `day3 test`。远端 GitHub Actions 尚未执行。
+
+检查真实停机失败、恢复后探测，并停止服务：
+
+```bash
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 offline-check
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 probe
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 down
+bash scripts/dev.sh colima stop
+```
+
+`offline-check` 停止本项目数据库，验证固定错误及 5 秒以内的本机停机失败，然后恢复服务。它不等于任意网络故障都能在同一时间内结束。`down` 保留名为 `traceagent-day3-postgres` 的数据卷。缓存和凭据统一登记于 `.cache/manifest.json`，清单本身与 Day 3 缓存均被 Git 忽略；数据库卷位于清单登记的 Colima VM 中。详细清理与数据保留规则见 Day 3 讲解。
 
 Day 2 的完整解释见 [完成记录与开发讲解](docs/day2-walkthrough.md)，实际证据见 [验证记录](docs/day2-results.json)，后续接口见 [API 契约 v1](docs/api-contract-v1.md)，三份真实资料见 [来源清单](docs/day2-sources.json)，七条待人工核对的问题草案见 [评测草案](evals/med/day2-draft.json)。
 

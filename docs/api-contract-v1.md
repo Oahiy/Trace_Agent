@@ -1,12 +1,12 @@
 # TraceAgent API 契约 v1
 
-定稿日期：2026-10-11。此文档约定后续实现行为。Day 2 实际公开接口只有 `/health`；其余接口尚未挂载，不能将下面样例当作已经运行的结果。`app/api/schemas.py` 已实现并测试研究请求与统一错误的结构模型。
+定稿日期：2026-10-11，实施状态更新：2026-10-13。Day 4 已实现 `/health`、`POST /documents` 和 `GET /documents/{id}/status`；其余业务接口尚未挂载。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。`app/api/schemas.py` 已实现并测试研究请求与统一错误的结构模型。
 
 ## 身份、输入与兼容性
 
 除 `/health` 和 `/ready` 外，业务接口将要求 `X-API-Key`。服务端验证身份并决定 owner；请求体不能包含 owner、待执行函数、供应商地址或宿主文件路径。文档、任务、run ID 使用服务端生成的小写规范 UUID 字符串。学习实验中的 `doc-001` 不属于正式 ID 格式。
 
-缺失或无效身份返回 401；其他用户的资源与不存在的资源均返回 404，避免泄露资源是否存在。查询与工具执行必须都带 owner 条件，不能依赖模型“自行遵守”。身份实现与集成测试安排在 D4。
+缺失或无效身份返回 401；其他用户的资源与不存在的资源均返回 404，避免泄露资源是否存在。查询与工具执行必须都带 owner 条件，不能依赖模型“自行遵守”。D4 上传与文档状态接口已经接入真实身份及数据库 owner 过滤。API Key 是安全随机生成的 43 字符 URL-safe 字符串，数据库仅保存 SHA-256 摘要；重复身份头拒绝，停用用户不能认证，401 带 `WWW-Authenticate: APIKey`。
 
 现有 `/health` 成功响应，以及框架的 404 `{"detail":"Not Found"}`、405 `{"detail":"Method Not Allowed"}` 和 Allow 头保持不变。新业务接口按下列错误结构实现；不在 D2 静默替换现有错误响应。统一所有路由错误时必须明确记录契约版本与迁移。
 
@@ -30,7 +30,7 @@
 
 成功：200，`{"status":"ready"}`。失败：503，`{"error":{"code":"dependencies_unavailable","message":"Service dependencies are unavailable."}}`。响应与日志均不包含连接串。D3/D6 实现时必须验证实际生命周期及超时；今天只是契约。
 
-### POST /documents —— 待实现
+### POST /documents —— Day 4 已实现上传登记
 
 输入：multipart/form-data，包括 `file`、`source_id`、`title`、`source_url`、`license`、`license_evidence_url`，可选 `publication_year`、`version_label`、`research_dates`。来源 URL 作为追溯元数据保存，不触发服务器任意 URL 抓取。年份未知保存 null，不能从标题补造。
 
@@ -44,7 +44,7 @@
 
 返回 PENDING 表示记录已经持久化，尚未承诺队列投递成功。首次投递明确失败时按原计划返回 503 `queue_unavailable`，错误体附已提交的 job_id，任务保留 PENDING，允许同一请求重试或修复命令继续；不能假报 QUEUED。同 owner、同文件哈希与同摄取版本复用已有文档和任务；不能跨 owner 复用可见资源。相同文件但来源元数据冲突返回 409 `source_metadata_conflict`，不能静默覆盖。文件过大返回 413 `file_too_large`；类型不支持返回 415 `unsupported_file_type`；元数据或编码不合法返回 422 `invalid_request`。异步解析失败体现在文档/任务状态中，不伪装成上传阶段已经完成解析。
 
-### GET /documents/{id}/status —— 待实现
+### GET /documents/{id}/status —— Day 4 已实现
 
 输入：文档 UUID 与身份。成功：200：
 
@@ -110,4 +110,24 @@ MedEvidence 只支持证据检索和研究辅助，不提供诊断、处方、�
 
 ## 验证状态
 
-已执行：健康接口回归、配置成功/边界/失败、研究输入结构成功/边界/失败、独立文档实验。未执行：未挂载接口的 HTTP、身份、数据库事务、队列、工作流、retry 和医学拒答测试。上述未来样例是验收预期，不能计入今天已通过的功能。
+Day 3 更新（2026-10-12）：PostgreSQL/pgvector、users/documents/chunks/jobs 表、迁移、内部文档与任务原子保存、owner 查询过滤和真实数据库测试已实现。内部登记使用可信调用者提供的 owner、合成文件哈希和摄取版本，不是公开上传接口；演示中的 UPLOADED 仅验证记录状态，不证明已经保存文件。公开 API 仍只有 `/health`，其成功、404、405 与 Allow 契约保持不变。
+
+数据库内部探测验证连接、扩展版本和合成向量运算。它没有作为 `/ready` 挂载；完整 `/ready` 仍需要 D6 的 Redis 和真实 worker heartbeat，并按上述时限单独实现。任务表的状态与幂等字段约束不等于队列、状态迁移、研究输入规范哈希或 retry 已实现。D4 从真实身份确定 owner，并从文件字节计算哈希；D5 从真实解析结果验证 chunk 定位与处理版本。详细执行证据见 `docs/day3-results.json`。
+
+Day 2 历史验证：健康接口回归、配置成功/边界/失败、研究输入结构成功/边界/失败、独立文档实验。此后的身份、数据库与上传验证分别记录在 Day 3/4 证据中。队列、工作流、retry、真实 RAG 和医学拒答仍未实现，未来样例不能计入已通过功能。
+
+## Day 4 实施细节与明确补充（2026-10-13）
+
+上传路由先完成身份验证，再显式解析 multipart；解析到暂存文件不等于正式保存。整个请求体上限为配置的文件上限加 64 KiB（包括所有元数据与 multipart 开销），真实接收字节计数不能被缺失或低报的 Content-Length 绕过。已知过大的 Content-Length 可能在外层返回 413，优先于内层身份错误。最多一个文件、八个元数据字段；单个非文件字段最多 8192 字节。拒绝重复字段、未知字段、未完成或畸形 multipart。网络读取及表单解析总截止默认 30 秒，可配置收紧；它不是磁盘保存和数据库提交的整体截止时间。
+
+缺少来源等必填元数据、非法字段、年份或 TXT 编码返回 422 `invalid_request`。年份必须是四位十进制字符串，省略或空字符串保存 null；其他可选元数据字段可省略，明确提交空字符串仍需通过字段校验。截断/畸形 multipart、缺少 boundary、超出解析字段/文件数量或字段字节上限返回 400 `invalid_request`。解析超时返回 408 `upload_timeout`。TXT 允许 UTF-8 BOM，拒绝空白文本、NUL 等非法控制字符，字符上限为配置值（最多 200000）；哈希和保存内容仍使用原始字节。
+
+文件 MIME 仅接受 text/plain、application/pdf（允许 MIME 参数）。不信任扩展名或 MIME 标签：TXT 严格解码；PDF 验证起始格式标识。PDF 文本型、50 页上限、损坏、加密、扫描件和提取字符数量的最终检查在 D5 摄取阶段；D4 接收 PDF 不表示解析通过。5 MiB 边界测试中的填充 PDF 只验证上传大小，不是有效文本 PDF 的证明。正式文件名由服务端随机生成，公开请求/响应没有文件路径、存储键、owner 或客户端哈希字段。
+
+新增错误：数据库不可用为 503 `database_unavailable`；引用文件缺失/损坏或存储故障为 503 `storage_unavailable`；每 owner 已有五个 PENDING/QUEUED/RUNNING 任务时，新上传为 429 `too_many_pending_tasks`（重复请求仍可复用）；不满足内部数据约束或意外业务异常为 500 `internal_error`。消息固定，不转发异常内容。原 `/health`、未知路径和错误方法的 404/405 与 Allow 头保持已有结构。
+
+每次上传使用独立候选存储键。文件先完成写入和 fsync，再通过同文件系统的独占硬链接原子发布；不会覆盖已有文件。随后文档、任务、文件引用在一个数据库事务中提交。确认回滚的业务拒绝清理本请求候选；SQLAlchemy 存储异常可能包含 COMMIT 确认丢失，因此保留候选，待数据库恢复后只读 audit 核对。复用成功时清理当前请求候选，并验证原引用文件。缺失或损坏的原文件不会被重试静默覆盖，需要从备份恢复或后续明确修复流程。
+
+状态查询同时校验 owner 与 UUID，再核对引用文件大小/哈希。不存在与其他 owner 均 404；存在但文件不可用为 503，不能误报不存在或成功。FAILED 文档的成功查询仍为 200；不在安全错误白名单的内部错误码被替换为 internal_error。D3 合成、无文件引用的历史记录保留，但通过该接口查询返回 storage_unavailable，避免把内部元数据演示当成真实上传。
+
+今天保存的任务保持 PENDING；没有投递队列，也不返回 QUEUED。上传目录通过受限宿主 bind mount 与临时容器共享，并已验证相同哈希和只读写入拒绝；真正 worker 的读取、摄取和状态变化在 D5/D6 验收。文件引用与凭据保留规则、真实验证及剩余边界见 `docs/day4-walkthrough.md` 和 `docs/day4-results.json`。

@@ -1,5 +1,6 @@
 """Validated startup settings; no network calls or credentials in this module."""
 
+from pathlib import Path
 from urllib.parse import urlsplit
 
 from pydantic import Field, ValidationError, field_validator
@@ -27,6 +28,15 @@ class Settings(BaseSettings):
     max_pdf_pages: int = Field(default=50, ge=1, le=50)
     max_text_characters: int = Field(default=200_000, ge=1, le=200_000)
     max_question_characters: int = Field(default=2000, ge=1, le=2000)
+    upload_root: Path = Path(__file__).resolve().parents[2] / ".cache/day4/uploads"
+    upload_timeout_seconds: float = Field(default=30, gt=0, le=30)
+
+    @field_validator("upload_root")
+    @classmethod
+    def safe_upload_root(cls, value: Path) -> Path:
+        if not value.is_absolute() or "sources" in value.parts:
+            raise ValueError("an absolute non-source upload directory is required")
+        return value
 
     @field_validator("local_model_url")
     @classmethod

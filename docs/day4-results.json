@@ -1,0 +1,233 @@
+{
+  "date": "2026-10-13",
+  "timezone": "Asia/Kuala_Lumpur",
+  "status": "engineering_deliverables_verified",
+  "scope": "Day 4 identity isolation, real upload persistence, deduplication, document status and shared file verification",
+  "versions": {
+    "python": "3.12.14",
+    "fastapi": "0.141.1",
+    "starlette": "1.6.0",
+    "anyio": "4.14.2",
+    "python-multipart": "0.0.32",
+    "pydantic": "2.13.4",
+    "pydantic-settings": "2.15.0",
+    "pypdf": "6.20.0",
+    "sqlalchemy": "2.1.4",
+    "psycopg": "3.3.6",
+    "alembic": "1.20.0",
+    "httpx": "0.28.1",
+    "uvicorn": "0.52.4",
+    "pytest": "9.1.1",
+    "ruff": "0.17.0",
+    "postgresql": "18.6 (Debian 18.6-1.pgdg12+2)",
+    "pgvector": "0.8.7",
+    "colima": "0.10.3"
+  },
+  "schema_revision": "0002",
+  "dependencies_added_or_upgraded": false,
+  "public_endpoints": [
+    "GET /health",
+    "POST /documents",
+    "GET /documents/{document_id}/status"
+  ],
+  "limits": {
+    "file_bytes": 5242880,
+    "raw_upload_body_bytes": 5308416,
+    "multipart_files": 1,
+    "metadata_fields": 8,
+    "field_bytes": 8192,
+    "txt_characters": 200000,
+    "network_parse_deadline_seconds": 30,
+    "unfinished_jobs_per_owner": 5,
+    "ingest_version": "ingest-v1",
+    "pdf_full_parse": "Day 5"
+  },
+  "tests": {
+    "local": {
+      "tests": 277,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 277,
+      "database_cases": 61,
+      "database_cases_executed": 61
+    },
+    "isolated": {
+      "tests": 277,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 277,
+      "database_cases": 61,
+      "database_cases_executed": 61
+    },
+    "service_independent": {
+      "tests": 277,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 62,
+      "passed": 215,
+      "database_cases": 61,
+      "database_cases_executed": 0
+    }
+  },
+  "test_reports": {
+    "local": ".cache/day4/tests-local.xml",
+    "isolated": ".cache/day4/tests-isolated.xml",
+    "service_independent": ".cache/pytest/tests.xml"
+  },
+  "new_day4_cases": 81,
+  "new_day4_fast_cases": 63,
+  "new_day4_database_cases": 18,
+  "warnings": [
+    {
+      "code": "testclient_httpx_deprecation",
+      "count_per_full_run": 1,
+      "action": "Retained locked dependencies; tests and real HTTP passed. Future test backend migration requires validation."
+    }
+  ],
+  "demo": {
+    "status": "passed",
+    "synthetic": true,
+    "transport": "real_loopback_http",
+    "registration": {
+      "document_id": "4bfb7a36-81be-4d75-90e5-f53888f95a8c",
+      "job_id": "49dbf91e-565d-4e8f-b2f1-37b3a868dff6",
+      "document_status": "UPLOADED",
+      "job_status": "PENDING"
+    },
+    "checks": {
+      "real_http_upload_and_status": true,
+      "repeat_reuses_document_and_job": true,
+      "owner_isolation_same_404": true,
+      "other_owner_independent_upload": true,
+      "metadata_conflict_409": true,
+      "missing_key_401": true,
+      "invalid_key_401": true,
+      "unsupported_type_415": true,
+      "invalid_utf8_422": true,
+      "empty_file_422": true,
+      "client_owner_rejected_422": true,
+      "real_text_pdf_upload": true,
+      "exact_5_mib_size_boundary": true,
+      "one_byte_over_limit_413": true,
+      "bytes_hash_and_unknown_year": true,
+      "independent_process_reads_file_and_database": true,
+      "api_restart_preserves_status": true
+    }
+  },
+  "shared_files": {
+    "status": "passed",
+    "container_reads_same_sha256": true,
+    "read_only_write_refused": true,
+    "network": "none",
+    "host_mount": "only_project_upload_directory",
+    "real_worker": "not_implemented_until_day6"
+  },
+  "audit": {
+    "status": "passed",
+    "read_only": true,
+    "referenced_files": 4,
+    "missing_or_corrupt": [],
+    "unreferenced_candidates": [],
+    "temporary_files": 0
+  },
+  "offline": {
+    "status": "passed",
+    "real_database_stopped": true,
+    "business_http": 503,
+    "health_http": 200,
+    "elapsed_seconds": 0.004,
+    "restored_after_api_restart": true
+  },
+  "verification_boundaries": {
+    "real_loopback_http": true,
+    "real_postgresql": true,
+    "real_container_shared_read": true,
+    "commit_acknowledgement_loss": "injected after a real COMMIT; not an actual network failure",
+    "slow_upload_and_forged_content_length": "ASGI stream fault injection",
+    "fast_database_fakes": "unit tests only",
+    "real_model_evaluation": "not_executed",
+    "medical_quality_evaluation": "not_executed",
+    "remote_github_actions": "not_executed"
+  },
+  "cache": {
+    "inventory": ".cache/manifest.json",
+    "inventory_git_ignored": true,
+    "day4_git_ignored": true,
+    "credentials_file": ".cache/day4/auth.env",
+    "upload_root": ".cache/day4/uploads/",
+    "isolated_environment": ".cache/day4/ci-env/",
+    "preserve_with_database": [
+      "database.env",
+      "auth.env",
+      "referenced upload files"
+    ],
+    "inventory_contains_secret_values": false
+  },
+  "review": {
+    "correctness": "reviewed and tested",
+    "error_handling": "reviewed and tested",
+    "tests": "success, edge, failure, concurrency and replay",
+    "security": "trusted owner, bounded parsing, private files and fixed errors",
+    "maintainability": "HTTP, business, storage and persistence responsibilities separated"
+  },
+  "preservation": {
+    "preexisting_changes_preserved": true,
+    "AGENTS_modified_this_task": false,
+    "synced_sources_modified": false,
+    "git_commit_created": false,
+    "github_pushed": false,
+    "public_deployment": false
+  },
+  "remaining_limits": [
+    "PDF extraction, chunks, embeddings and RAG are later stages.",
+    "Queue delivery, real worker, full ready and research retry are later stages.",
+    "No public login, key rotation, global upload concurrency control, disk quota, automated orphan deletion or backup.",
+    "Ambiguous commits retain candidates for read-only reconciliation.",
+    "Missing/corrupt referenced files require backup recovery or an explicit repair workflow.",
+    "Parsing deadline and database component timeouts are not a total upload deadline.",
+    "Real outage was recovered by restarting API; automatic pool recovery is not claimed.",
+    "Developer independent explanation needs personal demonstration."
+  ],
+  "final_service_state": {
+    "temporary_api_stopped": true,
+    "database_containers_stopped": true,
+    "colima_stopped": true,
+    "database_volume_preserved": true,
+    "upload_files_preserved": true,
+    "credentials_preserved": true
+  },
+  "checks": {
+    "ruff_lint": "passed",
+    "ruff_format": {
+      "status": "passed",
+      "python_files": 30
+    },
+    "uv_lock_offline": "passed",
+    "git_diff_whitespace": "passed",
+    "private_keys_absent_from_api_log": true,
+    "pdf_fixture": {
+      "pages": 1,
+      "synthetic_text_present": true
+    },
+    "isolated_locked_offline_install": "passed"
+  },
+  "implementation_sha256": {
+    "app/main.py": "2c885adf18269b79622288e1b7f7bdefb4d75e896b65f286625294200cece98f",
+    "app/api/documents.py": "9e9809e8a4dbc0b473c13bed4d8d7fbfaf0c6ec61319bb90c24d9e74aad1f064",
+    "app/api/upload_limits.py": "ed14e36a3697570528f2e63b356649bfd55d644968fac032f0bd5440ff5697d4",
+    "app/services/auth.py": "eab3439a64f53f938a4389a5252dfdedcf8efe84ac1c52da568d246fb9b68eee",
+    "app/services/documents.py": "5c6d2cb16b7c38d0b73a010ca683cee1ae49864c64b092c27796b4c69ecf4067",
+    "app/services/uploads.py": "cafcf24471306258a9c84df6b71b992d8a40051842340e9601aed94427b6b187",
+    "app/storage/files.py": "e8f483908de0c0a389ad6834f7e96b286347744d1aeb1d49d163a6954450ecff",
+    "app/db/models.py": "3813a1017d13063dcfb2df3fe28451c997a6722e0760795e02abe89363077625",
+    "app/db/repositories.py": "83317171f1bb39c1cb029037810763d9f8122a7982160d32e7d239de69c95930",
+    "app/core/config.py": "5801b23381d04048b9207493deb74510a1833183be70b85e3291e1c176b0dc9a",
+    "migrations/versions/0002_auth_and_files.py": "831d5da09c4cd9726d5381522123ff1394da9c567f898518c64c795696dd4f78",
+    "scripts/day4.py": "91f36b1d63fa78bfd5e929c8d3697f0bffcca2347f78d739f4c050d92bed5772",
+    "scripts/dev.sh": "c82e92f5abf3f40b27b43121106ed3099464e35808c557d40571b15a5edf794f",
+    "tests/test_day4.py": "532c0122120fdf0c79f5b48c55516af477c36cbfb2bef7f559b3c99bea4418c6",
+    "tests/test_day4_database.py": "bc099366a7a141eda2d73e39f2ca790b4d86380497d27aa883863f54f78ae014"
+  }
+}

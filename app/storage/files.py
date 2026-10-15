@@ -161,3 +161,28 @@ class FileStore:
                     raise StorageUnavailable()
         except OSError:
             raise StorageUnavailable() from None
+
+    def read_verified(self, reference: FileReference, sha256: str) -> bytes:
+        """Hash the same bounded bytes passed to the parser, through one open file."""
+        directory_fd = None
+        try:
+            self.path(reference.key)  # Validate the server-side key and reject a symlink root.
+            directory_fd = os.open(self.root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+            descriptor = os.open(
+                reference.key + ".bin",
+                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                dir_fd=directory_fd,
+            )
+            with os.fdopen(descriptor, "rb") as source:
+                info = os.fstat(source.fileno())
+                if not stat.S_ISREG(info.st_mode) or info.st_size != reference.size_bytes:
+                    raise StorageUnavailable()
+                data = source.read(reference.size_bytes + 1)
+                if len(data) != reference.size_bytes or hashlib.sha256(data).hexdigest() != sha256:
+                    raise StorageUnavailable()
+                return data
+        except OSError:
+            raise StorageUnavailable() from None
+        finally:
+            if directory_fd is not None:
+                os.close(directory_fd)

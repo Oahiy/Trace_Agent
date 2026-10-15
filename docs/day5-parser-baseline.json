@@ -1,0 +1,23 @@
+{
+  "pypdf": "6.20.0",
+  "sources": [
+    {
+      "source_id": "prisma-2009",
+      "pages": 6,
+      "characters": 36324,
+      "text_sha256": "be2d04615506768f0f07d67921470d1a20ee8c27f263f799bf3cd7e1aea58a76"
+    },
+    {
+      "source_id": "prisma-2020",
+      "pages": 15,
+      "characters": 61579,
+      "text_sha256": "d0a93870314607d0478c0d8b7f54caec8e9bb2989a6e24ba7a6c7601162da994"
+    },
+    {
+      "source_id": "prisma-2009-explanation",
+      "pages": 28,
+      "characters": 182083,
+      "text_sha256": "190cd023264572cac1a917cb1907ad0762a4154d07767d989fe456197ca12d23"
+    }
+  ]
+}

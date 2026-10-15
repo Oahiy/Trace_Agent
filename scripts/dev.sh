@@ -22,6 +22,8 @@ export OLLAMA_HOST="127.0.0.1:11434"
 export OLLAMA_NO_CLOUD=1
 mkdir -p "$UV_CACHE_DIR" "$TMPDIR" "$XDG_CACHE_HOME" "$DOCKER_CONFIG" "$TRACEAGENT_CACHE/day1" "$TRACEAGENT_CACHE/day2" "$TRACEAGENT_CACHE/day3" "$TRACEAGENT_CACHE/pytest" "$RUFF_CACHE_DIR" "$COLIMA_HOME" "$LIMA_HOME"
 mkdir -p "$TRACEAGENT_CACHE/day4/uploads"
+mkdir -p "$TRACEAGENT_CACHE/day5"
+mkdir -p "$TRACEAGENT_CACHE/day6"
 chmod 700 "$TRACEAGENT_CACHE"
 cat > "$TRACEAGENT_CACHE/manifest.$$.tmp" <<'JSON'
 {
@@ -43,6 +45,13 @@ cat > "$TRACEAGENT_CACHE/manifest.$$.tmp" <<'JSON'
   "day3_database_env_logs_reports_and_isolated_environment": "day3/",
   "day4_logs_reports_and_isolated_environment": "day4/",
   "day4_isolated_environment": "day4/ci-env/",
+  "day5_reports_fixtures_and_pdf_previews": "day5/",
+  "day5_isolated_environment": "day5/ci-env/",
+  "day5_failure_fixture_uploads": {"path": "day5/failure-uploads/", "database": "traceagent_test", "disposable_with_test_database": true},
+  "day6_queue_credentials_logs_reports_and_isolated_environment": "day6/",
+  "day6_queue_credentials": {"path": "day6/queue.env", "contains_secrets": true, "disposable_with_existing_redis_volume": false},
+  "day6_demo_uploads": {"path": "day6/uploads/", "database": "traceagent_test", "disposable_with_test_database": true},
+  "day6_redis_volume": {"name": "traceagent-day6-redis", "location": "Docker volume inside the managed Colima VM", "recovery_source": "PostgreSQL parse_tasks; retain credentials with volume"},
   "runtime_ipc": {"location": "OS temporary Colima/Lima sockets", "lifecycle": "released when local VM and services stop"},
   "upload_files": {"path": "day4/uploads/", "disposable_with_existing_database": false, "sharing": "Only this directory is mounted into Colima; consumers bind it at /data/uploads"},
   "api_key_credentials": {"path": "day4/auth.env", "contains_secrets": true, "disposable_with_existing_database": false},

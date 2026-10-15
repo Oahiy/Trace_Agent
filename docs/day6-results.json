@@ -1,0 +1,202 @@
+{
+  "date": "2026-10-15",
+  "timezone": "Asia/Kuala_Lumpur",
+  "scope": "Day 6 durable queued parsing, explicit reconciliation, deadlines, process cleanup and dependency readiness",
+  "versions": {
+    "python": "3.12.14",
+    "fastapi": "0.141.1",
+    "starlette": "1.6.0",
+    "pypdf": "6.20.1",
+    "sqlalchemy": "2.1.4",
+    "psycopg": "3.3.6",
+    "rq": "2.12.0",
+    "redis": "8.1.0",
+    "pytest": "9.1.1",
+    "ruff": "0.17.0",
+    "redis_server": "8.2.10"
+  },
+  "redis_image": "redis@sha256:b51665e66f00759be7c3152ad5ac3c66fb2f619c13ef62dea7cc1f9914524635",
+  "migration": "0003",
+  "tests": {
+    "local": {
+      "tests": 402,
+      "passed": 402,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "report": ".cache/day6/tests-local.xml"
+    },
+    "isolated": {
+      "tests": 402,
+      "passed": 402,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "report": ".cache/day6/tests-isolated.xml"
+    },
+    "service_independent": {
+      "tests": 402,
+      "passed": 291,
+      "skipped": 111,
+      "failures": 0,
+      "errors": 0,
+      "report": ".cache/pytest/tests.xml"
+    }
+  },
+  "day6_cases": {
+    "service_independent": 30,
+    "real_database_with_explicit_broker_substitutes": 17,
+    "real_queue_and_process_suite": 12,
+    "total": 59
+  },
+  "checks": {
+    "ruff_lint": "passed",
+    "ruff_format": "passed",
+    "uv_lock_offline": "passed",
+    "git_diff_whitespace": "passed",
+    "isolated_locked_offline_install": "passed",
+    "cache_manifest_and_day6_paths_ignored": true
+  },
+  "demo": {
+    "status": "passed",
+    "database": "traceagent_test",
+    "real_http_redis_worker_postgresql": true,
+    "checks": {
+      "health_without_worker": true,
+      "redis_without_worker_not_ready": true,
+      "separate_real_worker_ready": true,
+      "day6-txt": true,
+      "day6-txt_parsed_not_ready": true,
+      "day6-txt_parent_state": true,
+      "day6-txt_replay": true,
+      "day6-txt_owner_isolation": true,
+      "day6-pdf": true,
+      "day6-pdf_parsed_not_ready": true,
+      "day6-pdf_parent_state": true,
+      "day6-pdf_replay": true,
+      "day6-pdf_owner_isolation": true,
+      "day6-invalid-pdf": true,
+      "day6-invalid-pdf_parent_state": true,
+      "day6-invalid-pdf_replay": true,
+      "day6-invalid-pdf_owner_isolation": true,
+      "worker_stopped_not_ready": true,
+      "health_after_worker_stop": true
+    },
+    "documents": [
+      {
+        "document_id": "c906f676-3d1d-4363-ac7e-16831436fe47",
+        "job_id": "dd7b24f8-73f4-46f3-b3af-529341997c6e",
+        "document_status": "UPLOADED",
+        "job_status": "PENDING",
+        "parse_status": "SUCCEEDED",
+        "public_status": {
+          "document_id": "c906f676-3d1d-4363-ac7e-16831436fe47",
+          "status": "PARSED",
+          "index_version": null,
+          "error": null
+        }
+      },
+      {
+        "document_id": "ce9c1a5e-0b47-438d-b471-28896820b005",
+        "job_id": "9f6b8bb0-8d52-4793-aa43-763b227353b5",
+        "document_status": "UPLOADED",
+        "job_status": "PENDING",
+        "parse_status": "SUCCEEDED",
+        "public_status": {
+          "document_id": "ce9c1a5e-0b47-438d-b471-28896820b005",
+          "status": "PARSED",
+          "index_version": null,
+          "error": null
+        }
+      },
+      {
+        "document_id": "db9b6833-9ddc-4baf-9705-5a67ab5236d4",
+        "job_id": "5aa436af-0739-4db2-ac5f-d85f5d4c5bc6",
+        "document_status": "UPLOADED",
+        "job_status": "PENDING",
+        "parse_status": "FAILED",
+        "public_status": {
+          "document_id": "db9b6833-9ddc-4baf-9705-5a67ab5236d4",
+          "status": "FAILED",
+          "index_version": null,
+          "error": "invalid_pdf"
+        }
+      }
+    ]
+  },
+  "offline": {
+    "status": "passed",
+    "real_services_stopped_and_restored": true,
+    "checks": {
+      "real_redis_stopped_ready503_health200": true,
+      "upload503_keeps_job_id": true,
+      "same_upload_recovers_same_job": true,
+      "real_database_stopped_ready503_health200": true,
+      "business503_during_database_outage": true,
+      "recovered_ready200": true,
+      "ready_deadlines": true
+    },
+    "timings": {
+      "redis_down_ready_seconds": 0.0057,
+      "database_down_ready_seconds": 0.0039
+    }
+  },
+  "application_file_audit": {
+    "status": "passed",
+    "read_only": true,
+    "referenced_files": 8,
+    "missing_or_corrupt": [],
+    "unreferenced_candidates": [],
+    "temporary_files": 0
+  },
+  "verification_distinctions": [
+    "Real Redis, PostgreSQL, spawned RQ workers and loopback HTTP were exercised.",
+    "Delivery acknowledgement loss, clock advancement and selected database/service exceptions were explicit fault injections.",
+    "Real worker SIGKILL, parser SIGSTOP, process cleanup, timeout and heartbeat freshness were exercised.",
+    "Fast checks intentionally skip database/container/queue checks; skips are not counted as passes.",
+    "No model calls, real-model evaluation, retrieval quality benchmark or medical answer evaluation."
+  ],
+  "warnings": [
+    "Existing Starlette TestClient deprecation warning for httpx; no extra HTTP dependency added."
+  ],
+  "review": {
+    "correctness": "Conditional transitions, atomic stage/chunks, stale execution fences.",
+    "error_handling": "Durable delivery intent, safe errors, deadline reconciliation and disabled-owner handling.",
+    "tests": "Success, edge, failure, concurrency, migration, real cross-process and outage recovery executed.",
+    "security": "JSON and fixed function allowlist, owner checks, sanitized argv/logs and isolated test targets.",
+    "maintainability": "Existing parser/storage reused, two direct dependencies added, RQ spawn adaptation requires upgrade regression."
+  },
+  "remaining_limits": [
+    "Reconciliation is explicit, not a periodic scheduler; failed stages have no manual retry endpoint.",
+    "Complete ingest and embeddings are pending; PARSED is not READY and the parent job remains PENDING.",
+    "Complete-ingest attempts/cumulative budgets are not implemented by the preprocessing stage.",
+    "Pending parent jobs continue to count toward the five-task quota; historical app rows are retained.",
+    "macOS parser hard address-space limit remains unavailable; process cleanup is not a hostile-file sandbox.",
+    "Readiness has a 10-second heartbeat freshness window and checks DB/upload-root scope, not every deployment setting or file.",
+    "No multi-host clock/network-partition guarantee, backup restore drill, global quotas or public deployment acceptance."
+  ],
+  "delivery": {
+    "git_commit": false,
+    "git_push": false,
+    "public_deployment": false,
+    "remote_ci_executed": false,
+    "cache_inventory": ".cache/manifest.json",
+    "documentation": "docs/day6-walkthrough.md",
+    "services_stopped_after_verification": true,
+    "local_ports_closed": {
+      "8000": true,
+      "55432": true,
+      "56379": true
+    },
+    "git_delivery_note": "Verification snapshot predates Git delivery; consult Git history for subsequent commits and pushes."
+  },
+  "issues_found_and_resolved": [
+    "Accepted empty username in standard authenticated Redis URL; validated by config regression.",
+    "Aligned transport assertions with JSON arrays deserializing as lists.",
+    "Closed owned DB pool on queue configuration startup failure.",
+    "Preserved tightened parse limits in execution environment whitelist.",
+    "Recorded safe terminal failure when owner is disabled before or during execution.",
+    "Protected runtime environment repr and sanitized historical failure-log context.",
+    "Used verified existing interpreter path after offline version-discovery failure."
+  ]
+}

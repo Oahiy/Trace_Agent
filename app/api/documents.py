@@ -17,6 +17,7 @@ from starlette.requests import ClientDisconnect
 from starlette.responses import JSONResponse
 
 from app.db.session import DatabaseUnavailable
+from app.ingestion.text import ERROR_MESSAGES
 from app.services.auth import KEY_PATTERN, AuthenticationRequired, AuthService, Principal
 from app.services.documents import (
     DataIntegrityError,
@@ -28,6 +29,7 @@ from app.services.documents import (
 )
 from app.services.uploads import INGEST_VERSION, UploadService
 from app.storage.files import StorageUnavailable, UploadRejected
+from app.tasks.queue import QueueUnavailable
 
 router = APIRouter()
 scheme = APIKeyHeader(name="X-API-Key", auto_error=False)
@@ -42,6 +44,7 @@ FIELDS = {
     "research_dates",
 }
 MESSAGES = {
+    **ERROR_MESSAGES,
     "authentication_required": "Valid authentication is required.",
     "invalid_request": "Request does not satisfy the contract.",
     "file_too_large": "File or upload request exceeds the allowed size.",
@@ -53,6 +56,11 @@ MESSAGES = {
     "upload_timeout": "Upload exceeded the allowed time.",
     "too_many_pending_tasks": "Too many unfinished tasks.",
     "internal_error": "The request could not be completed.",
+    "queue_unavailable": "Task queue is unavailable.",
+    "task_execution_failed": "Background task could not be completed.",
+    "queue_wait_timeout": "Task exceeded its queue wait limit.",
+    "task_timeout": "Task exceeded its execution deadline.",
+    "ingest_state_conflict": "Task state does not allow this operation.",
 }
 
 
@@ -190,6 +198,10 @@ async def upload_document(request: Request, principal: Annotated[Principal, Depe
             file.file,
             (file.content_type or "").split(";", 1)[0].strip().lower(),
         )
+        if request.app.state.tasks is not None:
+            await run_in_threadpool(
+                request.app.state.tasks.dispatch, principal.owner_id, result.job_id
+            )
         return DocumentAccepted(
             document_id=str(result.document_id),
             job_id=str(result.job_id),
@@ -238,6 +250,16 @@ def document_status(
 
 
 def install_error_handlers(application) -> None:
+    @application.exception_handler(QueueUnavailable)
+    async def queue_error(request, error):
+        return JSONResponse(
+            {
+                "error": {"code": "queue_unavailable", "message": MESSAGES["queue_unavailable"]},
+                "job_id": str(error.job_id) if error.job_id else None,
+            },
+            status_code=503,
+        )
+
     mappings = {
         AuthenticationRequired: (401, "authentication_required"),
         ResourceNotFound: (404, "resource_not_found"),

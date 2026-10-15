@@ -16,7 +16,7 @@ from pydantic import (
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.db.models import Document, Job
+from app.db.models import Document, Job, ParseTask
 from app.db.repositories import DocumentRepository, JobRepository, UserRepository
 from app.db.session import DatabaseUnavailable
 from app.storage.files import FileReference
@@ -178,6 +178,8 @@ class DocumentService:
                         id=uuid4(), owner_id=owner_id, document_id=document.id, operation="ingest"
                     )
                     JobRepository(session).add(job)
+                    if stored_file is not None:
+                        session.add(ParseTask(job_id=job.id))
                     result = Registration(
                         document.id, job.id, document.status, job.status, False, stored_file
                     )

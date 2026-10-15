@@ -1,6 +1,6 @@
 # TraceAgent API 契约 v1
 
-定稿日期：2026-10-11，实施状态更新：2026-10-13。Day 4 已实现 `/health`、`POST /documents` 和 `GET /documents/{id}/status`；其余业务接口尚未挂载。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。`app/api/schemas.py` 已实现并测试研究请求与统一错误的结构模型。
+定稿日期：2026-10-11，实施状态更新：2026-10-15。Day 6 增加 `/ready`、可配置的上传后队列投递和后台解析阶段；保留原上传与状态查询字段形状。研究、完整摄取/Embedding 和公开 retry 尚未实现。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。`app/api/schemas.py` 已实现并测试研究请求与统一错误的结构模型。
 
 ## 身份、输入与兼容性
 
@@ -24,11 +24,11 @@
 
 输入：无。成功：200，`{"status":"ok"}`。失败演示：`POST /health` 返回 405，Allow 包含 GET；未知路径返回 404。API 进程停止后的 HTTP 请求连接失败。health 只检查路由存活，不访问模型、数据库或队列。
 
-### GET /ready —— 待实现
+### GET /ready —— Day 6 已实现
 
-输入：无。短时检查数据库、Redis 和 worker 的明确就绪信号，不通过 expensive 推理检查模型。每项最多等待 1 秒，整个检查最多 3 秒，不自动重试。worker 就绪判据必须在 D6 与实际 heartbeat 一起实现；不能把 Redis 可连接当作 worker 可执行。
+输入：无。并发检查数据库、Redis 和目标队列真实 worker 心跳，不通过推理检查模型。每项最多等待 1 秒，整个检查最多 3 秒，不自动重试。心跳须在 10 秒内、状态 idle/busy、无 death 标记、符合 JSON 协议，并匹配数据库和上传目录作用域。Redis 可连接本身不构成就绪。未启用队列时为 503。
 
-成功：200，`{"status":"ready"}`。失败：503，`{"error":{"code":"dependencies_unavailable","message":"Service dependencies are unavailable."}}`。响应与日志均不包含连接串。D3/D6 实现时必须验证实际生命周期及超时；今天只是契约。
+成功：200，`{"status":"ready"}`。失败：503，`{"error":{"code":"dependencies_unavailable","message":"Service dependencies are unavailable."}}`。响应与日志均不包含连接串。Day 6 已验证生命周期、连接握手不回应、服务停机及心跳过期；此检查不证明每条任务、全部配置或文件都可执行。
 
 ### POST /documents —— Day 4 已实现上传登记
 
@@ -52,7 +52,9 @@
 {"document_id":"12345678-1234-4234-8234-123456789abc","status":"READY","index_version":"v1","error":null}
 ```
 
-合法文档失败状态仍返回 200，例如 `{"document_id":"12345678-1234-4234-8234-123456789abc","status":"FAILED","index_version":null,"error":{"code":"no_extractable_text","message":"Document has no supported extractable text."}}`。不存在或越权返回 404 `resource_not_found`。READY 必须意味着当前版本 Embedding 已完成，不等同于 PARSED。
+合法文档失败状态仍返回 200，例如 `{"document_id":"12345678-1234-4234-8234-123456789abc","status":"FAILED","index_version":null,"error":"no_extractable_text"}`。不存在或越权返回 404 `resource_not_found`。READY 必须意味着当前版本 Embedding 已完成，不等同于 PARSED。
+
+Day 5 兼容性勘误：上述文档状态的 `error` 保持 Day 4 已实现的 `str | null`。原文的 `{code,message}` 示例与已实现响应模型不一致，今天修正文档，不改变运行中的字段形状。请求本身的 4xx/5xx 仍采用顶层 `{error:{code,message}}`；研究结果的未来结构不因此改变。未知内部文档错误码仍映射为 `internal_error`。
 
 ### POST /research —— 待实现，输入模型已测试
 
@@ -131,3 +133,29 @@ Day 2 历史验证：健康接口回归、配置成功/边界/失败、研究输
 状态查询同时校验 owner 与 UUID，再核对引用文件大小/哈希。不存在与其他 owner 均 404；存在但文件不可用为 503，不能误报不存在或成功。FAILED 文档的成功查询仍为 200；不在安全错误白名单的内部错误码被替换为 internal_error。D3 合成、无文件引用的历史记录保留，但通过该接口查询返回 storage_unavailable，避免把内部元数据演示当成真实上传。
 
 今天保存的任务保持 PENDING；没有投递队列，也不返回 QUEUED。上传目录通过受限宿主 bind mount 与临时容器共享，并已验证相同哈希和只读写入拒绝；真正 worker 的读取、摄取和状态变化在 D5/D6 验收。文件引用与凭据保留规则、真实验证及剩余边界见 `docs/day4-walkthrough.md` 和 `docs/day4-results.json`。
+
+## Day 5 解析阶段（2026-10-14）
+
+通过本地 `scripts.day5 parse <document_id> --owner A|B` 使用受保护凭据认证，再调用内部 IngestionService；没有新增公开解析路由、队列或 worker。输入不含文件路径。先核验同一份原始字节的大小与 SHA-256，再交给隔离子进程。解析成功的全部 chunks 和文档 PARSED 在一个短事务内提交；index_version 保持 null，整体摄取 job 仍为 PENDING。该命令不接管 QUEUED/RUNNING 任务。解析失败原子保存文档 FAILED、任务 FAILED 和安全错误码；数据库保存失败时不宣称失败状态已经持久化。
+
+初始 ingest-v1 解析规格固定为 pypdf 6.20.1、strict=True、普通提取模式、1000 字符片段、100 字符重叠、PDF 不跨页、TXT UTF-8-sig 解码后保留原始换行和空白。Day 4 的 ingest-v1 尚无解析/片段，这是第一次确定其解析规格；安全补丁对三份已固定语料的逐页文本哈希无变化。后续变更解析器、规范化或切分行为须使用新的处理版本；当前解析器拒绝其他版本，不无声改写旧证据。
+
+TXT 范围为 Python 解码后字符串的 [char_start,char_end)，不含 BOM，不是 UTF-8 字节偏移。PDF 页码为从 1 开始的物理页；空白页不压缩编号。所有片段可通过 document_id 追溯来源、许可、年份、版本和研究日期；未知 section 保持 null。
+
+子进程解析截止默认 60 秒，可收紧且最多 120 秒；不自动重试。超时后 kill 并回收子进程，stderr 不向业务输出转发。子进程不继承数据库/Key 等环境值，启用 CPU 限制并禁止 core dump；512 MiB 地址空间限制在本机 macOS 不受支持，报告为未启用。另限制单页解码内容流 4 MiB、累计 16 MiB；这是对原文件/页数/文本上限的明确补充，先解码再判断本身不构成硬内存隔离。解析截止不是文件读取、数据库保存或整个摄取尝试的总截止；后者与任务预算由后续 worker 接入。
+
+文档安全错误码包含 invalid_text、invalid_pdf、encrypted_pdf、too_many_pages、too_much_text、no_extractable_text、unsupported_image_page、parse_resource_limit、parse_timeout、parse_failed。空文本 PDF、加密和损坏文档拒绝；无文本且含直接图片 XObject 的页也拒绝。复杂嵌套图片、已有 OCR 层和混合扫描件没有完整检测保证；当前验收限于已核验文本型公开语料，不把少量可提取文本当成完整性证明。
+
+重复解析 PARSED/READY 复用片段 ID；FAILED 复用既有失败且命令非零退出，不自动重试。提交确认丢失返回安全数据库错误，后续重放读取已提交结果。文件损坏/缺失时安全失败，不删除片段或自动替换证据。历史 Day 3 无文件引用的合成记录保留，无法作为真实文件解析。实测证据和边界见 docs/day5-results.json 与 docs/day5-walkthrough.md。
+
+## Day 6 队列阶段与兼容性补充（2026-10-15）
+
+启用 TRACEAGENT_QUEUE_ENABLED 并配置认证本机 broker 后，POST /documents 在持久登记完成后投递解析阶段。返回字段仍为 document_id、job_id、document_status、job_status；其中 job_status 指完整 ingest 父任务，本日保持 PENDING，解析成功文档为 PARSED、index_version=null，不返回 READY。接入完整摄取调度后的顶层 QUEUED/RUNNING/SUCCEEDED 仍属后续实现。原“只有队列确认才记录 QUEUED”本日应用于独立 parse_tasks 阶段，不静默把父任务改成解析任务。
+
+新真实上传的 documents/jobs/parse_tasks 同事务保存，历史记录不回填。阶段通过内部命令 inspect/reconcile 查看，不新增公开任务查询或重试接口。阶段成功不增加父任务 attempt_count；完整摄取尝试和其累计预算尚未启动。阶段失败原子保存文档、父任务和阶段安全失败；片段及阶段成功也原子提交。
+
+明确投递失败响应为 503：`{"error":{"code":"queue_unavailable","message":"Task queue is unavailable."},"job_id":"已提交的规范 UUID"}`。这里新增顶层 job_id 是原定恢复语义的具体字段位置。文件/记录保留，允许同请求重放或身份范围内的显式 reconcile。RQ 确认不能让已运行/完成阶段倒退。PENDING/QUEUED 阶段可用相同 execution_id 恢复，RUNNING 到期只失败，不自动重跑。阶段排队 1800 秒、执行最多 300 秒，可配置收紧；等待未来索引的父任务不属于丢失的解析队列任务。
+
+文档 error 保持 str|null，新增安全码 task_execution_failed、queue_wait_timeout、task_timeout、ingest_state_conflict。现有上传/解析错误、身份隔离、404/405 与 Allow 保留。配置未启用队列的本地练习继续保存 PENDING 阶段，可用 Day 5 本地解析；QUEUED/RUNNING 不可绕过。每用户五个未结束父任务上限不变。
+
+解析 worker 只接受固定函数、单个规范执行标识的 JSON 消息；owner、文档、版本和文件引用从数据库重新检查。用户停用后不执行或提交资料结果。数据库确认失败不伪造已持久化终态。reconcile 当前为显式运维动作，没有周期调度器；完整 ingest、Embedding、公开 retry、RAG、医学回答与生产隔离仍未验收。详见 docs/day6-walkthrough.md 和 docs/day6-results.json。

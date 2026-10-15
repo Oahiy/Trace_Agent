@@ -1,6 +1,41 @@
 # TraceAgent
 
-TraceAgent 是用于可追溯资料研究的 Python 后端项目，MedEvidence 是首个证据检索场景。当前完成 Day 4：两个种子用户、API Key 摘要认证、owner 隔离、真实文件上传、哈希去重、文档状态查询与共享文件验证。公开接口为 `GET /health`、`POST /documents` 和 `GET /documents/{id}/status`；上传后为 UPLOADED/PENDING。PDF 完整解析、队列、研究工作流与医学拒答按后续阶段实现，今天没有生成真实研究答案。
+TraceAgent 是用于可追溯资料研究的 Python 后端项目，MedEvidence 是首个证据检索场景。当前完成 Day 6：真实 Redis/RQ 后台解析、独立阶段记录、投递恢复、截止与进程清理，以及 `GET /ready`。解析成功为 PARSED、阶段 SUCCEEDED；完整 ingest 父任务仍为 PENDING，Embedding 完成前不返回 READY。完整讲解见 [Day 6 完成记录与开发讲解](docs/day6-walkthrough.md)，实际结果见 [验证记录](docs/day6-results.json)。
+
+```bash
+bash scripts/dev.sh .venv/bin/python -m scripts.day6 prepare
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 up
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 migrate
+bash scripts/dev.sh .venv/bin/python -m scripts.day6 up
+bash scripts/dev.sh .venv/bin/python -m scripts.day6 test
+bash scripts/dev.sh .venv/bin/python -m scripts.day6 demo
+bash scripts/dev.sh .venv/bin/python -m scripts.day6 offline-check
+bash scripts/dev.sh .venv/bin/python -m scripts.day6 audit
+bash scripts/check.sh
+```
+
+上述命令需要先安装锁定依赖并启动现有 Colima，完整首次准备与手动展示步骤见 Day 6 讲解。测试、demo、offline-check 使用同一隔离测试库，必须串行；停机检查会短暂停止项目依赖。新增缓存、凭据、测试环境和 Redis 卷登记于唯一 `.cache/manifest.json`，清单及其管理目录已忽略。保留 Redis 卷时保留 `.cache/day6/queue.env`；原应用上传文件、数据库和 API Key 凭据继续与数据库卷一起保留。reconcile 当前为显式命令，没有周期调度或失败阶段自动重试。验证记录保留运行时状态；后续 Git 提交和推送以仓库历史为准。尚未公开部署。
+
+Day 5 完成了有截止时间的子进程解析、TXT/PDF 定位、确定性切分、片段原子保存与幂等重放。上传后为 UPLOADED/PENDING，本地解析成功后为 PARSED，Embedding 完成前不返回 READY。研究工作流与医学拒答按后续阶段实现。
+
+Day 5 完整设计、失败处理、逐层讲解、独立开发注意事项和复现见 [完成记录与开发讲解](docs/day5-walkthrough.md)，实际证据见 [验证记录](docs/day5-results.json)。使用 pypdf 6.20.1 安全补丁；升级前后三份资料逐页文本哈希一致。三份 PDF 共 328 个片段；合成中文 TXT 另有 4 个片段。真实资料与合成文件验证不代表模型回答或医学质量验收。
+
+```bash
+bash scripts/dev.sh uv sync --locked --python 3.12.14 --dev
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 prepare
+bash scripts/dev.sh .venv/bin/python -m scripts.day4 prepare
+bash scripts/dev.sh colima start --cpu 2 --memory 2 --disk 10 --vm-type vz --mount "$PWD/.cache/day4/uploads:w" --ssh-config=false
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 up
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 migrate
+bash scripts/dev.sh .venv/bin/python -m scripts.day4 seed
+bash scripts/dev.sh .venv/bin/python -m scripts.day5 corpus
+bash scripts/dev.sh .venv/bin/python -m scripts.day5 test
+bash scripts/dev.sh .venv/bin/python -m scripts.day5 demo
+bash scripts/dev.sh .venv/bin/python -m scripts.day5 audit
+bash scripts/check.sh
+```
+
+公开 PDF 缓存缺失时先执行 `scripts.verify_sources --download`（通过相同 dev 包装器）。`day5 demo` 启动临时本机 API，演示后关闭；失败 HTTP 用例只针对隔离 `traceagent_test`，不删除应用中的历史记录或绕过五任务上限。不要同时运行两份数据库测试或与 demo 并行使用测试库。Day 5 新缓存、测试环境和 PDF 预览均登记在唯一 `.cache/manifest.json`，清单与所管理路径均被 Git 忽略；应用上传文件与凭据仍须随数据库卷保留。macOS 未能启用子进程地址空间上限，当前只适用于公开/合成资料的本地开发验证，不构成生产恶意文件隔离保证。停止服务使用 `day3 down` 和 `colima stop`，保留卷。验证记录保留运行时状态；后续 Git 提交和推送以仓库历史为准。尚未公开部署。
 
 Day 4 完整解释见 [完成记录与开发讲解](docs/day4-walkthrough.md)，实际证据见 [验证记录](docs/day4-results.json)。在项目根目录复现：
 

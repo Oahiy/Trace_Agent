@@ -1,0 +1,28 @@
+name: traceagent-day6
+services:
+  redis:
+    image: redis@sha256:b51665e66f00759be7c3152ad5ac3c66fb2f619c13ef62dea7cc1f9914524635
+    environment:
+      REDIS_PASSWORD: ${TRACEAGENT_REDIS_PASSWORD:?Run Day 6 prepare}
+    # Secret is expanded inside the container into a 0600 tmpfs config, not argv.
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        umask 077
+        printf 'bind 0.0.0.0\nprotected-mode yes\nrequirepass %s\nappendonly yes\ndir /data\n' "$$REDIS_PASSWORD" > /tmp/redis.conf
+        exec /usr/local/bin/docker-entrypoint.sh redis-server /tmp/redis.conf
+    ports:
+      - "127.0.0.1:56379:6379"
+    volumes:
+      - redis_data:/data
+    tmpfs:
+      - /tmp:mode=1777
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=$$REDIS_PASSWORD redis-cli ping | tr -d '\r' | grep -qx PONG"]
+      interval: 2s
+      timeout: 1s
+      retries: 20
+    stop_grace_period: 5s
+volumes:
+  redis_data:
+    name: traceagent-day6-redis

@@ -30,6 +30,8 @@ class Settings(BaseSettings):
     max_question_characters: int = Field(default=2000, ge=1, le=2000)
     upload_root: Path = Path(__file__).resolve().parents[2] / ".cache/day4/uploads"
     upload_timeout_seconds: float = Field(default=30, gt=0, le=30)
+    parse_timeout_seconds: float = Field(default=60, gt=0, le=120)
+    queue_enabled: bool = False
 
     @field_validator("upload_root")
     @classmethod

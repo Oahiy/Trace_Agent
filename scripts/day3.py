@@ -128,7 +128,7 @@ def bootstrap(env: dict[str, str]) -> None:
             "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES FROM traceagent_app"
         )
         connection.execute("REVOKE ALL ON ALL TABLES IN SCHEMA public FROM traceagent_app")
-        for table in ("users", "documents", "chunks", "jobs"):
+        for table in ("users", "documents", "chunks", "jobs", "parse_tasks"):
             if connection.execute("SELECT to_regclass(%s)", ("public." + table,)).fetchone()[0]:
                 connection.execute(
                     sql.SQL("GRANT SELECT, INSERT, UPDATE, DELETE ON {} TO traceagent_app").format(
@@ -319,7 +319,7 @@ def main(argv: list[str] | None = None) -> int:
                 result = {"status": "running"}
             elif args.command == "migrate":
                 migrate(env)
-                result = {"status": "migrated", "revision": "0002"}
+                result = {"status": "migrated", "revision": "0003"}
             elif args.command == "demo":
                 result = demo(env)
             elif args.command == "test":

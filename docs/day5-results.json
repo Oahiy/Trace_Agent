@@ -1,0 +1,391 @@
+{
+  "date": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "status": "engineering_deliverables_verified",
+  "scope": "Day 5 bounded TXT/PDF parsing, deterministic chunks, traceable locators and atomic persistence",
+  "versions": {
+    "python": "3.12.14",
+    "fastapi": "0.141.1",
+    "starlette": "1.6.0",
+    "pypdf": "6.20.1",
+    "pydantic": "2.13.4",
+    "pydantic-settings": "2.15.0",
+    "sqlalchemy": "2.1.4",
+    "psycopg": "3.3.6",
+    "alembic": "1.20.0",
+    "httpx": "0.28.1",
+    "pytest": "9.1.1",
+    "ruff": "0.17.0"
+  },
+  "dependency_change": {
+    "pypdf": {
+      "before": "6.20.0",
+      "after": "6.20.1",
+      "reason": "official cyclic-tree security fix"
+    },
+    "new_dependency_types": false,
+    "other_packages_changed": false
+  },
+  "schema_revision": "0002",
+  "schema_migrations_added": false,
+  "public_endpoints": [
+    "GET /health",
+    "POST /documents",
+    "GET /documents/{document_id}/status"
+  ],
+  "status_error_contract": "preserved str|null; corrected prior object example explicitly in contract",
+  "parsing_profile": {
+    "ingest_version": "ingest-v1",
+    "first_parser_for_existing_upload_only_version": true,
+    "mode": "plain",
+    "strict_pdf": true,
+    "chunk_characters": 1000,
+    "overlap_characters": 100,
+    "pdf_cross_page_chunks": false,
+    "txt_offsets": "Python Unicode after UTF-8-sig decode, CR/LF preserved; [start,end)",
+    "file_bytes": 5242880,
+    "pdf_pages": 50,
+    "text_characters": 200000,
+    "page_decoded_stream_bytes": 4194304,
+    "total_decoded_stream_bytes": 16777216,
+    "parse_timeout_default_seconds": 60,
+    "parse_timeout_max_seconds": 120,
+    "automatic_retries": 0,
+    "cpu_rlimit_configured": true,
+    "address_space_limit_active_on_this_mac": false,
+    "full_os_sandbox": false
+  },
+  "tests": {
+    "local": {
+      "tests": 343,
+      "passed": 343,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "database_cases": 81,
+      "database_cases_executed": 81,
+      "report": ".cache/day5/tests-local.xml"
+    },
+    "isolated": {
+      "tests": 343,
+      "passed": 343,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "database_cases": 81,
+      "database_cases_executed": 81,
+      "report": ".cache/day5/tests-isolated.xml"
+    },
+    "service_independent": {
+      "tests": 343,
+      "passed": 261,
+      "skipped": 82,
+      "failures": 0,
+      "errors": 0,
+      "database_cases": 81,
+      "database_cases_executed": 0,
+      "report": ".cache/pytest/tests.xml"
+    }
+  },
+  "new_cases": {
+    "total": 66,
+    "fast": 46,
+    "real_database": 20
+  },
+  "isolated_environment": {
+    "path": ".cache/day5/ci-env/",
+    "locked_offline_install": "passed",
+    "python": "3.12.14",
+    "interpreter_reused": true,
+    "fresh_operating_system": false
+  },
+  "corpus": {
+    "status": "passed",
+    "before": "6.20.0",
+    "after": "6.20.1",
+    "all_page_text_hashes_unchanged": true,
+    "ingest_version": "ingest-v1",
+    "chunk_characters": 1000,
+    "overlap_characters": 100,
+    "memory_limit_active": false,
+    "sources": [
+      {
+        "source_id": "prisma-2009",
+        "pages": 6,
+        "characters": 36324,
+        "chunks": 43,
+        "anchors": [
+          {
+            "pdf_page": 2,
+            "chunk_ordinals": [
+              9
+            ]
+          },
+          {
+            "pdf_page": 4,
+            "chunk_ordinals": [
+              21
+            ]
+          }
+        ],
+        "seconds_including_comparison": 0.3832
+      },
+      {
+        "source_id": "prisma-2020",
+        "pages": 15,
+        "characters": 61579,
+        "chunks": 74,
+        "anchors": [
+          {
+            "pdf_page": 5,
+            "chunk_ordinals": [
+              22
+            ]
+          },
+          {
+            "pdf_page": 6,
+            "chunk_ordinals": [
+              27
+            ]
+          }
+        ],
+        "seconds_including_comparison": 0.8569
+      },
+      {
+        "source_id": "prisma-2009-explanation",
+        "pages": 28,
+        "characters": 182083,
+        "chunks": 211,
+        "anchors": [
+          {
+            "pdf_page": 8,
+            "chunk_ordinals": [
+              53
+            ]
+          },
+          {
+            "pdf_page": 9,
+            "chunk_ordinals": [
+              56
+            ]
+          }
+        ],
+        "seconds_including_comparison": 0.955
+      }
+    ],
+    "baseline_timing_available": false
+  },
+  "demo": {
+    "status": "passed",
+    "transport": "real_loopback_http",
+    "failure_fixture_database": "traceagent_test",
+    "checks": {
+      "txt_bom_crlf_unicode_exact_locators": true,
+      "synthetic-day4-day5-txt_status": true,
+      "synthetic-day4-day5-txt_replay": true,
+      "synthetic-day4-day5-txt_job_pending": true,
+      "synthetic-day4-day5-txt_new_process": true,
+      "synthetic-day4-day5-txt_owner_isolation": true,
+      "prisma-2009_physical_locators": true,
+      "prisma-2009_status": true,
+      "prisma-2009_replay": true,
+      "prisma-2009_job_pending": true,
+      "prisma-2009_new_process": true,
+      "prisma-2009_owner_isolation": true,
+      "prisma-2020_physical_locators": true,
+      "prisma-2020_status": true,
+      "prisma-2020_replay": true,
+      "prisma-2020_job_pending": true,
+      "prisma-2020_new_process": true,
+      "prisma-2020_owner_isolation": true,
+      "prisma-2009-explanation_physical_locators": true,
+      "prisma-2009-explanation_status": true,
+      "prisma-2009-explanation_replay": true,
+      "prisma-2009-explanation_job_pending": true,
+      "prisma-2009-explanation_new_process": true,
+      "prisma-2009-explanation_owner_isolation": true,
+      "real_http_parse_failure_200_with_safe_code": true,
+      "api_restart_preserves_parsed_documents": true
+    },
+    "documents": [
+      {
+        "document_id": "aa220fa2-0d2d-4081-9f9a-0e6ca2ef854b",
+        "owner_label": "A",
+        "source_id": "synthetic-day4-day5-txt",
+        "status": "PARSED",
+        "chunks": 4
+      },
+      {
+        "document_id": "9011b953-bf99-475f-a616-76b0f08c21a8",
+        "owner_label": "B",
+        "source_id": "prisma-2009",
+        "status": "PARSED",
+        "chunks": 43
+      },
+      {
+        "document_id": "ceb43469-1563-46a2-90d7-628dc754287e",
+        "owner_label": "B",
+        "source_id": "prisma-2020",
+        "status": "PARSED",
+        "chunks": 74
+      },
+      {
+        "document_id": "58a3d1a6-6ec8-4d7c-8e0f-2a765f4255f8",
+        "owner_label": "B",
+        "source_id": "prisma-2009-explanation",
+        "status": "PARSED",
+        "chunks": 211
+      }
+    ]
+  },
+  "audit": {
+    "status": "passed",
+    "read_only": true,
+    "referenced_files": 8,
+    "missing_or_corrupt": [],
+    "unreferenced_candidates": [],
+    "temporary_files": 0
+  },
+  "offline": {
+    "status": "passed",
+    "real_database_stopped": true,
+    "health_http": 200,
+    "business_http": 503,
+    "parse_safe_database_failure": true,
+    "outage_exercise_seconds_including_stop_and_api_start": 0.7686,
+    "recovered_with_fresh_connection": true
+  },
+  "visual_review": {
+    "status": "spot_checked",
+    "reviewer": "assistant visual inspection",
+    "render_tool": "pdftoppm",
+    "pages": [
+      {
+        "source_id": "prisma-2009",
+        "pdf_page": 2,
+        "anchor_chunk_ordinal": 9,
+        "preview": ".cache/day5/prisma-2009-page2.png"
+      },
+      {
+        "source_id": "prisma-2020",
+        "pdf_page": 5,
+        "anchor_chunk_ordinal": 22,
+        "preview": ".cache/day5/prisma-2020-page5.png"
+      },
+      {
+        "source_id": "prisma-2009-explanation",
+        "pdf_page": 8,
+        "anchor_chunk_ordinal": 53,
+        "preview": ".cache/day5/prisma-explanation-page8.png"
+      }
+    ],
+    "anchors_visible_on_expected_physical_pages": true,
+    "all_pages_or_tables_reviewed": false,
+    "limitation": "Three relevant pages visually checked; six anchors checked automatically. Not a full layout or medical quality review."
+  },
+  "secret_scan": {
+    "status": "passed",
+    "files_scanned": 24,
+    "secret_value_matches": []
+  },
+  "verification_boundaries": {
+    "real_loopback_http": true,
+    "real_postgresql": true,
+    "real_subprocess_and_timeout_reaping": true,
+    "real_container_test": true,
+    "concurrent_parse_computation": "fixed parse results + barrier, real PostgreSQL save",
+    "lost_commit_acknowledgement": "injected after an actual successful COMMIT, not a real network failure",
+    "READY_case": "synthetic state fixture, not embedding execution",
+    "visual_review": "three relevant pages, six automatic anchors; not full layout/table validation",
+    "real_model_evaluation": "not_executed",
+    "medical_quality_evaluation": "not_executed",
+    "remote_github_actions": "not_executed"
+  },
+  "warnings": [
+    {
+      "code": "testclient_httpx_deprecation",
+      "count_per_full_run": 1,
+      "action": "retained locked test backend; no unrelated migration"
+    }
+  ],
+  "cache": {
+    "single_inventory": ".cache/manifest.json",
+    "inventory_and_day5_git_ignored": true,
+    "day5": ".cache/day5/",
+    "api_log_reused": ".cache/day4/api.log",
+    "application_uploads_preserve_with_database": ".cache/day4/uploads/",
+    "credentials_preserve_with_database": [
+      ".cache/day3/database.env",
+      ".cache/day4/auth.env"
+    ],
+    "failure_uploads": ".cache/day5/failure-uploads/",
+    "failure_database": "traceagent_test",
+    "inventory_contains_secret_values": false
+  },
+  "application_state": {
+    "new_parsed_documents": 4,
+    "new_pdf_chunks": 328,
+    "new_txt_chunks": 4,
+    "unfinished_jobs_per_seed_owner": 5,
+    "old_records_preserved": true,
+    "failed_http_fixture_uses_isolated_test_database": true
+  },
+  "review": {
+    "correctness": "reviewed; locators, versions, replay and concurrency checked",
+    "error_handling": "reviewed; real outage, atomic rollback, process failure and ambiguous commit covered",
+    "tests": "success, edges and failures executed at stated levels",
+    "security": "owner checks, safe codes, bounded verified reads and reduced child environment checked",
+    "maintainability": "HTTP, parsing, orchestration, persistence and file storage separated"
+  },
+  "remaining_limits": [
+    "macOS address-space limit unavailable; not a production hostile-PDF sandbox",
+    "No complete mixed-scan/OCR, complex layout or table fidelity guarantee",
+    "Chunk parameters not compared on retrieval quality; characters are not tokens",
+    "No embeddings, RAG answers, clinical advice, medical refusal/citation evaluation",
+    "Queue, real worker, attempt state machine, retries, total job deadline and stale PENDING reconciliation remain later work",
+    "Both seed owners have five unfinished jobs; new uploads correctly return 429 until real task lifecycle advances",
+    "No remote CI, public deployment or developer mastery claim"
+  ],
+  "preservation": {
+    "preexisting_AGENTS_change_preserved": true,
+    "AGENTS_modified_by_this_task": false,
+    "synced_sources_modified": false,
+    "git_commit_created": false,
+    "github_pushed": false,
+    "public_deployment": false
+  },
+  "final_service_state": {
+    "temporary_api_stopped": true,
+    "database_containers_stopped": true,
+    "colima_stopped": true,
+    "database_volume_preserved": true,
+    "application_uploads_preserved": true,
+    "credentials_preserved": true
+  },
+  "checks": {
+    "ruff_lint": "passed",
+    "ruff_format": {
+      "status": "passed",
+      "python_files": 37
+    },
+    "uv_lock_offline": "passed",
+    "git_diff_whitespace": "passed",
+    "frozen_baseline_matches_original_capture": true
+  },
+  "implementation_sha256": {
+    "app/ingestion/text.py": "a510172848137e85e02e021d8b18622ae32f3558b53b11f57265f9230f6f530c",
+    "app/ingestion/worker.py": "51effde9dfb1962a767b3522a1941cf6aff48aaf299fcd177439409a373b88c1",
+    "app/ingestion/parser.py": "10687ddaad78ff3904266cd102dc613a41f8773fc5cb54b11e8822f01487092a",
+    "app/services/ingestion.py": "6e6012949642af21b20717eb75d76489a73fde63468cd5aa72fd79ab4563ffea",
+    "app/db/repositories.py": "c46058807e704cb4ac185b8a62e579efde12ac30b847d1b763ba581dbef39545",
+    "app/storage/files.py": "dfbdcd035e426f8c6eac6a99edac963d30aa0baf14d9e32d34ca5b3789c2d4c4",
+    "app/api/documents.py": "f85115281e2173cd5bcb300d6bac58c92297a16c93ecf6f41fb147bdd1a092df",
+    "app/core/config.py": "919a5c9977c1f29423081d031cdc1fc6d739b931be2cb70b6b50b11466317ca6",
+    "scripts/day5.py": "3d0906100d821f53b669361710710ca083394f0ba2771b81a0b56e4bc02fbf14",
+    "scripts/dev.sh": "ec5c8b6549f9f2136f9760f9e8f8cce9e3c41e81bcdf5affd4569df39f303930",
+    "tests/test_day5.py": "dc2e35cf580212c652447de76c49825d75d714a06b54735b8e0f12e6d166ee80",
+    "tests/test_day5_database.py": "fe8474e73f1aa7e4d18d4314cefe44f8870fee84b29d5a2face9c022b85bbf3e",
+    "pyproject.toml": "41a33e6990da388627f8bca9c2dd8095e0fce6fe4c58eb36a26654539f0d0cf7",
+    "uv.lock": "d42a73b1c20da997548ccf0c4d09166ffe42f9388a26aaadfd0d849a6a31d3bf"
+  }
+}

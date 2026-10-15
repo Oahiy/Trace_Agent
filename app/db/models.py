@@ -171,3 +171,39 @@ class Job(Base):
     input_sha256: Mapped[str | None] = mapped_column(String(64))
     error_code: Mapped[str | None] = mapped_column(String(64))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class ParseTask(Base):
+    """One durable preprocessing stage per ingest job, not a completed ingest attempt."""
+
+    __tablename__ = "parse_tasks"
+    __table_args__ = (
+        UniqueConstraint("execution_id", name="uq_parse_tasks_execution"),
+        CheckConstraint(
+            "status IN ('PENDING','QUEUED','RUNNING','SUCCEEDED','FAILED')",
+            name="ck_parse_tasks_status",
+        ),
+        CheckConstraint(
+            "(status = 'RUNNING' AND started_at IS NOT NULL AND deadline_at IS NOT NULL) "
+            "OR status <> 'RUNNING'",
+            name="ck_parse_tasks_running",
+        ),
+        CheckConstraint(
+            "(status IN ('SUCCEEDED','FAILED') AND finished_at IS NOT NULL) "
+            "OR (status NOT IN ('SUCCEEDED','FAILED') AND finished_at IS NULL)",
+            name="ck_parse_tasks_finished",
+        ),
+        Index("ix_parse_tasks_status_created", "status", "created_at"),
+    )
+
+    job_id: Mapped[UUID] = mapped_column(
+        ForeignKey("jobs.id", name="fk_parse_tasks_job", ondelete="CASCADE"), primary_key=True
+    )
+    execution_id: Mapped[UUID] = mapped_column(Uuid, default=uuid4)
+    status: Mapped[str] = mapped_column(String(16), server_default="PENDING")
+    error_code: Mapped[str | None] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    queued_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deadline_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

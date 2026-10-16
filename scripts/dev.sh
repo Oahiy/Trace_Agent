@@ -24,6 +24,7 @@ mkdir -p "$UV_CACHE_DIR" "$TMPDIR" "$XDG_CACHE_HOME" "$DOCKER_CONFIG" "$TRACEAGE
 mkdir -p "$TRACEAGENT_CACHE/day4/uploads"
 mkdir -p "$TRACEAGENT_CACHE/day5"
 mkdir -p "$TRACEAGENT_CACHE/day6"
+mkdir -p "$TRACEAGENT_CACHE/day7"
 chmod 700 "$TRACEAGENT_CACHE"
 cat > "$TRACEAGENT_CACHE/manifest.$$.tmp" <<'JSON'
 {
@@ -52,6 +53,8 @@ cat > "$TRACEAGENT_CACHE/manifest.$$.tmp" <<'JSON'
   "day6_queue_credentials": {"path": "day6/queue.env", "contains_secrets": true, "disposable_with_existing_redis_volume": false},
   "day6_demo_uploads": {"path": "day6/uploads/", "database": "traceagent_test", "disposable_with_test_database": true},
   "day6_redis_volume": {"name": "traceagent-day6-redis", "location": "Docker volume inside the managed Colima VM", "recovery_source": "PostgreSQL parse_tasks; retain credentials with volume"},
+  "day7_acceptance_logs_reports_and_snapshots": "day7/",
+  "day7_demo_uploads": {"path": "day7/uploads/", "database": "traceagent_test", "disposable_with_test_database": true},
   "runtime_ipc": {"location": "OS temporary Colima/Lima sockets", "lifecycle": "released when local VM and services stop"},
   "upload_files": {"path": "day4/uploads/", "disposable_with_existing_database": false, "sharing": "Only this directory is mounted into Colima; consumers bind it at /data/uploads"},
   "api_key_credentials": {"path": "day4/auth.env", "contains_secrets": true, "disposable_with_existing_database": false},

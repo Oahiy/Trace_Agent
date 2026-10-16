@@ -1,6 +1,10 @@
 # TraceAgent
 
-TraceAgent 是用于可追溯资料研究的 Python 后端项目，MedEvidence 是首个证据检索场景。当前完成 Day 6：真实 Redis/RQ 后台解析、独立阶段记录、投递恢复、截止与进程清理，以及 `GET /ready`。解析成功为 PARSED、阶段 SUCCEEDED；完整 ingest 父任务仍为 PENDING，Embedding 完成前不返回 READY。完整讲解见 [Day 6 完成记录与开发讲解](docs/day6-walkthrough.md)，实际结果见 [验证记录](docs/day6-results.json)。
+Day 7 已完成本地后端摄取阶段验收：417 项完整测试通过、0 项跳过；真实 HTTP/Redis/RQ/PostgreSQL 链路、中文 TXT、公开 PDF 持久定位、重放、权限、配额和实际停机恢复均已验证。公开 PDF 得到 74 个片段，合成 TXT 得到 3 个片段；原应用表、8 个上传文件及凭据指纹前后保持一致。完整说明见 [Day 7 验收与独立开发讲解](docs/day7-walkthrough.md)，实际证据见 [Day 7 验证记录](docs/day7-results.json)。成功仍为 PARSED/解析阶段 SUCCEEDED，完整 ingest 父任务保持 PENDING；尚无 Embedding、完整 RAG、医学质量或生产发布验收。
+
+依赖准备与完整顺序见 Day 7 讲解。核心验收依次为 `scripts.day6 test` → `scripts.day6 demo` → `scripts.day7` → `scripts.day6 offline-check` → `scripts.day6 audit`，均经 `bash scripts/dev.sh .venv/bin/python -m` 运行，不能并行。Day 7 的预览、报告与测试上传纳入唯一 `.cache/manifest.json`，清单及所管理目录明确忽略；应用文件和凭据仍须随数据卷保留。开发者本人的独立讲解能力需要通过文末自测亲自验证。
+
+TraceAgent 是用于可追溯资料研究的 Python 后端项目，MedEvidence 是首个证据检索场景。Day 6 交付了真实 Redis/RQ 后台解析、独立阶段记录、投递恢复、截止与进程清理，以及 `GET /ready`。解析成功为 PARSED、阶段 SUCCEEDED；完整 ingest 父任务仍为 PENDING，Embedding 完成前不返回 READY。完整讲解见 [Day 6 完成记录与开发讲解](docs/day6-walkthrough.md)，实际结果见 [验证记录](docs/day6-results.json)。
 
 ```bash
 bash scripts/dev.sh .venv/bin/python -m scripts.day6 prepare

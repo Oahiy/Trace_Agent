@@ -1,0 +1,332 @@
+{
+  "date": "2026-10-16",
+  "timezone": "Asia/Kuala_Lumpur",
+  "scope": "Day 7 local backend ingestion gate: migration, authentication, upload, independent worker, persisted evidence and safe recovery",
+  "versions": {
+    "python": "3.12.14",
+    "fastapi": "0.141.1",
+    "starlette": "1.6.0",
+    "sqlalchemy": "2.1.4",
+    "psycopg": "3.3.6",
+    "alembic": "1.20.0",
+    "pypdf": "6.20.1",
+    "rq": "2.12.0",
+    "redis": "8.1.0",
+    "pytest": "9.1.1",
+    "ruff": "0.17.0"
+  },
+  "tests": {
+    "new_acceptance_assertions": {
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.276
+    },
+    "complete_real_dependency_suite": {
+      "tests": 417,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 31.256
+    },
+    "complete_suite_includes_new_tests": true,
+    "warnings": [
+      "Existing Starlette TestClient/httpx deprecation warning"
+    ]
+  },
+  "checks": {
+    "ruff_lint": "passed",
+    "ruff_format": "passed",
+    "uv_lock_check_offline": "passed",
+    "git_diff_whitespace": "passed",
+    "locked_offline_sync": "passed",
+    "single_cache_manifest": ".cache/manifest.json",
+    "cache_manifest_and_day7_paths_ignored": true
+  },
+  "demo": {
+    "status": "passed",
+    "database": "traceagent_test",
+    "real_http_redis_worker_postgresql": true,
+    "checks": {
+      "health_without_worker": true,
+      "redis_without_worker_not_ready": true,
+      "separate_real_worker_ready": true,
+      "day6-txt": true,
+      "day6-txt_parsed_not_ready": true,
+      "day6-txt_parent_state": true,
+      "day6-txt_replay": true,
+      "day6-txt_owner_isolation": true,
+      "day6-pdf": true,
+      "day6-pdf_parsed_not_ready": true,
+      "day6-pdf_parent_state": true,
+      "day6-pdf_replay": true,
+      "day6-pdf_owner_isolation": true,
+      "day6-invalid-pdf": true,
+      "day6-invalid-pdf_parent_state": true,
+      "day6-invalid-pdf_replay": true,
+      "day6-invalid-pdf_owner_isolation": true,
+      "worker_stopped_not_ready": true,
+      "health_after_worker_stop": true
+    },
+    "documents": [
+      {
+        "document_id": "e58e55fc-e307-4068-b9d5-63035b59c4c3",
+        "job_id": "b13dd188-4192-4fd5-9031-abe3423a1dac",
+        "document_status": "UPLOADED",
+        "job_status": "PENDING",
+        "parse_status": "SUCCEEDED",
+        "public_status": {
+          "document_id": "e58e55fc-e307-4068-b9d5-63035b59c4c3",
+          "status": "PARSED",
+          "index_version": null,
+          "error": null
+        }
+      },
+      {
+        "document_id": "2e130a35-de88-4a35-a158-9f9121d3994b",
+        "job_id": "1e3e7e12-5947-4bd3-a4a4-a4da155ba51e",
+        "document_status": "UPLOADED",
+        "job_status": "PENDING",
+        "parse_status": "SUCCEEDED",
+        "public_status": {
+          "document_id": "2e130a35-de88-4a35-a158-9f9121d3994b",
+          "status": "PARSED",
+          "index_version": null,
+          "error": null
+        }
+      },
+      {
+        "document_id": "55ed0db0-8339-4b65-b03c-28e2704f8552",
+        "job_id": "8f265953-b3c2-481f-8ffe-8cec2c9cdfa5",
+        "document_status": "UPLOADED",
+        "job_status": "PENDING",
+        "parse_status": "FAILED",
+        "public_status": {
+          "document_id": "55ed0db0-8339-4b65-b03c-28e2704f8552",
+          "status": "FAILED",
+          "index_version": null,
+          "error": "invalid_pdf"
+        }
+      }
+    ]
+  },
+  "public_source_acceptance": {
+    "status": "passed",
+    "database": "traceagent_test",
+    "upload_root": ".cache/day7/uploads/",
+    "real_http_redis_worker_postgresql": true,
+    "checks": {
+      "txt_metadata": true,
+      "txt_parent_pending": true,
+      "txt_hash": true,
+      "txt_parsed_not_ready": true,
+      "txt_replay_ids": true,
+      "txt_replay_chunks": true,
+      "txt_replay_execution": true,
+      "txt_owner_isolation": true,
+      "txt_authentication": true,
+      "txt_metadata_conflict": true,
+      "public_pdf_metadata": true,
+      "public_pdf_parent_pending": true,
+      "public_pdf_hash": true,
+      "public_pdf_parsed_not_ready": true,
+      "public_pdf_replay_ids": true,
+      "public_pdf_replay_chunks": true,
+      "public_pdf_replay_execution": true,
+      "public_pdf_owner_isolation": true,
+      "public_pdf_authentication": true,
+      "public_pdf_metadata_conflict": true,
+      "sixth_pending_ingest_rejected": true,
+      "replay_allowed_at_quota": true,
+      "application_rows_unchanged": true
+    },
+    "documents": [
+      {
+        "kind": "txt",
+        "document_id": "0bcee77f-ff68-4c3d-8c4c-135303d41252",
+        "job_id": "a6507445-7fac-47b1-a1df-d13c0df02720",
+        "chunks": 3,
+        "all_chunk_locations_checked": true,
+        "source_id": "synthetic-day4-day7-txt",
+        "anchors": []
+      },
+      {
+        "kind": "public_pdf",
+        "document_id": "8bf4e62c-170f-4097-b686-0cdc6fdab67b",
+        "job_id": "01760c65-436d-4464-9f57-0074def13ea0",
+        "chunks": 74,
+        "all_chunk_locations_checked": true,
+        "source_id": "prisma-2020",
+        "anchors": [
+          {
+            "pdf_page": 5,
+            "chunk_ordinals": [
+              22
+            ]
+          },
+          {
+            "pdf_page": 6,
+            "chunk_ordinals": [
+              27
+            ]
+          }
+        ]
+      }
+    ],
+    "public_source": {
+      "source_id": "prisma-2020",
+      "sha256": "a09df7b2977b925736d0dd7bf0087d8e918a6bbdf52cb7af1246965dd06663a7",
+      "bytes": 825448,
+      "page_count": 15,
+      "characters": 61579,
+      "anchors_checked": 2
+    },
+    "application_snapshot_before": {
+      "users": {
+        "rows": 2,
+        "sha256": "5392025ea52dcc98c1b438db1fbe63f7f791436b3031d1dee1faf6cf03c1f15f"
+      },
+      "documents": {
+        "rows": 10,
+        "sha256": "9481ac41662438715ed078660676f2493b316bd4a56366498f8048f047eaa1d3"
+      },
+      "chunks": {
+        "rows": 332,
+        "sha256": "bee08621f82b5d1cbd728a1a7697f5e0f9b1a423d08ef8808343ee4fb6211c72"
+      },
+      "jobs": {
+        "rows": 10,
+        "sha256": "6df378f003e5badaf4b6f4585850a1b1c9400af9e984952d0d366bcc547b63b6"
+      },
+      "parse_tasks": {
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "application_snapshot_after": {
+      "users": {
+        "rows": 2,
+        "sha256": "5392025ea52dcc98c1b438db1fbe63f7f791436b3031d1dee1faf6cf03c1f15f"
+      },
+      "documents": {
+        "rows": 10,
+        "sha256": "9481ac41662438715ed078660676f2493b316bd4a56366498f8048f047eaa1d3"
+      },
+      "chunks": {
+        "rows": 332,
+        "sha256": "bee08621f82b5d1cbd728a1a7697f5e0f9b1a423d08ef8808343ee4fb6211c72"
+      },
+      "jobs": {
+        "rows": 10,
+        "sha256": "6df378f003e5badaf4b6f4585850a1b1c9400af9e984952d0d366bcc547b63b6"
+      },
+      "parse_tasks": {
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "model_calls": 0
+  },
+  "offline": {
+    "status": "passed",
+    "real_services_stopped_and_restored": true,
+    "checks": {
+      "real_redis_stopped_ready503_health200": true,
+      "upload503_keeps_job_id": true,
+      "same_upload_recovers_same_job": true,
+      "real_database_stopped_ready503_health200": true,
+      "business503_during_database_outage": true,
+      "recovered_ready200": true,
+      "ready_deadlines": true
+    },
+    "timings": {
+      "redis_down_ready_seconds": 0.0059,
+      "database_down_ready_seconds": 0.0039
+    }
+  },
+  "application_file_audit": {
+    "status": "passed",
+    "read_only": true,
+    "referenced_files": 8,
+    "missing_or_corrupt": [],
+    "unreferenced_candidates": [],
+    "temporary_files": 0
+  },
+  "preservation": {
+    "status": "passed",
+    "checks": {
+      "application": true,
+      "upload_files": true,
+      "credentials": true
+    },
+    "application_counts": {
+      "users": 2,
+      "documents": 10,
+      "chunks": 332,
+      "jobs": 10,
+      "parse_tasks": 0
+    },
+    "upload_files": 8
+  },
+  "visual_review": {
+    "pdf_physical_pages": [
+      5,
+      6
+    ],
+    "rendered_with": "Poppler pdftoppm",
+    "reviewed": true,
+    "cached_previews": [
+      ".cache/day7/prisma-2020-05.png",
+      ".cache/day7/prisma-2020-06.png"
+    ],
+    "scope": "Physical page and two source anchor spot checks; not complete layout or medical quality validation"
+  },
+  "review": {
+    "correctness": "Traceability, three distinct states, replay identifiers, quota, migration and data preservation verified.",
+    "error_handling": "Corrupt input, real dependency outage, execution interruption, deadlines and stale results covered.",
+    "tests": "Success, edge, failure, explicit substitutes and real dependencies distinguished.",
+    "security": "Authentication, owner filtering, JSON/fixed entry, local-only services, protected credentials and isolated destructive tests.",
+    "maintainability": "Existing services and lifecycle reused; no API, dependency or migration changes."
+  },
+  "remaining_limits": [
+    "Complete ingest, embedding, READY, retrieval and research workflow remain pending.",
+    "Complete-ingest cumulative attempts and budgets remain pending; parent PENDING jobs retain quota.",
+    "Reconciliation is explicit; no periodic scheduler or public failed-stage retry.",
+    "macOS parser hard address-space limit unavailable; not a hostile-file sandbox.",
+    "Full layout/OCR extraction integrity, RAG and medical answer quality not evaluated.",
+    "No multi-host partition/clock guarantees, backup restore drill, global quotas or public deployment acceptance.",
+    "Developer independent explanation requires personal practice; not independently assessed by automation."
+  ],
+  "model_calls": 0,
+  "new_dependencies": [],
+  "delivery": {
+    "documentation": "docs/day7-walkthrough.md",
+    "verification_precedes_commit": true,
+    "git_delivery": "Consult Git history and remote-ref verification in the final task result.",
+    "remote_ci": "Not verified at time of this pre-commit record.",
+    "services_stopped_after_verification": true,
+    "local_ports_closed": {
+      "8000": true,
+      "55432": true,
+      "56379": true
+    },
+    "volumes_and_credentials_preserved": true,
+    "unrelated_AGENTS_change_preserved": true
+  },
+  "job_search_evidence": {
+    "checked_date": "2026-10-16",
+    "url": "https://jobs.smartrecruiters.com/SeekaTechnology/744000117565313-backend-ai-data-pipeline-engineer",
+    "title": "Backend AI & Data Pipeline Engineer",
+    "page_category": "Intern",
+    "caveat": "Posting also asks for 1+ years experience; applicant eligibility not assessed; no application submitted.",
+    "mapped_skills": [
+      "Python data processing",
+      "resumable pipeline behavior",
+      "architecture documentation"
+    ],
+    "remaining_skills": [
+      "embedding and retrieval integration"
+    ]
+  }
+}

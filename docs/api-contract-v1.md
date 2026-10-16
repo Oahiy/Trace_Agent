@@ -1,6 +1,6 @@
 # TraceAgent API 契约 v1
 
-定稿日期：2026-10-11，实施状态更新：2026-10-15。Day 6 增加 `/ready`、可配置的上传后队列投递和后台解析阶段；保留原上传与状态查询字段形状。研究、完整摄取/Embedding 和公开 retry 尚未实现。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。`app/api/schemas.py` 已实现并测试研究请求与统一错误的结构模型。
+定稿日期：2026-10-11，实施状态更新：2026-10-16。Day 7 完成现有摄取接口的真实来源、重放、配额与故障验收，没有改变 API 契约。Day 6 增加 `/ready`、可配置的上传后队列投递和后台解析阶段；保留原上传与状态查询字段形状。研究、完整摄取/Embedding 和公开 retry 尚未实现。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。`app/api/schemas.py` 已实现并测试研究请求与统一错误的结构模型。
 
 ## 身份、输入与兼容性
 
@@ -159,3 +159,7 @@ TXT 范围为 Python 解码后字符串的 [char_start,char_end)，不含 BOM，
 文档 error 保持 str|null，新增安全码 task_execution_failed、queue_wait_timeout、task_timeout、ingest_state_conflict。现有上传/解析错误、身份隔离、404/405 与 Allow 保留。配置未启用队列的本地练习继续保存 PENDING 阶段，可用 Day 5 本地解析；QUEUED/RUNNING 不可绕过。每用户五个未结束父任务上限不变。
 
 解析 worker 只接受固定函数、单个规范执行标识的 JSON 消息；owner、文档、版本和文件引用从数据库重新检查。用户停用后不执行或提交资料结果。数据库确认失败不伪造已持久化终态。reconcile 当前为显式运维动作，没有周期调度器；完整 ingest、Embedding、公开 retry、RAG、医学回答与生产隔离仍未验收。详见 docs/day6-walkthrough.md 和 docs/day6-results.json。
+
+## Day 7 摄取门槛复验（2026-10-16）
+
+现有接口经真实公开 PDF 和中文 TXT 的独立 worker 链路复验。来源元数据、字节哈希、所有持久片段定位、重放标识、401/404、来源冲突 409、五任务上限 429 与真实依赖故障均有实际证据。成功仍为 PARSED、index_version=null，解析阶段 SUCCEEDED、父任务 PENDING；解析完成不释放完整 ingest 的未结束配额。没有新路由、响应字段或处理版本变更。详见 docs/day7-walkthrough.md 和 docs/day7-results.json；该门槛不代表完整摄取/索引或 RAG 验收。

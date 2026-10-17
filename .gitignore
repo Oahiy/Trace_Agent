@@ -21,6 +21,8 @@ AGENTS.md
 /.cache/day6/
 # Day 7 acceptance evidence and isolated uploads use the same inventory.
 /.cache/day7/
+# Day 8 corpus downloads, snapshots, PDF previews and verification reports.
+/.cache/day8/
 .env
 .env.*
 !.env.example

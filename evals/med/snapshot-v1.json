@@ -1,0 +1,8 @@
+{
+  "corpus_sha256": "fcda30f5884709d9442a54ab15d1bd0eafa1454f00b03656e1d2ac1ba8245ef5",
+  "evals_sha256": "2e61cf82a7844f4350f35b327172b64b2aba48babff9e481545e284e5670b237",
+  "acceptance_gaps": [
+    "developer_source_and_label_review_pending",
+    "three_genuine_conflict_cases_not_established"
+  ]
+}

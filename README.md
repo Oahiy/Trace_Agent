@@ -1,5 +1,16 @@
 # TraceAgent
 
+Day 8 已准备 10 份真实英文资料与 30 条固定评测标注（10 开发、20 验收），沿用现有解析器得到 151 页、779 个片段，55 个来源/评测锚点核验通过。新增离线检查与可重复准备命令，不新增依赖或公开接口。**完整人工冻结尚未通过**：开发者本人尚未复核，三条冲突候选中只有两条真实报告不一致，另一条是研究条件差异；严格门槛会明确失败。完整说明、独立开发注意事项与实际证据见 [Day 8 讲解](docs/day8-walkthrough.md)、[验证记录](docs/day8-results.json)。本日没有运行模型或全量数据库 seed。
+
+```bash
+bash scripts/dev.sh .venv/bin/python -m scripts.day8 check
+bash scripts/dev.sh .venv/bin/python -m scripts.day8 prepare
+bash scripts/dev.sh .venv/bin/python -m scripts.day8 prepare
+bash scripts/check.sh
+```
+
+缺少锁定 PDF 时运行 `scripts.day8 prepare --download`（通过相同 dev 包装器）；已有损坏文件明确失败，不自动覆盖。`scripts.day8 check --require-acceptance` 当前预期非零退出，不能作为已通过的完整冻结验收。准备产物属于唯一 `.cache/manifest.json` 管理的 `.cache/day8/`，两者均明确忽略；它是离线语料快照，未绕过每用户五任务上限或将 PARSED 改为 READY。
+
 Day 7 已完成本地后端摄取阶段验收：417 项完整测试通过、0 项跳过；真实 HTTP/Redis/RQ/PostgreSQL 链路、中文 TXT、公开 PDF 持久定位、重放、权限、配额和实际停机恢复均已验证。公开 PDF 得到 74 个片段，合成 TXT 得到 3 个片段；原应用表、8 个上传文件及凭据指纹前后保持一致。完整说明见 [Day 7 验收与独立开发讲解](docs/day7-walkthrough.md)，实际证据见 [Day 7 验证记录](docs/day7-results.json)。成功仍为 PARSED/解析阶段 SUCCEEDED，完整 ingest 父任务保持 PENDING；尚无 Embedding、完整 RAG、医学质量或生产发布验收。
 
 依赖准备与完整顺序见 Day 7 讲解。核心验收依次为 `scripts.day6 test` → `scripts.day6 demo` → `scripts.day7` → `scripts.day6 offline-check` → `scripts.day6 audit`，均经 `bash scripts/dev.sh .venv/bin/python -m` 运行，不能并行。Day 7 的预览、报告与测试上传纳入唯一 `.cache/manifest.json`，清单及所管理目录明确忽略；应用文件和凭据仍须随数据卷保留。开发者本人的独立讲解能力需要通过文末自测亲自验证。

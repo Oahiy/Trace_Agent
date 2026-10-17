@@ -1,0 +1,562 @@
+{
+  "date": "2026-10-17",
+  "timezone": "Asia/Kuala_Lumpur",
+  "engineering_status": "passed",
+  "day8_full_acceptance": "incomplete",
+  "scope": "Pinned public corpus and source-checked evaluation annotations; offline preparation only",
+  "versions": {
+    "python": "3.12.14",
+    "pypdf": "6.20.1",
+    "pydantic": "2.13.4",
+    "new_dependencies": []
+  },
+  "data": {
+    "sources": 10,
+    "physical_pages": 151,
+    "characters": 648212,
+    "chunks": 779,
+    "case_count": 30,
+    "case_counts": {
+      "dev": {
+        "single_document": 4,
+        "cross_document": 2,
+        "no_answer": 2,
+        "conflict_evidence": 1,
+        "security": 1
+      },
+      "acceptance": {
+        "single_document": 8,
+        "cross_document": 4,
+        "no_answer": 4,
+        "conflict_evidence": 2,
+        "security": 2
+      }
+    },
+    "genuine_reporting_discrepancy_cases": 2,
+    "condition_difference_candidate_cases": 1,
+    "source_and_case_anchors_checked": 55,
+    "corpus_sha256": "fcda30f5884709d9442a54ab15d1bd0eafa1454f00b03656e1d2ac1ba8245ef5",
+    "evals_sha256": "2e61cf82a7844f4350f35b327172b64b2aba48babff9e481545e284e5670b237",
+    "review_status": "agent_source_checked_developer_pending"
+  },
+  "executed": {
+    "ruff_lint": "passed",
+    "ruff_format": "passed",
+    "service_independent_tests": {
+      "total": 470,
+      "passed": 359,
+      "skipped": 111,
+      "new_day8_passed": 53,
+      "failed": 0,
+      "warnings": [
+        "Existing Starlette TestClient/httpx deprecation"
+      ]
+    },
+    "real_pdf_verification": {
+      "status": "passed",
+      "sources": [
+        {
+          "source_id": "prisma-2009",
+          "pages": 6,
+          "characters": 36324,
+          "chunks": 43,
+          "anchors": [
+            {
+              "pdf_page": 2,
+              "chunk_ordinals": [
+                9
+              ]
+            },
+            {
+              "pdf_page": 4,
+              "chunk_ordinals": [
+                21
+              ]
+            },
+            {
+              "pdf_page": 2,
+              "chunk_ordinals": [
+                9
+              ]
+            },
+            {
+              "pdf_page": 2,
+              "chunk_ordinals": [
+                8,
+                9,
+                10,
+                11
+              ]
+            },
+            {
+              "pdf_page": 2,
+              "chunk_ordinals": [
+                9
+              ]
+            },
+            {
+              "pdf_page": 2,
+              "chunk_ordinals": [
+                9
+              ]
+            },
+            {
+              "pdf_page": 2,
+              "chunk_ordinals": [
+                8,
+                9,
+                10,
+                11
+              ]
+            }
+          ],
+          "memory_limit_active": false
+        },
+        {
+          "source_id": "prisma-2020",
+          "pages": 15,
+          "characters": 61579,
+          "chunks": 74,
+          "anchors": [
+            {
+              "pdf_page": 5,
+              "chunk_ordinals": [
+                22
+              ]
+            },
+            {
+              "pdf_page": 6,
+              "chunk_ordinals": [
+                27
+              ]
+            },
+            {
+              "pdf_page": 5,
+              "chunk_ordinals": [
+                22
+              ]
+            },
+            {
+              "pdf_page": 6,
+              "chunk_ordinals": [
+                27
+              ]
+            },
+            {
+              "pdf_page": 9,
+              "chunk_ordinals": [
+                44
+              ]
+            },
+            {
+              "pdf_page": 5,
+              "chunk_ordinals": [
+                22
+              ]
+            },
+            {
+              "pdf_page": 5,
+              "chunk_ordinals": [
+                22
+              ]
+            }
+          ],
+          "memory_limit_active": false
+        },
+        {
+          "source_id": "prisma-2009-explanation",
+          "pages": 28,
+          "characters": 182083,
+          "chunks": 211,
+          "anchors": [
+            {
+              "pdf_page": 8,
+              "chunk_ordinals": [
+                53
+              ]
+            },
+            {
+              "pdf_page": 9,
+              "chunk_ordinals": [
+                56
+              ]
+            },
+            {
+              "pdf_page": 9,
+              "chunk_ordinals": [
+                56
+              ]
+            }
+          ],
+          "memory_limit_active": false
+        },
+        {
+          "source_id": "prisma-abstracts-2013",
+          "pages": 8,
+          "characters": 49314,
+          "chunks": 59,
+          "anchors": [
+            {
+              "pdf_page": 3,
+              "chunk_ordinals": [
+                21
+              ]
+            },
+            {
+              "pdf_page": 3,
+              "chunk_ordinals": [
+                21
+              ]
+            },
+            {
+              "pdf_page": 3,
+              "chunk_ordinals": [
+                21
+              ]
+            },
+            {
+              "pdf_page": 7,
+              "chunk_ordinals": [
+                46
+              ]
+            },
+            {
+              "pdf_page": 3,
+              "chunk_ordinals": [
+                21
+              ]
+            }
+          ],
+          "memory_limit_active": false
+        },
+        {
+          "source_id": "prisma-equity-2012",
+          "pages": 7,
+          "characters": 40145,
+          "chunks": 48,
+          "anchors": [
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                6
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2,
+                4
+              ]
+            }
+          ],
+          "memory_limit_active": false
+        },
+        {
+          "source_id": "prisma-endorsement-2013",
+          "pages": 7,
+          "characters": 29333,
+          "chunks": 35,
+          "anchors": [
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                1
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                1
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                1
+              ]
+            }
+          ],
+          "memory_limit_active": false
+        },
+        {
+          "source_id": "prisma-reporting-2016",
+          "pages": 30,
+          "characters": 92516,
+          "chunks": 113,
+          "anchors": [
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2
+              ]
+            },
+            {
+              "pdf_page": 5,
+              "chunk_ordinals": [
+                18
+              ]
+            },
+            {
+              "pdf_page": 5,
+              "chunk_ordinals": [
+                18
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2
+              ]
+            },
+            {
+              "pdf_page": 5,
+              "chunk_ordinals": [
+                18
+              ]
+            }
+          ],
+          "memory_limit_active": false
+        },
+        {
+          "source_id": "prisma-ent-2015",
+          "pages": 11,
+          "characters": 34049,
+          "chunks": 42,
+          "anchors": [
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                1
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                1
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                1
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2
+              ]
+            },
+            {
+              "pdf_page": 9,
+              "chunk_ordinals": [
+                28
+              ]
+            }
+          ],
+          "memory_limit_active": false
+        },
+        {
+          "source_id": "prisma-flow-2018",
+          "pages": 16,
+          "characters": 36530,
+          "chunks": 48,
+          "anchors": [
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                3
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2,
+                3
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                3
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                3
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2
+              ]
+            },
+            {
+              "pdf_page": 3,
+              "chunk_ordinals": [
+                10
+              ]
+            },
+            {
+              "pdf_page": 11,
+              "chunk_ordinals": [
+                29
+              ]
+            }
+          ],
+          "memory_limit_active": false
+        },
+        {
+          "source_id": "prisma-dental-2023",
+          "pages": 23,
+          "characters": 86339,
+          "chunks": 106,
+          "anchors": [
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2
+              ]
+            },
+            {
+              "pdf_page": 18,
+              "chunk_ordinals": [
+                76
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                2,
+                3
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                1
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                1
+              ]
+            },
+            {
+              "pdf_page": 1,
+              "chunk_ordinals": [
+                1
+              ]
+            }
+          ],
+          "memory_limit_active": false
+        }
+      ]
+    },
+    "offline_prepare": {
+      "first_reused": false,
+      "second_reused": true,
+      "same_output_hash": true,
+      "snapshot_file": ".cache/day8/snapshot-3dbdc145e26036ad770ec6057626251f62f7c743ec2fcdbb00f0ad279e63795b.json",
+      "snapshot_sha256": "5ec2e2ddcaa5e679ac4638fd11cad5f93cec07a58eff712fbcc45986aac6c5fe"
+    },
+    "real_https_restore": {
+      "status": "passed",
+      "source_id": "prisma-abstracts-2013",
+      "real_https_download": true,
+      "bytes": 169862,
+      "hash_matches": true
+    },
+    "strict_acceptance": {
+      "exit_code": 1,
+      "response": {
+        "status": "failed",
+        "error_code": "dataset_acceptance_incomplete"
+      }
+    },
+    "visual_review": {
+      "rendered_and_viewed_physical_pages": 24,
+      "contact_sheets_viewed": 6,
+      "scope": "All source first pages and all cited verification/evaluation pages; PDF text and layout read together",
+      "previews_directory": ".cache/day8/previews/"
+    },
+    "cache_ignore": {
+      "passed": true,
+      "paths": [
+        ".cache/manifest.json",
+        ".cache/day8/restore-check.pdf",
+        ".cache/day8/previews/contact-1.jpg"
+      ]
+    }
+  },
+  "test_distinctions": {
+    "synthetic_unit_tests": "Mock parser, fake download and synthetic bytes validate rules and failures; not real PDF or network evidence",
+    "real_data_checks": "Ten pinned original PDFs parsed in isolated subprocesses; all anchors checked against physical pages and chunks",
+    "real_network_checks": "One pinned PLOS PDF restored over actual HTTPS and hash checked; initial seven PDF and publisher-page acquisitions also succeeded",
+    "not_rerun": "Real PostgreSQL, Redis, container and worker checks were disabled by the existing service-independent check script; historical Day 7 417-pass result is not reused as a current run"
+  },
+  "acceptance_gaps": [
+    "developer_source_and_label_review_pending",
+    "three_genuine_conflict_cases_not_established"
+  ],
+  "deferred_dependencies": [
+    "Full database seed after completion of ingest/indexing; current five unfinished-job quota is preserved"
+  ],
+  "not_executed": [
+    "Real model calls",
+    "Embedding/indexing",
+    "RAG retrieval or answer quality evaluation",
+    "Research endpoint security enforcement",
+    "Public deployment",
+    "Developer independent review"
+  ],
+  "preservation": {
+    "database_accessed": false,
+    "models_called": false,
+    "public_api_changed": false,
+    "sources_directory_touched": false,
+    "preexisting_AGENTS_change_included_in_commit": false
+  },
+  "limitations": [
+    "No claim of three genuine clinical conflicts: two reporting discrepancies and one heterogeneous observational comparison",
+    "Developer review is pending; no automatic approval mechanism",
+    "One-publisher English corpus is not a comprehensive medical collection",
+    "Exact duplicate questions are checked; semantic similarity and answer support still require human review",
+    "macOS parser address-space hard limit remains inactive",
+    "Pinned publisher files may change or disappear, causing safe restore failure",
+    "No cloud/remote CI result asserted in this pre-commit record"
+  ]
+}

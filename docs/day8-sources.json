@@ -1,0 +1,310 @@
+{
+  "version": "medevidence-corpus-v1",
+  "topic": "Systematic-review reporting: PRISMA guidance, methods, reporting quality and source discrepancies",
+  "language": "en",
+  "review_status": "agent_source_checked_developer_pending",
+  "profile": {
+    "parser": "pypdf",
+    "parser_version": "6.20.1",
+    "ingest_version": "ingest-v1",
+    "chunk_characters": 1000,
+    "overlap_characters": 100
+  },
+  "sources": [
+    {
+      "source_id": "prisma-2009",
+      "title": "Preferred Reporting Items for Systematic Reviews and Meta-Analyses: The PRISMA Statement",
+      "authors": "Moher D, Liberati A, Tetzlaff J, Altman DG, The PRISMA Group",
+      "doi": "10.1371/journal.pmed.1000097",
+      "publication_date": "2009-07-21",
+      "publication_year": 2009,
+      "version_label": "PRISMA 2009 (historical)",
+      "research_dates": "Development meeting: June 2005; not a clinical trial",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000097",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1000097&type=printable",
+      "license": "CC BY; attribute the original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000097",
+      "license_basis": "Publisher copyright notice and physical PDF page 1 state Creative Commons Attribution; exact version is not inferred.",
+      "cache_file": ".cache/day1/prisma-2009.pdf",
+      "retrieved_date": "2026-10-10",
+      "sha256": "e0b0b3717e905d9d9de18db3c9fcd3ea1a4a8de1ac743b83b27f28416ca35077",
+      "bytes": 159810,
+      "page_count": 6,
+      "characters": 36324,
+      "verification_anchors": [
+        {
+          "source_id": "prisma-2009",
+          "pdf_page": 2,
+          "anchor": "27-item checklist"
+        },
+        {
+          "source_id": "prisma-2009",
+          "pdf_page": 4,
+          "anchor": "at least one database"
+        }
+      ]
+    },
+    {
+      "source_id": "prisma-2020",
+      "title": "The PRISMA 2020 statement: An updated guideline for reporting systematic reviews",
+      "authors": "Page MJ, McKenzie JE, Bossuyt PM, et al.",
+      "doi": "10.1371/journal.pmed.1003583",
+      "publication_date": "2021-03-29",
+      "publication_year": 2021,
+      "version_label": "PRISMA 2020",
+      "research_dates": "Development meeting: September 2018; revisions during 2019 and 2020; feedback in April 2020. Not a clinical trial.",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003583",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1003583&type=printable",
+      "license": "CC BY; attribute the original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003583",
+      "license_basis": "Publisher copyright notice and physical PDF page 1 state Creative Commons Attribution; exact version is not inferred.",
+      "cache_file": ".cache/day1/prisma-2020.pdf",
+      "retrieved_date": "2026-10-10",
+      "sha256": "a09df7b2977b925736d0dd7bf0087d8e918a6bbdf52cb7af1246965dd06663a7",
+      "bytes": 825448,
+      "page_count": 15,
+      "characters": 61579,
+      "verification_anchors": [
+        {
+          "source_id": "prisma-2020",
+          "pdf_page": 5,
+          "anchor": "should not be used to assess"
+        },
+        {
+          "source_id": "prisma-2020",
+          "pdf_page": 6,
+          "anchor": "all databases"
+        }
+      ]
+    },
+    {
+      "source_id": "prisma-2009-explanation",
+      "title": "The PRISMA Statement for Reporting Systematic Reviews and Meta-Analyses of Studies That Evaluate Health Care Interventions: Explanation and Elaboration",
+      "authors": "Liberati A, Altman DG, Tetzlaff J, et al.",
+      "doi": "10.1371/journal.pmed.1000100",
+      "publication_date": "2009-07-21",
+      "publication_year": 2009,
+      "version_label": "PRISMA 2009 explanation (historical)",
+      "research_dates": "Methodological reporting guidance; not a clinical trial. Development context concerns PRISMA 2009.",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000100",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1000100&type=printable",
+      "license": "CC BY; attribute the original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1000100",
+      "license_basis": "Publisher copyright notice and physical PDF page 1 state Creative Commons Attribution; exact version is not inferred.",
+      "cache_file": ".cache/day2/prisma-2009-explanation.pdf",
+      "retrieved_date": "2026-10-11",
+      "sha256": "89776ac85ffd59607407de6d12087e3e32094781cdaf8b8aa505e976a2bc629d",
+      "bytes": 639475,
+      "page_count": 28,
+      "characters": 182083,
+      "verification_anchors": [
+        {
+          "source_id": "prisma-2009-explanation",
+          "pdf_page": 8,
+          "anchor": "Item 8: SEARCH"
+        },
+        {
+          "source_id": "prisma-2009-explanation",
+          "pdf_page": 9,
+          "anchor": "at least one major database"
+        }
+      ]
+    },
+    {
+      "source_id": "prisma-abstracts-2013",
+      "title": "PRISMA for Abstracts: Reporting Systematic Reviews in Journal and Conference Abstracts",
+      "authors": "Elaine M. Beller; Paul P. Glasziou; Douglas G. Altman; Sally Hopewell; Hilda Bastian; Iain Chalmers; Peter C. Gøtzsche; Toby Lasserson; David Tovey; for the PRISMA for Abstracts Group",
+      "doi": "10.1371/journal.pmed.1001419",
+      "publication_date": "2013-04-09",
+      "publication_year": 2013,
+      "version_label": "PRISMA for Abstracts 2013",
+      "research_dates": "Reporting guidance, not a clinical study; historical abstract-reporting extension.",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1001419",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1001419&type=printable",
+      "license": "CC0 public domain dedication",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1001419",
+      "license_basis": "Publisher rights notice and physical PDF page 1 explicitly state Creative Commons CC0 public domain dedication.",
+      "cache_file": ".cache/day8/prisma-abstracts-2013.pdf",
+      "retrieved_date": "2026-10-17",
+      "sha256": "97ce1d8ca540e365bd0c454d20c0643c4e92119ed90857ab9336f8e36e370957",
+      "bytes": 169862,
+      "page_count": 8,
+      "characters": 49314,
+      "verification_anchors": [
+        {
+          "source_id": "prisma-abstracts-2013",
+          "pdf_page": 3,
+          "anchor": "Registration number and registry name"
+        }
+      ]
+    },
+    {
+      "source_id": "prisma-equity-2012",
+      "title": "PRISMA-Equity 2012 Extension: Reporting Guidelines for Systematic Reviews with a Focus on Health Equity",
+      "authors": "Vivian Welch; Mark Petticrew; Peter Tugwell; David Moher; Jennifer O'Neill; Elizabeth Waters; Howard White; the PRISMA-Equity Bellagio group",
+      "doi": "10.1371/journal.pmed.1001333",
+      "publication_date": "2012-10-30",
+      "publication_year": 2012,
+      "version_label": "PRISMA-Equity 2012",
+      "research_dates": "Reporting guidance, not a clinical study; scope is reviews focused on health equity.",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1001333",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1001333&type=printable",
+      "license": "CC BY; attribute original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1001333",
+      "license_basis": "Publisher copyright notice and physical PDF page 1 explicitly permit reuse under Creative Commons Attribution with attribution; no version inferred.",
+      "cache_file": ".cache/day8/prisma-equity-2012.pdf",
+      "retrieved_date": "2026-10-17",
+      "sha256": "99c5a045f1cba8b07e70ff657210d06d535fc3df7ad3aab4a7d6715bf16e7eb2",
+      "bytes": 307306,
+      "page_count": 7,
+      "characters": 40145,
+      "verification_anchors": [
+        {
+          "source_id": "prisma-equity-2012",
+          "pdf_page": 1,
+          "anchor": "PROGRESS-Plus"
+        }
+      ]
+    },
+    {
+      "source_id": "prisma-endorsement-2013",
+      "title": "Evaluation of the Endorsement of the Preferred Reporting Items for Systematic Reviews and Meta-Analysis (PRISMA) Statement on the Quality of Published Systematic Review and Meta-Analyses",
+      "authors": "Nikola Panic; Emanuele Leoncini; Giulio de Belvis; Walter Ricciardi; Stefania Boccia",
+      "doi": "10.1371/journal.pone.0083138",
+      "publication_date": "2013-12-26",
+      "publication_year": 2013,
+      "version_label": "PRISMA endorsement observational study 2013",
+      "research_dates": "Gastroenterology/hepatology journals; endorsement assessed through September 2012; four comparison groups, 90 reviews in total.",
+      "source_url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0083138",
+      "download_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0083138&type=printable",
+      "license": "CC BY; attribute original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0083138",
+      "license_basis": "Publisher copyright notice and physical PDF page 1 explicitly permit reuse under Creative Commons Attribution with attribution; no version inferred.",
+      "cache_file": ".cache/day8/prisma-endorsement-2013.pdf",
+      "retrieved_date": "2026-10-17",
+      "sha256": "da95b5f7ca97bb7f410f0f4e1ff16a6eb5a9902f3b5e82a975088c15aad8f832",
+      "bytes": 341643,
+      "page_count": 7,
+      "characters": 29333,
+      "verification_anchors": [
+        {
+          "source_id": "prisma-endorsement-2013",
+          "pdf_page": 1,
+          "anchor": "Explicit referencing of PRISMA"
+        }
+      ]
+    },
+    {
+      "source_id": "prisma-reporting-2016",
+      "title": "Epidemiology and Reporting Characteristics of Systematic Reviews of Biomedical Research: A Cross-Sectional Study",
+      "authors": "Matthew J. Page; Larissa Shamseer; Douglas G. Altman; Jennifer Tetzlaff; Margaret Sampson; Andrea C. Tricco; Ferrán Catalá-López; Lun Li; Emma K. Reid; Rafael Sarkis-Onofre; David Moher",
+      "doi": "10.1371/journal.pmed.1002028",
+      "publication_date": "2016-05-24",
+      "publication_year": 2016,
+      "version_label": "Cross-sectional reporting study 2016",
+      "research_dates": "MEDLINE indexing month February 2014; random sample of 300 reviews; comparison with a 2004 sample. Indexing date differs from publication date.",
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1002028",
+      "download_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1002028&type=printable",
+      "license": "CC BY; attribute original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1002028",
+      "license_basis": "Publisher copyright notice and physical PDF page 1 explicitly permit reuse under Creative Commons Attribution with attribution; no version inferred.",
+      "cache_file": ".cache/day8/prisma-reporting-2016.pdf",
+      "retrieved_date": "2026-10-17",
+      "sha256": "272dcab2fac00d2c2ae8be0d8f10a5b557fd11cf4de5aaa911cbd36991d25451",
+      "bytes": 1732225,
+      "page_count": 30,
+      "characters": 92516,
+      "verification_anchors": [
+        {
+          "source_id": "prisma-reporting-2016",
+          "pdf_page": 1,
+          "anchor": "random sample of 300"
+        }
+      ]
+    },
+    {
+      "source_id": "prisma-ent-2015",
+      "title": "Reporting Quality of Systematic Reviews and Meta-Analyses of Otorhinolaryngologic Articles Based on the PRISMA Statement",
+      "authors": "Jeroen P. M. Peters; Lotty Hooft; Wilko Grolman; Inge Stegeman",
+      "doi": "10.1371/journal.pone.0136540",
+      "publication_date": "2015-08-28",
+      "publication_year": 2015,
+      "version_label": "ENT reporting study 2015",
+      "research_dates": "PubMed searched September 3, 2014; ENT and Cochrane reviews published in 2012 and 2013.",
+      "source_url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0136540",
+      "download_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0136540&type=printable",
+      "license": "CC BY; attribute original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0136540",
+      "license_basis": "Publisher copyright notice and physical PDF page 1 explicitly permit reuse under Creative Commons Attribution with attribution; no version inferred.",
+      "cache_file": ".cache/day8/prisma-ent-2015.pdf",
+      "retrieved_date": "2026-10-17",
+      "sha256": "eac36a4d410c1fefdc4a520b34d7446f7bff966235aeab409da04408b63d5212",
+      "bytes": 585100,
+      "page_count": 11,
+      "characters": 34049,
+      "verification_anchors": [
+        {
+          "source_id": "prisma-ent-2015",
+          "pdf_page": 1,
+          "anchor": "September 3, 2014"
+        }
+      ]
+    },
+    {
+      "source_id": "prisma-flow-2018",
+      "title": "Quality of flow diagram in systematic review and/or meta-analysis",
+      "authors": "Hai Vu-Ngoc; Sameh Samir Elawady; Ghaleb Muhammad Mehyar; Amr Hesham Abdelhamid; Omar Mohamed Mattar; Oday Halhouli; Nguyen Lam Vuong; Citra Dewi Mohd Ali; Ummu Helma Hassan; Nguyen Dang Kien; Kenji Hirayama; Nguyen Tien Huy",
+      "doi": "10.1371/journal.pone.0195955",
+      "publication_date": "2018-06-27",
+      "publication_year": 2018,
+      "version_label": "Flow-diagram reporting study 2018",
+      "research_dates": "Abstract and methods prose say January 2004 to August 2015; printed query ends 2016/12/31. Preserve this unresolved reporting discrepancy.",
+      "source_url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0195955",
+      "download_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0195955&type=printable",
+      "license": "CC BY; attribute original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0195955",
+      "license_basis": "Publisher copyright notice and physical PDF page 1 explicitly permit reuse under Creative Commons Attribution with attribution; no version inferred.",
+      "cache_file": ".cache/day8/prisma-flow-2018.pdf",
+      "retrieved_date": "2026-10-17",
+      "sha256": "3088a83d661d7a10382dc298225c54cc3cf041dcb8f56f7f2f1e0430937a6fb8",
+      "bytes": 4675488,
+      "page_count": 16,
+      "characters": 36530,
+      "verification_anchors": [
+        {
+          "source_id": "prisma-flow-2018",
+          "pdf_page": 1,
+          "anchor": "beta = 0.177"
+        }
+      ]
+    },
+    {
+      "source_id": "prisma-dental-2023",
+      "title": "Effect of PRISMA 2009 on reporting quality in systematic reviews and meta-analyses in high-impact dental medicine journals between 1993–2018",
+      "authors": "Kerry A. Sewell; Jana Schellinger; Jamie E. Bloss",
+      "doi": "10.1371/journal.pone.0295864",
+      "publication_date": "2023-12-14",
+      "publication_year": 2023,
+      "version_label": "Dental reporting study 2023",
+      "research_dates": "Highest-impact dental journals; pre-PRISMA 1993-2009 and post-PRISMA 2012-2018; 2010-2011 excluded. Not a 2023 study window.",
+      "source_url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0295864",
+      "download_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0295864&type=printable",
+      "license": "CC BY; attribute original authors and publisher. Exact version not inferred.",
+      "license_evidence_url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0295864",
+      "license_basis": "Publisher copyright notice and physical PDF page 1 explicitly permit reuse under Creative Commons Attribution with attribution; no version inferred.",
+      "cache_file": ".cache/day8/prisma-dental-2023.pdf",
+      "retrieved_date": "2026-10-17",
+      "sha256": "c2147ff46c9801a950199dca19c550a583f80489c7087a7d1208527592a428e5",
+      "bytes": 561507,
+      "page_count": 23,
+      "characters": 86339,
+      "verification_anchors": [
+        {
+          "source_id": "prisma-dental-2023",
+          "pdf_page": 1,
+          "anchor": "any described use of PRISMA"
+        }
+      ]
+    }
+  ]
+}

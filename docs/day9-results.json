@@ -1,0 +1,254 @@
+{
+  "date": "2026-10-18",
+  "timezone": "Asia/Kuala_Lumpur",
+  "recorded_at": "2026-10-18T10:14:33.730679+08:00",
+  "scope": "Day 9 local model adapters, in-process budgets and compatibility probes",
+  "environment": {
+    "python": "3.12.14",
+    "ollama": "0.40.2",
+    "packages": {
+      "httpx": "0.28.1",
+      "pydantic": "2.13.4",
+      "fastapi": "0.141.1",
+      "pytest": "9.1.1"
+    }
+  },
+  "tests": {
+    "day9": {
+      "command": "bash scripts/dev.sh .venv/bin/python -m pytest tests/test_day9.py -q --basetemp=.cache/pytest/day9-tmp --junitxml=.cache/day9/pytest.xml",
+      "tests": 108,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 108,
+      "seconds": 0.799
+    },
+    "repository_checks": {
+      "command": "bash scripts/check.sh",
+      "tests": 578,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 111,
+      "passed": 467,
+      "seconds": 4.094,
+      "ruff_lint": "passed",
+      "ruff_format": "passed",
+      "skips": "Existing real database, Redis/queue and container tests explicitly disabled by check.sh",
+      "warning": "Existing Starlette/httpx TestClient deprecation; no dependency added to silence it"
+    },
+    "locked_environment": {
+      "command": "bash scripts/dev.sh uv sync --locked --offline --python .venv/bin/python --dev",
+      "status": "passed",
+      "dependencies_added_or_upgraded": false
+    }
+  },
+  "real_model": {
+    "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day9 demo",
+    "status": "passed",
+    "recorded_at": "2026-10-18T10:11:17.691270+08:00",
+    "profiles": [
+      {
+        "name": "qwen3:1.7b",
+        "digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+        "dimensions": null,
+        "preprocessing_version": null
+      },
+      {
+        "name": "nomic-embed-text:v1.5",
+        "digest": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+        "dimensions": 768,
+        "preprocessing_version": "nomic-task-prefix-v1"
+      }
+    ],
+    "source": {
+      "source_id": "prisma-2020",
+      "sha256": "a09df7b2977b925736d0dd7bf0087d8e918a6bbdf52cb7af1246965dd06663a7",
+      "pdf_page": 5,
+      "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003583"
+    },
+    "generation": {
+      "source_id": "prisma-2020",
+      "pdf_page": 5,
+      "summary": "PRISMA 2020 is not intended to assess the conduct or methodological quality of systematic reviews, and it is not suitable for reporting protocols."
+    },
+    "embedding": {
+      "document_count": 2,
+      "query_count": 1,
+      "dimensions": 768,
+      "query_document_cosines": [
+        0.86612476262564,
+        0.7431055155431548
+      ]
+    },
+    "boundary": {
+      "result": {
+        "value": "ok"
+      },
+      "usage": {
+        "task_attempt": 1,
+        "request_attempt": 1,
+        "kind": "generation",
+        "model": "qwen3:1.7b",
+        "model_digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+        "estimated_input_tokens": 2704,
+        "estimation_method": "utf8-bytes-plus-template-reserve-v1; heuristic-not-tokenizer",
+        "input_tokens": 506,
+        "output_tokens": 10,
+        "charged_tokens": 516,
+        "seconds": 0.160021,
+        "status": "succeeded",
+        "error_code": null,
+        "http_status": 200,
+        "cloud_api_cost_usd": 0
+      },
+      "oversized_input_rejected_before_inference": true,
+      "closed_client_rejected": true
+    },
+    "budget": {
+      "task_attempt": 1,
+      "generation_calls": 2,
+      "attempt_generation_calls": 2,
+      "embedding_calls": 2,
+      "generation_tokens_charged": 876,
+      "embedding_tokens_charged": 248,
+      "records": [
+        {
+          "task_attempt": 1,
+          "request_attempt": 1,
+          "kind": "generation",
+          "model": "qwen3:1.7b",
+          "model_digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+          "estimated_input_tokens": 1423,
+          "estimation_method": "utf8-bytes-plus-template-reserve-v1; heuristic-not-tokenizer",
+          "input_tokens": 298,
+          "output_tokens": 62,
+          "charged_tokens": 360,
+          "seconds": 0.914846,
+          "status": "succeeded",
+          "error_code": null,
+          "http_status": 200,
+          "cloud_api_cost_usd": 0
+        },
+        {
+          "task_attempt": 1,
+          "request_attempt": 1,
+          "kind": "embedding",
+          "model": "nomic-embed-text:v1.5",
+          "model_digest": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+          "estimated_input_tokens": 940,
+          "estimation_method": "utf8-bytes-plus-template-reserve-v1; heuristic-not-tokenizer",
+          "input_tokens": 227,
+          "output_tokens": null,
+          "charged_tokens": 227,
+          "seconds": 0.045004,
+          "status": "succeeded",
+          "error_code": null,
+          "http_status": 200,
+          "cloud_api_cost_usd": 0
+        },
+        {
+          "task_attempt": 1,
+          "request_attempt": 1,
+          "kind": "embedding",
+          "model": "nomic-embed-text:v1.5",
+          "model_digest": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+          "estimated_input_tokens": 125,
+          "estimation_method": "utf8-bytes-plus-template-reserve-v1; heuristic-not-tokenizer",
+          "input_tokens": 21,
+          "output_tokens": null,
+          "charged_tokens": 21,
+          "seconds": 0.00991,
+          "status": "succeeded",
+          "error_code": null,
+          "http_status": 200,
+          "cloud_api_cost_usd": 0
+        },
+        {
+          "task_attempt": 1,
+          "request_attempt": 1,
+          "kind": "generation",
+          "model": "qwen3:1.7b",
+          "model_digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+          "estimated_input_tokens": 2704,
+          "estimation_method": "utf8-bytes-plus-template-reserve-v1; heuristic-not-tokenizer",
+          "input_tokens": 506,
+          "output_tokens": 10,
+          "charged_tokens": 516,
+          "seconds": 0.160021,
+          "status": "succeeded",
+          "error_code": null,
+          "http_status": 200,
+          "cloud_api_cost_usd": 0
+        }
+      ]
+    },
+    "cloud_api_cost_usd": 0
+  },
+  "cache": {
+    "inventory": ".cache/manifest.json",
+    "entry": "day9_model_logs_reports_and_test_artifacts",
+    "path": ".cache/day9/",
+    "explicit_ignore_verified": [
+      ".cache/manifest.json",
+      ".cache/day9/ollama.log",
+      ".cache/day9/demo.json",
+      ".cache/day9/pytest.xml"
+    ],
+    "second_inventory_created": false
+  },
+  "test_distinctions": {
+    "unit_tests": "HTTPX MockTransport and synthetic responses; fault, retry and cancellation behavior are deterministic simulations",
+    "real_model": "Actual Ollama 0.40.2 and pinned weights; two generation and two embedding requests in final probe",
+    "evaluation": "One public methods excerpt plus long synthetic padding; no corpus-wide retrieval, medical answer or 30-case model evaluation"
+  },
+  "review": {
+    "correctness": "Strict schema, completion, fixed dimensions, model identity and accounting checked",
+    "error_handling": "Deadline, retry, cancellation, safe fallback and stale report regressions tested",
+    "tests": "Success, edge and failure cases executed; skips and mocks distinguished",
+    "security": "Loopback, no redirects/proxies, response size limit, safe errors and ignored caches",
+    "maintainability": "Provider contracts, budget and implementation separated; existing experiments preserved; no dependency changes"
+  },
+  "preservation": {
+    "public_api_changed": false,
+    "database_accessed": false,
+    "document_READY_state_changed": false,
+    "sources_directory_edited": false,
+    "preexisting_AGENTS_change_included": false
+  },
+  "dataset_acceptance_gaps": [
+    "developer_source_and_label_review_pending",
+    "three_genuine_conflict_cases_not_established"
+  ],
+  "not_executed": [
+    "Real PostgreSQL/Redis/container/worker acceptance",
+    "Full corpus embedding and indexing",
+    "RAG recall or answer quality evaluation",
+    "Medical safety enforcement at research endpoints",
+    "Durable task retry and token accounting",
+    "Public deployment",
+    "Developer independent oral review",
+    "Remote CI verification"
+  ],
+  "limitations": [
+    "Byte-based input estimate is a conservative heuristic, not an exact tokenizer guarantee",
+    "Client cancellation does not prove server-side inference has stopped",
+    "Inventory digest checks before/after do not atomically bind a server response to weights",
+    "Budget is in-process and caller-owned; no durable task retry accounting yet",
+    "No database writes, indexing, retrieval metrics, medical safety or answer-quality acceptance",
+    "Day 8 developer review and third genuine conflict remain pending",
+    "Actual 2800-token prompt limit was not exercised; tested 2704 estimate versus 506 actual input tokens",
+    "Inventory/response caps and cooperative deadlines are development safeguards, not a hard hostile-server sandbox"
+  ],
+  "git_delivery": "This execution record precedes commit/push; verified Git history and the final chat response identify delivery.",
+  "real_stopped_model_check": {
+    "status": "passed",
+    "expected_failure": "model_identity_unavailable",
+    "generation_calls": 0,
+    "scope": "Actual stopped local Ollama; no inference request issued"
+  },
+  "runtime_cleanup": {
+    "started_local_model_for_this_task": true,
+    "owned_server_stopped_after_validation": true,
+    "original_model_weights_preserved": true
+  }
+}

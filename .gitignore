@@ -23,6 +23,8 @@ AGENTS.md
 /.cache/day7/
 # Day 8 corpus downloads, snapshots, PDF previews and verification reports.
 /.cache/day8/
+# Day 9 local model logs, adapter demos and test reports use the same inventory.
+/.cache/day9/
 .env
 .env.*
 !.env.example

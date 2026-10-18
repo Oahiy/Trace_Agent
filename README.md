@@ -1,5 +1,16 @@
 # TraceAgent
 
+Day 9 已交付可复用的本机生成/Embedding 适配器、严格结构输出、固定模型 digest 与 768 维校验、共享截止、一次有限重试及独立用量预算。108 项新增测试通过；完整基础检查为 467 passed、111 skipped，跳过项未计为通过。真实模型完成两次生成和两次 Embedding 请求，输入估算与供应商实际统计分开保存。没有新依赖、公开 API 或数据库改动；预算目前为进程内对象，RAG/医学质量和持久化任务预算尚未验收。逐层解释、独立开发注意事项、官方依据和复现见 [Day 9 讲解](docs/day9-walkthrough.md)，实际证据见 [验证记录](docs/day9-results.json)。
+
+```bash
+bash scripts/dev.sh .venv/bin/python -m pytest tests/test_day9.py -q --basetemp=.cache/pytest/day9-tmp
+bash scripts/check.sh
+# 另一个终端先运行 bash scripts/dev.sh ollama serve，使用已有固定模型与锁定 PDF。
+bash scripts/dev.sh .venv/bin/python -m scripts.day9 demo
+```
+
+Day 9 日志、演示和测试产物纳入唯一 `.cache/manifest.json` 的 `.cache/day9/` 条目；清单及该目录均明确忽略。不要删除随原数据库/Redis 卷保留的凭据和上传文件。Day 8 的人工复核及冲突用例缺口继续保留，文档仍未因适配器完成而改为 READY。
+
 Day 8 已准备 10 份真实英文资料与 30 条固定评测标注（10 开发、20 验收），沿用现有解析器得到 151 页、779 个片段，55 个来源/评测锚点核验通过。新增离线检查与可重复准备命令，不新增依赖或公开接口。**完整人工冻结尚未通过**：开发者本人尚未复核，三条冲突候选中只有两条真实报告不一致，另一条是研究条件差异；严格门槛会明确失败。完整说明、独立开发注意事项与实际证据见 [Day 8 讲解](docs/day8-walkthrough.md)、[验证记录](docs/day8-results.json)。本日没有运行模型或全量数据库 seed。
 
 ```bash

@@ -163,3 +163,13 @@ TXT 范围为 Python 解码后字符串的 [char_start,char_end)，不含 BOM，
 ## Day 7 摄取门槛复验（2026-10-16）
 
 现有接口经真实公开 PDF 和中文 TXT 的独立 worker 链路复验。来源元数据、字节哈希、所有持久片段定位、重放标识、401/404、来源冲突 409、五任务上限 429 与真实依赖故障均有实际证据。成功仍为 PARSED、index_version=null，解析阶段 SUCCEEDED、父任务 PENDING；解析完成不释放完整 ingest 的未结束配额。没有新路由、响应字段或处理版本变更。详见 docs/day7-walkthrough.md 和 docs/day7-results.json；该门槛不代表完整摄取/索引或 RAG 验收。
+
+### Day 9 内部模型适配器交付范围
+
+新增 app/llm 的异步生成/Embedding 接口，未新增公开模型调用、研究或 trace 路由。固定本机 qwen3:1.7b 与 nomic-embed-text:v1.5 的 Day 1 digest，生成使用调用方 Pydantic Schema；Embedding 区分 query/document 前缀并严格校验 768 维。调用前后核对库存不是权重原子绑定证明。
+
+适配器有效总截止最多 30 秒，Settings 的更短值可收紧；历史 Settings 仍可接受至 120 秒，但此适配器不会因此超过 30 秒。最多追加一次自动重试，首次请求、等待和重试共享截止和预算。只重试明确瞬态状态/传输错误；不跟随重定向，不重试身份/输入/输出校验失败。响应解码字节最多 1 MiB，错误只输出固定码。
+
+完整消息和 Schema 使用 UTF-8 字节加模板预留估算，预检上限为 2800，明确不构成精确 tokenizer 保证；实际统计超过约定上限时记录后拒绝结果。输出最多 1024。每次生成请求前预留 2800+输出上限，已知统计替换对应预留，未知保持 null 且继续扣预留。失败和取消也计次数，Embedding 用量单独记录；内部 Embedding 输入批次最多八条、单条最多 2000 字符、每预算对象最多 32 次请求，可收紧；truncate=false。
+
+CallBudget 每尝试四次生成、最多两次任务尝试，累计 24000 生成 Token 及历史跨尝试保留。同一对象并发操作被拒绝。它当前只是可信调用方的进程内对象；未接入研究任务鉴权/FAILED 判断、跨进程恢复或持久化账本，不能声称公开任务 retry 或整体预算已经实现。客户端取消不保证服务端停止。详见 docs/day9-walkthrough.md 和 docs/day9-results.json。

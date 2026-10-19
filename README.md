@@ -1,5 +1,16 @@
 # TraceAgent
 
+Day 10 已完成锁定公开 PDF 的向量入库与可追溯精确检索：74 个片段、版本化 768 维向量、持久执行权/预算、原子 READY 与摄取父任务收尾，以及用户、年份和索引条件过滤。真实检索命中第 5 页预期证据；完整测试与运行证据见 [Day 10 记录](docs/day10-results.json)，设计、逐层解释和独立开发注意事项见 [Day 10 讲解](docs/day10-walkthrough.md)。索引目前为本地显式触发，队列仍仅执行解析；没有研究回答、全语料质量或公开部署验收。
+
+```bash
+bash scripts/dev.sh .venv/bin/python -m scripts.day3 migrate
+bash scripts/dev.sh .venv/bin/python -m scripts.day10 test
+# 先在另一个终端运行 bash scripts/dev.sh ollama serve。
+bash scripts/dev.sh .venv/bin/python -m scripts.day10 demo
+```
+
+以上依赖已有 PostgreSQL 环境及锁定 PDF，首次准备见讲解。数据库测试与 demo 串行执行，最后运行 demo 可保留其隔离库展示状态。新增缓存沿用唯一 `.cache/manifest.json`，清单与 `.cache/day10/` 明确忽略；应用数据、上传文件和凭据继续随卷保留。Day 8 人工冻结缺口仍未关闭。
+
 Day 9 已交付可复用的本机生成/Embedding 适配器、严格结构输出、固定模型 digest 与 768 维校验、共享截止、一次有限重试及独立用量预算。108 项新增测试通过；完整基础检查为 467 passed、111 skipped，跳过项未计为通过。真实模型完成两次生成和两次 Embedding 请求，输入估算与供应商实际统计分开保存。没有新依赖、公开 API 或数据库改动；预算目前为进程内对象，RAG/医学质量和持久化任务预算尚未验收。逐层解释、独立开发注意事项、官方依据和复现见 [Day 9 讲解](docs/day9-walkthrough.md)，实际证据见 [验证记录](docs/day9-results.json)。
 
 ```bash

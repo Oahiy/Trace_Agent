@@ -18,6 +18,7 @@ from starlette.responses import JSONResponse
 
 from app.db.session import DatabaseUnavailable
 from app.ingestion.text import ERROR_MESSAGES
+from app.retrieval.contracts import INDEX_MESSAGES
 from app.services.auth import KEY_PATTERN, AuthenticationRequired, AuthService, Principal
 from app.services.documents import (
     DataIntegrityError,
@@ -44,6 +45,7 @@ FIELDS = {
     "research_dates",
 }
 MESSAGES = {
+    **INDEX_MESSAGES,
     **ERROR_MESSAGES,
     "authentication_required": "Valid authentication is required.",
     "invalid_request": "Request does not satisfy the contract.",

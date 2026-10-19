@@ -27,6 +27,7 @@ mkdir -p "$TRACEAGENT_CACHE/day6"
 mkdir -p "$TRACEAGENT_CACHE/day7"
 mkdir -p "$TRACEAGENT_CACHE/day8"
 mkdir -p "$TRACEAGENT_CACHE/day9"
+mkdir -p "$TRACEAGENT_CACHE/day10"
 chmod 700 "$TRACEAGENT_CACHE"
 cat > "$TRACEAGENT_CACHE/manifest.$$.tmp" <<'JSON'
 {
@@ -59,6 +60,7 @@ cat > "$TRACEAGENT_CACHE/manifest.$$.tmp" <<'JSON'
   "day7_demo_uploads": {"path": "day7/uploads/", "database": "traceagent_test", "disposable_with_test_database": true},
   "day8_corpus_reports_previews_and_downloads": {"path": "day8/", "disposable": true, "recovery": "Locked source metadata and scripts.day8 prepare --download; no credentials or application uploads"},
   "day9_model_logs_reports_and_test_artifacts": {"path": "day9/", "disposable": true, "recovery": "scripts.day9 demo and scripts/check.sh; model weights remain managed by local_models"},
+  "day10_index_reports_logs_and_test_artifacts": {"path": "day10/", "disposable": true, "recovery": "scripts.day10 demo and tests; isolated uploads are disposable with traceagent_test; application data and credentials are not stored here"},
   "runtime_ipc": {"location": "OS temporary Colima/Lima sockets", "lifecycle": "released when local VM and services stop"},
   "upload_files": {"path": "day4/uploads/", "disposable_with_existing_database": false, "sharing": "Only this directory is mounted into Colima; consumers bind it at /data/uploads"},
   "api_key_credentials": {"path": "day4/auth.env", "contains_secrets": true, "disposable_with_existing_database": false},

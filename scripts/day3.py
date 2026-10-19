@@ -14,10 +14,11 @@ from uuid import UUID, uuid4
 
 import psycopg
 from psycopg import sql
+from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
 from app.core.config import ConfigurationError
-from app.db.config import load_database_settings
+from app.db.config import DatabaseSettings, load_database_settings
 from app.db.models import Document, Job, User
 from app.db.session import DatabaseUnavailable, open_database
 from app.services.documents import (
@@ -128,7 +129,16 @@ def bootstrap(env: dict[str, str]) -> None:
             "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES FROM traceagent_app"
         )
         connection.execute("REVOKE ALL ON ALL TABLES IN SCHEMA public FROM traceagent_app")
-        for table in ("users", "documents", "chunks", "jobs", "parse_tasks"):
+        for table in (
+            "users",
+            "documents",
+            "chunks",
+            "jobs",
+            "parse_tasks",
+            "embedding_profiles",
+            "chunk_embeddings",
+            "index_tasks",
+        ):
             if connection.execute("SELECT to_regclass(%s)", ("public." + table,)).fetchone()[0]:
                 connection.execute(
                     sql.SQL("GRANT SELECT, INSERT, UPDATE, DELETE ON {} TO traceagent_app").format(
@@ -319,7 +329,12 @@ def main(argv: list[str] | None = None) -> int:
                 result = {"status": "running"}
             elif args.command == "migrate":
                 migrate(env)
-                result = {"status": "migrated", "revision": "0003"}
+                with open_database(
+                    DatabaseSettings(url=env["TRACEAGENT_MIGRATION_URL"])
+                ) as database:
+                    with database.sessions() as session:
+                        revision = session.scalar(text("SELECT version_num FROM alembic_version"))
+                result = {"status": "migrated", "revision": revision}
             elif args.command == "demo":
                 result = demo(env)
             elif args.command == "test":

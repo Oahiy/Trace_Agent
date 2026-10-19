@@ -7,7 +7,7 @@ from uuid import UUID
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.core.config import Settings
-from app.db.models import Chunk
+from app.db.models import Chunk, IndexTask
 from app.db.repositories import (
     ChunkRepository,
     DocumentRepository,
@@ -18,6 +18,7 @@ from app.db.repositories import (
 from app.db.session import DatabaseUnavailable
 from app.ingestion.parser import IsolatedParser
 from app.ingestion.text import ERROR_MESSAGES, INGEST_VERSION, ParseRejected, split_text
+from app.retrieval.contracts import INDEX_MESSAGES
 from app.services.documents import DataIntegrityError, ResourceNotFound, metadata_of, reference_of
 from app.storage.files import FileStore, StorageUnavailable
 
@@ -63,7 +64,21 @@ class IngestionService:
             return ParseOutcome(document.id, document.status, len(chunks), True)
         if document.status == "FAILED":
             if chunks:
-                raise DataIntegrityError()
+                job = JobRepository(session).for_document(document.owner_id, document.id)
+                index = session.get(IndexTask, job.id) if job else None
+                parse = ParseTaskRepository(session).get(job.id) if job else None
+                if (
+                    index is None
+                    or index.status != "FAILED"
+                    or parse is None
+                    or parse.status != "SUCCEEDED"
+                    or job.status != "FAILED"
+                    or document.error_code != index.error_code
+                    or job.error_code != index.error_code
+                    or document.error_code not in INDEX_MESSAGES
+                ):
+                    raise DataIntegrityError()
+                return ParseOutcome(document.id, "FAILED", len(chunks), True, document.error_code)
             code = document.error_code
             return ParseOutcome(
                 document.id, "FAILED", 0, True, code if code in ERROR_MESSAGES else "internal_error"

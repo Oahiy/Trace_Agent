@@ -1,0 +1,211 @@
+{
+  "date": "2026-10-19",
+  "timezone": "Asia/Kuala_Lumpur",
+  "recorded_at": "2026-10-19T23:25:20.206643+08:00",
+  "scope": "Day 10 one-document indexing and traceable exact retrieval; local explicit entry points",
+  "environment": {
+    "python": "3.12.14",
+    "ollama": "0.40.2",
+    "postgresql": "18.6",
+    "pgvector_extension": "0.8.7",
+    "packages": {
+      "pgvector": "0.5.0",
+      "sqlalchemy": "2.1.4",
+      "psycopg": "3.3.6",
+      "httpx": "0.28.1",
+      "pydantic": "2.13.4",
+      "fastapi": "0.141.1",
+      "pytest": "9.1.1"
+    },
+    "database_revision": "0004"
+  },
+  "dependency_change": {
+    "added": {
+      "pgvector": "0.5.0"
+    },
+    "new_transitive_dependencies": [],
+    "existing_packages_upgraded": false,
+    "reason": "Maintainer-provided vector(768) serialization and SQLAlchemy cosine operators; validated against real PostgreSQL before adoption"
+  },
+  "tests": {
+    "day10": {
+      "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day10 test",
+      "tests": 66,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 66,
+      "seconds": 8.243
+    },
+    "all_real_dependencies": {
+      "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day6 test --report-label local",
+      "tests": 644,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 644,
+      "seconds": 40.137,
+      "real_database_redis_worker_container_enabled": true
+    },
+    "service_independent_checks": {
+      "command": "bash scripts/check.sh",
+      "tests": 644,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 149,
+      "passed": 495,
+      "seconds": 3.987,
+      "ruff_lint": "passed",
+      "ruff_format": "passed",
+      "skip_reason": "Real PostgreSQL/Redis/worker/container checks disabled explicitly; they were executed in the full real-dependency run"
+    },
+    "locked_environment": "uv sync --locked --offline --python .venv/bin/python --dev passed",
+    "migration_command": {
+      "status": "passed",
+      "reported_revision": "0004",
+      "metadata_reader": "migration role; runtime role remains denied"
+    },
+    "warning": "Existing Starlette/httpx TestClient deprecation; no extra dependency added to suppress it"
+  },
+  "real_demo": {
+    "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day10 demo",
+    "status": "passed",
+    "recorded_at": "2026-10-19T23:23:32.823858+08:00",
+    "database": "traceagent_test",
+    "source_id": "prisma-2020",
+    "source_sha256": "a09df7b2977b925736d0dd7bf0087d8e918a6bbdf52cb7af1246965dd06663a7",
+    "source_publication_year": 2021,
+    "chunks": 74,
+    "vector_dimensions": 768,
+    "index_version": "e1-5741880e77b9a1e922904924",
+    "index_spec": {
+      "model_name": "nomic-embed-text:v1.5",
+      "model_digest": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+      "dimensions": 768,
+      "preprocessing_version": "nomic-task-prefix-v1",
+      "normalization": "provider-l2-unit-v1",
+      "ingest_version": "ingest-v1"
+    },
+    "index_inference_requests": 10,
+    "index_actual_input_tokens": 17544,
+    "query_inference_requests": 1,
+    "query_actual_input_tokens": 21,
+    "top5": [
+      {
+        "source_id": "prisma-2020",
+        "pdf_page": 5,
+        "distance": 0.16679114098865122
+      },
+      {
+        "source_id": "prisma-2020",
+        "pdf_page": 4,
+        "distance": 0.188603050349319
+      },
+      {
+        "source_id": "prisma-2020",
+        "pdf_page": 3,
+        "distance": 0.19981808666749423
+      },
+      {
+        "source_id": "prisma-2020",
+        "pdf_page": 3,
+        "distance": 0.2212837174836706
+      },
+      {
+        "source_id": "prisma-2020",
+        "pdf_page": 3,
+        "distance": 0.23256350395035552
+      }
+    ],
+    "expected_evidence_in_top5": true,
+    "data_snapshot": "ds1-45d8503d99c88df74503c0bffcadd4e50417704b6251d50aaab0c7a6599ff974",
+    "publication_year_2020": {
+      "hits": 0,
+      "inference_requests": 0,
+      "exclusion_reason": "outside_publication_year"
+    },
+    "successful_replay_reused_without_inference": true,
+    "chunk_ids_preserved": true,
+    "cross_owner_and_absent_rejected": true,
+    "real_http_document_status": "READY",
+    "timings_seconds": {
+      "index": 2.945192,
+      "query": 0.049983,
+      "demo": 4.680789
+    },
+    "cloud_api_cost_usd": 0,
+    "not_a_cold_start_or_statistical_benchmark": true
+  },
+  "test_distinctions": {
+    "deterministic": "Unit tests, synthetic vectors, fake Embedder and HTTPX MockTransport; simulated failure and retry behavior",
+    "real_database": "Actual PostgreSQL vector codec, constraints, ownership, transactions, concurrent claims and migration roundtrips; DB faults/commit acknowledgement loss injected",
+    "real_model": "Actual pinned Ollama weights; all 74 chunks and one dev-02 query in final demo, not model training or generated medical answers",
+    "full_regression": "Actual Redis/RQ spawned worker and container acceptance also executed"
+  },
+  "cache": {
+    "single_inventory": ".cache/manifest.json",
+    "entry": "day10_index_reports_logs_and_test_artifacts",
+    "path": ".cache/day10/",
+    "inventory_and_directory_explicitly_gitignored": true,
+    "second_inventory_created": false
+  },
+  "preservation": {
+    "original_tables_unchanged": true,
+    "credentials_unchanged": true,
+    "uploads_unchanged": true,
+    "original_upload_count": 8,
+    "application_counts": {
+      "embedding_profiles": 0,
+      "users": 2,
+      "documents": 10,
+      "chunks": 332,
+      "jobs": 10,
+      "chunk_embeddings": 0,
+      "index_tasks": 0,
+      "parse_tasks": 0
+    },
+    "new_tables_empty": true,
+    "public_api_field_shapes_changed": false,
+    "sources_directory_edited": false,
+    "preexisting_AGENTS_change_included": false
+  },
+  "runtime_cleanup": {
+    "owned_model_server_stopped": true,
+    "original_weights_preserved": true,
+    "model_port_closed": true,
+    "owned_postgresql_and_redis_stopped": true,
+    "owned_colima_stopped": true,
+    "original_data_volumes_preserved": true
+  },
+  "review": {
+    "correctness": "Version, complete matching vectors, hashes, ascending distance, year filters, stable snapshot and atomic READY/parent completion",
+    "error_handling": "Deadline, cancellation, retry counting, failed index with preserved chunks, late inputs/tokens, unknown COMMIT and explicit expired-run reconciliation",
+    "tests": "Success, edge and failure cases executed; 66 targeted and complete real-dependency suite; skips separated",
+    "security": "Owner filter both service and SQL, active users, parameter binding, safe errors, minimal runtime metadata permissions and ignored reports",
+    "maintainability": "Generic persistence/index/retrieval separated from MedEvidence fixtures; one justified dependency; current API response shapes preserved"
+  },
+  "dataset_acceptance_gaps": [
+    "developer_source_and_label_review_pending",
+    "three_genuine_conflict_cases_not_established"
+  ],
+  "not_executed": [
+    "Full 10-source embedding/seed and 30-case retrieval or answer evaluations",
+    "Medical refusal or supported-answer workflow at research endpoints",
+    "Automatic index scheduling after upload",
+    "Manual failed-index retry or durable research-task retry accounting",
+    "Public deployment",
+    "Developer independent source/label and oral review",
+    "Remote CI verification at the time this pre-commit record was written"
+  ],
+  "limitations": [
+    "Indexing is explicit local invocation; queue still runs parsing only",
+    "Current preflight supports at most 128 chunks, reserving room for one request retry per batch; preflight rejection leaves PARSED/PENDING and must not be bypassed",
+    "Failed index attempts are terminal; expired RUNNING requires explicit invocation, no scheduler",
+    "Small-scale exact retrieval validates complete candidate vectors twice; scalability and overall research deadline not established",
+    "Synchronous SQL/file operations and cooperative cancellation are not hard real-time or hostile-input isolation",
+    "Client cancellation does not prove server inference has stopped; digest inventory checks are not atomic response provenance",
+    "One fixed developer query hitting page 5 is not corpus-wide Recall@5/MRR or medical quality validation",
+    "Day 8 human freeze and genuine-conflict gap remain pending"
+  ],
+  "git_delivery": "This evidence precedes commit/push. Verified Git history and the final chat message identify the commit, push and remote CI status."
+}

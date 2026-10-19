@@ -3,7 +3,9 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
+from pgvector.sqlalchemy import VECTOR
 from sqlalchemy import (
+    JSON,
     Boolean,
     CheckConstraint,
     DateTime,
@@ -207,3 +209,68 @@ class ParseTask(Base):
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     deadline_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class EmbeddingProfile(Base):
+    __tablename__ = "embedding_profiles"
+    __table_args__ = (
+        CheckConstraint("dimensions = 768", name="ck_embedding_profiles_dimensions"),
+        CheckConstraint("model_digest ~ '^[0-9a-f]{64}$'", name="ck_embedding_profiles_digest"),
+    )
+
+    version: Mapped[str] = mapped_column(String(32), primary_key=True)
+    model_name: Mapped[str] = mapped_column(String(100))
+    model_digest: Mapped[str] = mapped_column(String(64))
+    dimensions: Mapped[int] = mapped_column(Integer)
+    preprocessing_version: Mapped[str] = mapped_column(String(100))
+    normalization: Mapped[str] = mapped_column(String(100))
+    ingest_version: Mapped[str] = mapped_column(String(32))
+
+
+class ChunkEmbedding(Base):
+    __tablename__ = "chunk_embeddings"
+    __table_args__ = (
+        CheckConstraint("content_sha256 ~ '^[0-9a-f]{64}$'", name="ck_chunk_embeddings_hash"),
+        CheckConstraint("vector_norm(embedding) > 0", name="ck_chunk_embeddings_nonzero"),
+    )
+
+    chunk_id: Mapped[UUID] = mapped_column(
+        ForeignKey("chunks.id", name="fk_chunk_embeddings_chunk", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    index_version: Mapped[str] = mapped_column(
+        ForeignKey("embedding_profiles.version", name="fk_chunk_embeddings_profile"),
+        primary_key=True,
+    )
+    content_sha256: Mapped[str] = mapped_column(String(64))
+    embedding: Mapped[list[float]] = mapped_column(VECTOR(768))
+
+
+class IndexTask(Base):
+    """One explicit, durable indexing execution; failed executions are not auto-retried."""
+
+    __tablename__ = "index_tasks"
+    __table_args__ = (
+        UniqueConstraint("execution_id", name="uq_index_tasks_execution"),
+        CheckConstraint("status IN ('RUNNING','SUCCEEDED','FAILED')", name="ck_index_tasks_status"),
+        CheckConstraint("deadline_at > started_at", name="ck_index_tasks_deadline"),
+        CheckConstraint(
+            "(status = 'RUNNING' AND finished_at IS NULL) OR "
+            "(status IN ('SUCCEEDED','FAILED') AND finished_at IS NOT NULL)",
+            name="ck_index_tasks_finished",
+        ),
+    )
+
+    job_id: Mapped[UUID] = mapped_column(
+        ForeignKey("jobs.id", name="fk_index_tasks_job", ondelete="CASCADE"), primary_key=True
+    )
+    execution_id: Mapped[UUID] = mapped_column(Uuid, default=uuid4)
+    index_version: Mapped[str] = mapped_column(
+        ForeignKey("embedding_profiles.version", name="fk_index_tasks_profile")
+    )
+    status: Mapped[str] = mapped_column(String(16))
+    error_code: Mapped[str | None] = mapped_column(String(64))
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    deadline_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    budget: Mapped[dict] = mapped_column(JSON)

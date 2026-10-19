@@ -25,6 +25,8 @@ AGENTS.md
 /.cache/day8/
 # Day 9 local model logs, adapter demos and test reports use the same inventory.
 /.cache/day9/
+# Day 10 index demonstrations, isolated uploads, logs and test reports.
+/.cache/day10/
 .env
 .env.*
 !.env.example

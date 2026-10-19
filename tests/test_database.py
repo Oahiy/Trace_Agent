@@ -364,6 +364,9 @@ def test_empty_database_migration_downgrade_and_upgrade(database):
         "chunks",
         "jobs",
         "parse_tasks",
+        "embedding_profiles",
+        "chunk_embeddings",
+        "index_tasks",
         "alembic_version",
     }
     assert {constraint["name"] for constraint in inspector.get_unique_constraints("documents")} >= {
@@ -371,7 +374,7 @@ def test_empty_database_migration_downgrade_and_upgrade(database):
         "uq_documents_id_owner",
     }
     with database.sessions() as session:
-        assert session.scalar(text("SELECT version_num FROM alembic_version")) == "0003"
+        assert session.scalar(text("SELECT version_num FROM alembic_version")) == "0004"
     with pytest.MonkeyPatch.context() as patch:
         patch.setenv("TRACEAGENT_DB_URL", database.engine.url.render_as_string(hide_password=False))
         command.check(Config(str(ROOT / "alembic.ini")))

@@ -1,6 +1,6 @@
 # TraceAgent API 契约 v1
 
-定稿日期：2026-10-11，实施状态更新：2026-10-17。Day 8 增加离线语料与评测准备，没有新增路由或改变公开字段；全量数据库 seed、索引、研究与人工冻结仍有明确待办。Day 7 完成现有摄取接口的真实来源、重放、配额与故障验收，没有改变 API 契约。Day 6 增加 `/ready`、可配置的上传后队列投递和后台解析阶段；保留原上传与状态查询字段形状。研究、完整摄取/Embedding 和公开 retry 尚未实现。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。`app/api/schemas.py` 已实现并测试研究请求与统一错误的结构模型。
+定稿日期：2026-10-11，实施状态更新：2026-10-19。Day 10 增加本地显式向量入库、完整索引后的 READY/摄取任务收尾与内部精确检索，未新增公开路由或改变既有字段形状；队列仍只执行解析。全量数据库 seed、研究接口、公开 retry 和人工冻结仍待完成。Day 8 增加离线语料与评测准备；Day 7 完成摄取接口的真实来源、重放、配额与故障验收；Day 6 增加 `/ready` 和后台解析。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。`app/api/schemas.py` 已实现并测试研究请求与统一错误的结构模型。
 
 ## 身份、输入与兼容性
 
@@ -173,3 +173,17 @@ TXT 范围为 Python 解码后字符串的 [char_start,char_end)，不含 BOM，
 完整消息和 Schema 使用 UTF-8 字节加模板预留估算，预检上限为 2800，明确不构成精确 tokenizer 保证；实际统计超过约定上限时记录后拒绝结果。输出最多 1024。每次生成请求前预留 2800+输出上限，已知统计替换对应预留，未知保持 null 且继续扣预留。失败和取消也计次数，Embedding 用量单独记录；内部 Embedding 输入批次最多八条、单条最多 2000 字符、每预算对象最多 32 次请求，可收紧；truncate=false。
 
 CallBudget 每尝试四次生成、最多两次任务尝试，累计 24000 生成 Token 及历史跨尝试保留。同一对象并发操作被拒绝。它当前只是可信调用方的进程内对象；未接入研究任务鉴权/FAILED 判断、跨进程恢复或持久化账本，不能声称公开任务 retry 或整体预算已经实现。客户端取消不保证服务端停止。详见 docs/day9-walkthrough.md 和 docs/day9-results.json。
+
+## Day 10 显式索引与内部检索（2026-10-19）
+
+本地 `scripts.day10 index <document_uuid> --owner A|B` 先使用已有 API Key 凭据验证身份，再调用 IndexingService；没有公开索引路由。要求自己的 PARSED 文档、成功 parse_tasks 和 PENDING/attempt_count=0 的摄取父任务。建立持久 index_tasks 后，父任务由 PENDING 直接进入 RUNNING/attempt_count=1，这是显式本地执行，没有虚构 QUEUED。
+
+固定规格为 nomic-embed-text:v1.5、原固定 digest、768 维、nomic-task-prefix-v1、provider-l2-unit-v1 和 ingest-v1，短 index_version=e1-5741880e77b9a1e922904924，完整规格保存于 embedding_profiles。向量关联已有 chunk_id 与原文 SHA-256。每批最多八条，尝试总截止最多 300 秒、Embedding 请求最多 32 次，含适配器的一次自动重试；为每批两次请求预留空间，当前预检最多 128 个片段，超出时返回 index_budget_exhausted，未创建执行，保持 PARSED/PENDING。不能重建预算或改配额绕过限制。
+
+模型 I/O 期间不占数据库事务。请求前持久化预算预留，批次完成保存实际用量；未知统计保留未知。最终在一个事务中保存全部向量、文档 READY、index_tasks SUCCEEDED 与父任务 SUCCEEDED。重复成功核对完整性与原文件后复用，不新增请求。当前没有手动索引重试，失败是终态；截止后再次显式调用可核对并终止过期 RUNNING，没有自动调度器。
+
+索引已知失败保留原片段及成功解析阶段，文档和父任务 FAILED。状态接口 error 仍为 str|null，新增安全码 index_timeout、index_cancelled、index_model_failed、index_invalid_embedding、index_budget_exhausted、index_storage_unavailable、index_failed；不返回供应商 body 或异常。数据库提交确认丢失返回 database_unavailable，不能直接覆盖成 FAILED；重放先核对实际已提交状态。
+
+`scripts.day10 search` 是内部检索入口：严格问题、规范 UUID、最多十五个显式文档 ID、可选发表年份和 1–5 结果。省略文档列表时仅考虑自己的资料，当前内部枚举最多一百份。显式越权与不存在均 resource_not_found；未 READY、不兼容索引或不满足年份条件的资料明确排除。启用年份过滤排除未知年份。过滤后空集不调用模型，不生成答案。
+
+使用 cosine distance 精确检索，权限、活跃用户、年份、READY、文档范围和索引/解析版本在 SQL 中执行；距离升序，并列用稳定 ID/ordinal 排序。向量调用前后核对范围、元数据和片段哈希。返回原问题、实际范围、过滤条件/排除原因、来源文件哈希、完整来源与日期/许可元数据、原文与定位、index_version、embedding_profile、data_snapshot 和用量。数据快照标识该次证据范围，不宣称是数据库全局事务快照。相似度不证明支持性；研究答案、引用支持、医学拒答、全语料评测与生产能力尚未验收。详见 docs/day10-walkthrough.md。

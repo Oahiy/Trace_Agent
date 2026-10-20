@@ -274,3 +274,36 @@ class IndexTask(Base):
     deadline_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     budget: Mapped[dict] = mapped_column(JSON)
+
+
+class ResearchRun(Base):
+    """Research payload and execution lease; jobs owns the single business status."""
+
+    __tablename__ = "research_runs"
+    __table_args__ = (
+        UniqueConstraint("id", name="uq_research_runs_id"),
+        UniqueConstraint("execution_id", name="uq_research_runs_execution"),
+        CheckConstraint(
+            "(started_at IS NULL AND deadline_at IS NULL) OR "
+            "(started_at IS NOT NULL AND deadline_at > started_at)",
+            name="ck_research_runs_deadline",
+        ),
+        CheckConstraint(
+            "result IS NULL OR finished_at IS NOT NULL", name="ck_research_runs_result"
+        ),
+    )
+
+    job_id: Mapped[UUID] = mapped_column(
+        ForeignKey("jobs.id", name="fk_research_runs_job", ondelete="CASCADE"), primary_key=True
+    )
+    id: Mapped[UUID] = mapped_column(Uuid, default=uuid4)
+    execution_id: Mapped[UUID] = mapped_column(Uuid, default=uuid4)
+    workflow_version: Mapped[str] = mapped_column(String(40))
+    request: Mapped[dict] = mapped_column(JSON)
+    budget: Mapped[dict] = mapped_column(JSON)
+    evidence: Mapped[dict | None] = mapped_column(JSON(none_as_null=True))
+    result: Mapped[dict | None] = mapped_column(JSON(none_as_null=True))
+    queued_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deadline_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

@@ -1,0 +1,180 @@
+{
+  "date": "2026-10-20",
+  "timezone": "Asia/Kuala_Lumpur",
+  "recorded_at": "2026-10-20T10:03:43.468874+08:00",
+  "scope": "Durable authenticated asynchronous research; bounded retrieval and server-bound extractive summary",
+  "environment": {
+    "python": "3.12.14",
+    "packages": {
+      "fastapi": "0.141.1",
+      "pydantic": "2.13.4",
+      "sqlalchemy": "2.1.4",
+      "httpx": "0.28.1",
+      "rq": "2.12.0",
+      "redis": "8.1.0",
+      "pgvector": "0.5.0",
+      "pytest": "9.1.1"
+    },
+    "ollama": "0.40.2",
+    "new_dependencies": [],
+    "upgraded_dependencies": false
+  },
+  "implementation": {
+    "routes": [
+      "POST /research",
+      "GET /research/{job_id}"
+    ],
+    "migration": "0005",
+    "workflow_version": "med-extractive-v2",
+    "worker_protocol": "tasks-v2-json",
+    "research_generation_request_limit": 2,
+    "research_embedding_request_limit": 2,
+    "output_limit": 512,
+    "attempt_deadline_seconds": 180,
+    "deadline_also_capped_by_transport": true,
+    "generation_token_budget": 24000,
+    "manual_retry_route": false,
+    "periodic_reconciler": false
+  },
+  "tests": {
+    "day11": {
+      "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day11 test",
+      "tests": 67,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 67,
+      "seconds": 16.116
+    },
+    "all_real_dependencies": {
+      "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day6 test --report-label local",
+      "tests": 711,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 711,
+      "seconds": 55.983,
+      "real_database_redis_worker_container_enabled": true
+    },
+    "service_independent_checks": {
+      "command": "bash scripts/check.sh",
+      "tests": 711,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 185,
+      "passed": 526,
+      "seconds": 4.068,
+      "ruff_lint": "passed",
+      "ruff_format": "passed",
+      "skip_reason": "Real PostgreSQL/Redis/worker/container tests disabled in this separate check; executed in full real-dependency run"
+    },
+    "warning": "Existing Starlette/httpx TestClient deprecation; no dependency added to hide it"
+  },
+  "real_demo": {
+    "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day11 demo",
+    "status": "passed",
+    "recorded_at": "2026-10-20T10:02:41.251721+08:00",
+    "database": "traceagent_test",
+    "source_id": "prisma-2020",
+    "source_sha256": "a09df7b2977b925736d0dd7bf0087d8e918a6bbdf52cb7af1246965dd06663a7",
+    "source_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003583",
+    "source_publication_year": 2021,
+    "physical_pdf_page": 5,
+    "expected_original_anchor_present": true,
+    "kind": "answer",
+    "generation_calls": 1,
+    "embedding_calls": 1,
+    "generation_input_tokens": 459,
+    "generation_output_tokens": 20,
+    "generation_estimated_input": 2164,
+    "context_chunks": 1,
+    "omitted_candidates": 4,
+    "empty_year_kind": "refused",
+    "medical_kind": "refused",
+    "refusals_used_zero_inference": true,
+    "checks": {
+      "real_http": true,
+      "separate_worker": true,
+      "owner_isolation": true,
+      "idempotency": true,
+      "source_page": true,
+      "application_data_preserved": true
+    },
+    "seconds": 8.1158,
+    "cloud_api_cost_usd": 0,
+    "not_a_statistical_benchmark": true,
+    "research_status": "SUCCEEDED",
+    "create_http_status": 202,
+    "query_http_status": 200
+  },
+  "development_experiment": {
+    "initial_quote_reconstruction": "Actual model removed PDF references/hyphenation and binding correctly refused it",
+    "independent_bounded_diagnostic_generation_calls": 1,
+    "diagnostic_report": ".cache/day11/context-experiment.json",
+    "decision": "Use numbered original-text selection; server retrieves original excerpt; no prompt or budget expansion"
+  },
+  "test_distinctions": {
+    "deterministic": "Policy, schema, context estimator, safe errors and controlled model substitutes",
+    "real_database": "Transactions, constraints, ownership, races, snapshots and commit fault injection against actual PostgreSQL",
+    "real_queue": "Actual Redis and spawned worker; loopback HTTP inference substitute for deterministic retry, invalid-output, cancellation and SIGKILL tests",
+    "real_model": "Pinned Ollama weights, locked PDF and real HTTP/worker flow for one dev case plus two no-inference refusals"
+  },
+  "preservation": {
+    "application_snapshot_unchanged": true,
+    "application_counts": {
+      "embedding_profiles": 0,
+      "users": 2,
+      "documents": 10,
+      "chunks": 332,
+      "jobs": 10,
+      "chunk_embeddings": 0,
+      "index_tasks": 0,
+      "parse_tasks": 0,
+      "research_runs": 0
+    },
+    "sources_edited": false,
+    "preexisting_AGENTS_change_included": false,
+    "existing_public_response_shapes_preserved": true
+  },
+  "cache": {
+    "single_inventory": ".cache/manifest.json",
+    "entry": "day11_research_reports_logs_and_test_artifacts",
+    "path": ".cache/day11/",
+    "inventory_and_directory_gitignored": true,
+    "second_inventory_created": false,
+    "reused_managed_logs": [
+      ".cache/day4/api.log",
+      ".cache/day6/worker.log"
+    ]
+  },
+  "review": {
+    "correctness": "Canonical request/hash, owner-scoped idempotency, execution lease, original-text binding and atomic publication",
+    "error_handling": "Queue uncertainty, reservation failure, deadline, cancellation, crash, late execution and uncertain COMMIT",
+    "tests": "Success, edge and failure checks; real dependencies and real inference distinguished",
+    "security": "Owner checks in queries and service, fixed functions/JSON, bounded input, no raw provider error or secret exposure",
+    "maintainability": "Scenario policy injected into shared task service, no new dependency"
+  },
+  "remaining_limits": [
+    "Single development case is not corpus-wide retrieval or answer-quality evaluation",
+    "Methods-only keyword guard can miss or over-refuse; not a complete medical safety classifier",
+    "Extractive source membership does not prove relevance, completeness or absence of conflicting evidence",
+    "Simple punctuation segmentation can group adjacent sentences or split abbreviations; unfinished fragments are refused",
+    "Context estimator is byte-based heuristic; no exact tokenizer guarantee",
+    "Synchronous SQL/cooperative deadlines are not hard real-time or hostile-input isolation",
+    "Cancellation does not prove inference stopped server-side; digest inventory is not atomic response provenance",
+    "No public retry or trace, automatic complete-ingestion scheduling, periodic recovery, production deployment or full-corpus seed",
+    "Developer source/label review, third genuine conflict and independent oral review remain pending"
+  ],
+  "git_delivery": "Evidence is written before commit/push. Final Git history and chat identify commit, remote push and CI status.",
+  "runtime_cleanup": {
+    "owned_api_worker_model_stopped": true,
+    "owned_postgresql_redis_colima_stopped": true,
+    "ports": {
+      "8000": "closed",
+      "11434": "closed",
+      "55432": "closed",
+      "56379": "closed"
+    },
+    "model_weights_uploads_credentials_and_data_volumes_preserved": true
+  }
+}

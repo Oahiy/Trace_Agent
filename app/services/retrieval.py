@@ -75,11 +75,57 @@ class RetrievalService:
             )
         return eligible, excluded, signatures
 
-    async def search(self, owner_id, payload):
+    def validate_snapshot(self, session, owner_id, payload, expected):
+        signatures = self._scope(session, owner_id, RetrievalRequest.model_validate(payload))[2]
+        if self._snapshot(signatures) != expected:
+            raise IngestConflict()
+
+    def inspect_scope(self, owner_id, payload):
+        """Describe an authorized scope without spending an inference request."""
+        request = RetrievalRequest.model_validate(payload)
+        try:
+            with self.sessions() as session:
+                _, excluded, signatures = self._scope(session, owner_id, request)
+            return {
+                "question": request.question,
+                "conditions": {
+                    **request.model_dump(exclude={"question"}),
+                    "document_ids": [str(s[0]) for s in signatures],
+                },
+                "data_snapshot": self._snapshot(signatures),
+                "index_version": SPEC.version,
+                "excluded_documents": excluded,
+                "hits": [],
+            }
+        except SQLAlchemyError:
+            raise DatabaseUnavailable() from None
+
+    @staticmethod
+    def _snapshot(signatures):
+        snapshot = [
+            {
+                "document_id": str(s[0]),
+                "metadata": s[1].model_dump(),
+                "status": s[2],
+                "index_version": s[3],
+                "chunks": s[4],
+            }
+            for s in signatures
+        ]
+        return (
+            "ds1-"
+            + sha256(
+                json.dumps(
+                    snapshot, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+                ).encode()
+            ).hexdigest()
+        )
+
+    async def search(self, owner_id, payload, *, budget=None):
         request = RetrievalRequest.model_validate(payload)
         # Copy the list-bearing model so callers cannot mutate scope while we await I/O.
         request = RetrievalRequest.model_validate(request.model_dump())
-        budget = CallBudget(embedding_limit=2)
+        budget = budget if budget is not None else CallBudget(embedding_limit=2)
         try:
             with self.sessions() as session:
                 before = self._scope(session, owner_id, request)
@@ -113,21 +159,6 @@ class RetrievalService:
                                 "index_version": SPEC.version,
                             }
                         )
-            snapshot = [
-                {
-                    "document_id": str(s[0]),
-                    "metadata": s[1].model_dump(),
-                    "status": s[2],
-                    "index_version": s[3],
-                    "chunks": s[4],
-                }
-                for s in signatures
-            ]
-            digest = sha256(
-                json.dumps(
-                    snapshot, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-                ).encode()
-            ).hexdigest()
             return {
                 "question": request.question,
                 "conditions": {
@@ -136,7 +167,7 @@ class RetrievalService:
                     "publication_year_to": request.publication_year_to,
                     "limit": request.limit,
                 },
-                "data_snapshot": "ds1-" + digest,
+                "data_snapshot": self._snapshot(signatures),
                 "index_version": SPEC.version,
                 "embedding_profile": asdict(SPEC),
                 "excluded_documents": excluded,

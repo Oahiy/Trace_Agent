@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     upload_timeout_seconds: float = Field(default=30, gt=0, le=30)
     parse_timeout_seconds: float = Field(default=60, gt=0, le=120)
     queue_enabled: bool = False
+    research_timeout_seconds: float = Field(default=180, gt=0, le=180)
 
     @field_validator("upload_root")
     @classmethod

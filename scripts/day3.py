@@ -138,6 +138,7 @@ def bootstrap(env: dict[str, str]) -> None:
             "embedding_profiles",
             "chunk_embeddings",
             "index_tasks",
+            "research_runs",
         ):
             if connection.execute("SELECT to_regclass(%s)", ("public." + table,)).fetchone()[0]:
                 connection.execute(

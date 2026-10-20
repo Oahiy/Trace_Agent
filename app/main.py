@@ -6,6 +6,7 @@ from starlette.concurrency import run_in_threadpool
 from starlette.responses import JSONResponse
 
 from app.api.documents import install_error_handlers, router
+from app.api.research import router as research_router
 from app.api.upload_limits import SafeBusinessErrors, UploadBodyLimit
 from app.core.config import Settings, load_settings
 from app.db.config import load_database_settings
@@ -14,7 +15,7 @@ from app.services.readiness import Readiness
 from app.services.tasks import TaskService
 from app.storage.files import FileStore
 from app.tasks.config import load_queue_settings
-from app.tasks.queue import ParseQueue
+from app.tasks.queue import ParseQueue, ResearchQueue
 
 
 def create_app(settings: Settings | None = None, *, database: Database | None = None) -> FastAPI:
@@ -22,6 +23,7 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
     async def lifespan(application):
         owned = None
         queue = None
+        research_queue = None
         try:
             if database is None and os.environ.get("TRACEAGENT_DB_URL", "").strip():
                 owned = Database(load_database_settings())
@@ -31,6 +33,8 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
                 queue = ParseQueue(queue_settings)
                 db = application.state.database
                 application.state.tasks = TaskService(db.sessions, queue)
+                research_queue = ResearchQueue(queue_settings)
+                application.state.research_queue = research_queue
                 application.state.readiness = Readiness(
                     db.engine.url.render_as_string(hide_password=False),
                     application.state.settings.upload_root,
@@ -38,6 +42,9 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
                 )
             yield
         finally:
+            if research_queue is not None:
+                research_queue.close()
+                application.state.research_queue = None
             if queue is not None:
                 queue.close()
                 application.state.tasks = application.state.readiness = None
@@ -50,12 +57,14 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
     application.state.database = database
     application.state.files = FileStore(application.state.settings.upload_root)
     application.state.tasks = None
+    application.state.research_queue = None
     application.state.readiness = None
     application.add_middleware(
         UploadBodyLimit, max_body_size=application.state.settings.max_file_bytes + 64 * 1024
     )
     application.add_middleware(SafeBusinessErrors)
     application.include_router(router)
+    application.include_router(research_router)
     install_error_handlers(application)
 
     @application.get("/health")

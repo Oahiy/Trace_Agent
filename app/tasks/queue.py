@@ -37,17 +37,19 @@ def rq_id(execution_id: UUID) -> str:
 
 
 class ParseQueue:
+    function = "app.tasks.worker.execute_parse"
+    prefix = "parse"
+
     def __init__(self, settings: QueueSettings):
         self.settings = settings
         self.connection = redis_connection(settings)
         self.queue = Queue(settings.name, connection=self.connection, serializer=JSONSerializer)
 
     def ensure(self, execution_id: UUID):
+        identifier = f"{self.prefix}-{execution_id}"
         try:
             try:
-                job = Job.fetch(
-                    rq_id(execution_id), connection=self.connection, serializer=JSONSerializer
-                )
+                job = Job.fetch(identifier, connection=self.connection, serializer=JSONSerializer)
             except NoSuchJobError:
                 job = None
             if job is not None:
@@ -55,18 +57,27 @@ class ParseQueue:
                 status = job.get_status()
                 if status is None:
                     raise QueueUnavailable()
+                if (
+                    job.func_name != self.function
+                    or list(job.args) != [str(execution_id)]
+                    or job.kwargs
+                    or job.origin != self.settings.name
+                ):
+                    raise QueueUnavailable()
                 return status.value
             try:
                 self.queue.enqueue(
-                    "app.tasks.worker.execute_parse",
+                    self.function,
                     str(execution_id),
-                    job_id=rq_id(execution_id),
+                    job_id=identifier,
                     unique=True,
-                    job_timeout=self.settings.execution_timeout_seconds,
+                    job_timeout=min(self.settings.execution_timeout_seconds, 180)
+                    if self.prefix == "research"
+                    else self.settings.execution_timeout_seconds,
                     ttl=self.settings.wait_timeout_seconds,
                     result_ttl=3600,
                     failure_ttl=3600,
-                    description="parse_stage",
+                    description=self.prefix + "_stage",
                     retry=None,
                 )
             except DuplicateJobError:
@@ -78,3 +89,8 @@ class ParseQueue:
 
     def close(self):
         self.connection.close()
+
+
+class ResearchQueue(ParseQueue):
+    function = "app.tasks.worker.execute_research"
+    prefix = "research"

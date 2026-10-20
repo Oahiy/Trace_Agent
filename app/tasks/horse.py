@@ -29,7 +29,8 @@ def main():
         job = Job.fetch(job_id, connection=connection, serializer=JSONSerializer)
         # JSON avoids pickle; this allowlist also prevents alternate function imports.
         if (
-            job.func_name != "app.tasks.worker.execute_parse"
+            job.func_name
+            not in {"app.tasks.worker.execute_parse", "app.tasks.worker.execute_research"}
             or len(job.args) != 1
             or job.kwargs
             or job.origin != settings.name

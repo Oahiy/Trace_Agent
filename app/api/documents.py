@@ -18,6 +18,8 @@ from starlette.responses import JSONResponse
 
 from app.db.session import DatabaseUnavailable
 from app.ingestion.text import ERROR_MESSAGES
+from app.research.contracts import MESSAGES as RESEARCH_MESSAGES
+from app.research.contracts import ResearchFailure
 from app.retrieval.contracts import INDEX_MESSAGES
 from app.services.auth import KEY_PATTERN, AuthenticationRequired, AuthService, Principal
 from app.services.documents import (
@@ -45,6 +47,7 @@ FIELDS = {
     "research_dates",
 }
 MESSAGES = {
+    **RESEARCH_MESSAGES,
     **INDEX_MESSAGES,
     **ERROR_MESSAGES,
     "authentication_required": "Valid authentication is required.",
@@ -252,6 +255,10 @@ def document_status(
 
 
 def install_error_handlers(application) -> None:
+    @application.exception_handler(ResearchFailure)
+    async def research_error(request, error):
+        return error_response(error.code, 409 if error.code == "idempotency_conflict" else 503)
+
     @application.exception_handler(QueueUnavailable)
     async def queue_error(request, error):
         return JSONResponse(

@@ -35,7 +35,10 @@ class SafeBusinessErrors:
 
     async def __call__(self, scope, receive, send) -> None:
         if scope["type"] != "http" or not (
-            scope["path"] == "/documents" or scope["path"].startswith("/documents/")
+            scope["path"] == "/documents"
+            or scope["path"].startswith("/documents/")
+            or scope["path"] == "/research"
+            or scope["path"].startswith("/research/")
         ):
             await self.app(scope, receive, send)
             return

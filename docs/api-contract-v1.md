@@ -1,6 +1,6 @@
 # TraceAgent API 契约 v1
 
-定稿日期：2026-10-11，实施状态更新：2026-10-19。Day 10 增加本地显式向量入库、完整索引后的 READY/摄取任务收尾与内部精确检索，未新增公开路由或改变既有字段形状；队列仍只执行解析。全量数据库 seed、研究接口、公开 retry 和人工冻结仍待完成。Day 8 增加离线语料与评测准备；Day 7 完成摄取接口的真实来源、重放、配额与故障验收；Day 6 增加 `/ready` 和后台解析。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。`app/api/schemas.py` 已实现并测试研究请求与统一错误的结构模型。
+定稿日期：2026-10-11，实施状态更新：2026-10-20。Day 11 已实现异步 POST /research、GET /research/{job_id}、受控单段摘录与持久预算，worker 支持固定解析/研究入口；具体收紧与限制见文末。本日未改变已有健康、上传和文档状态字段形状。全量 seed、公开 retry/trace、人工冻结及完整支持性/医学安全验收仍待完成。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。
 
 ## 身份、输入与兼容性
 
@@ -56,7 +56,7 @@
 
 Day 5 兼容性勘误：上述文档状态的 `error` 保持 Day 4 已实现的 `str | null`。原文的 `{code,message}` 示例与已实现响应模型不一致，今天修正文档，不改变运行中的字段形状。请求本身的 4xx/5xx 仍采用顶层 `{error:{code,message}}`；研究结果的未来结构不因此改变。未知内部文档错误码仍映射为 `internal_error`。
 
-### POST /research —— 待实现，输入模型已测试
+### POST /research —— Day 11 已实现
 
 输入 JSON：
 
@@ -76,7 +76,7 @@ Day 5 兼容性勘误：上述文档状态的 `error` 保持 Day 4 已实现的 
 
 非法请求返回 422 `invalid_request`；显式文档不存在或越权返回 404 `resource_not_found`。没有可用证据时最终结果为明确拒答，不能凭空生成引用。今天没有运行研究工作流或证明其医学安全行为。
 
-### GET /research/{id} —— 待实现
+### GET /research/{id} —— Day 11 已实现受限摘录
 
 `id` 是创建研究时返回的 job_id。成功查询：200。运行中返回身份允许的状态、原问题与条件；完成后返回 result。
 
@@ -187,3 +187,17 @@ CallBudget 每尝试四次生成、最多两次任务尝试，累计 24000 生�
 `scripts.day10 search` 是内部检索入口：严格问题、规范 UUID、最多十五个显式文档 ID、可选发表年份和 1–5 结果。省略文档列表时仅考虑自己的资料，当前内部枚举最多一百份。显式越权与不存在均 resource_not_found；未 READY、不兼容索引或不满足年份条件的资料明确排除。启用年份过滤排除未知年份。过滤后空集不调用模型，不生成答案。
 
 使用 cosine distance 精确检索，权限、活跃用户、年份、READY、文档范围和索引/解析版本在 SQL 中执行；距离升序，并列用稳定 ID/ordinal 排序。向量调用前后核对范围、元数据和片段哈希。返回原问题、实际范围、过滤条件/排除原因、来源文件哈希、完整来源与日期/许可元数据、原文与定位、index_version、embedding_profile、data_snapshot 和用量。数据快照标识该次证据范围，不宣称是数据库全局事务快照。相似度不证明支持性；研究答案、引用支持、医学拒答、全语料评测与生产能力尚未验收。详见 docs/day10-walkthrough.md。
+
+## Day 11 异步研究实施补充（2026-10-20）
+
+新增两个研究路由，队列仍使用现有独立 worker。JSON 最多 16 KiB，读取最多 30 秒；重复键、NaN、非法 Unicode/问题控制字符拒绝。OpenAPI 声明既有 ResearchRequest。已有路由响应形状、404/405 和 Allow 保持。/ready 要求内部 worker 协议 tasks-v2-json，旧解析 worker 不再被当作研究就绪。
+
+创建/领取/最终提交使用短事务，模型等待不占连接；jobs 是唯一业务状态，research_runs 保存 run_id、execution_id、输入、workflow_version、时间、持久预算、证据和结果。请求规范化排序文档 ID；幂等哈希与证据快照分别保存。同键相同输入复用原任务，包括终态；冲突 409，越权与不存在同为 404；五个未结束任务同时计入摄取和研究。队列故障返回 503 queue_unavailable 并附已持久化 job_id，重放/显式核对使用同一 execution_id。
+
+本日采用 med-extractive-v2：一次检索后，在完整片段预算内让模型只选择证据/句子编号，服务端取回原句，形成单段摘录摘要并扩展真实引用元数据。不得把模型生成的元数据直接当作来源。引用保留 source_id、document_id、chunk_id、source_sha256、URL、许可、发表年份、版本、研究日期、页码或字符范围和 support_fragment。结果增加 workflow_version、index_version、conditions、excluded_documents、context_chunk_ids、omitted_chunk_ids；后三项在实际经过上下文选择时适用。原问题/请求条件仍在顶层，实际资料条件和 data_snapshot 在 result。
+
+这是上述 answer 结构的受限实现：claims 目前最多一条，text 为服务端原文，不发布自由改写的研究结论。明显医学/超范围请求、无证据、模型拒答、无效编号或不合格片段正常完成 refused，reason 仍为 insufficient_evidence 或 medical_request。关键词与原文绑定不能证明完整医学安全或答案支持性。conflicts 目前为空且 limitations 明确说明未评估冲突，不能理解为已证明无冲突。
+
+研究尝试最多 180 秒，可收紧；正常生成一次，适配器最多追加一次有限重试，共最多两次生成请求和两次查询 Embedding 请求；每次输出最多 512，累计生成预算仍为 24000。所有请求发送前持久化预留，失败/取消和未知用量也扣除；Embedding 独立计数。没有 RQ 自动任务重试或公开手动 retry。执行标识、输入哈希、版本、活跃用户、证据快照和截止在发布前再次检查。
+
+研究查询的 error 为 null 或固定 {code,message}，新增安全码 research_timeout、research_cancelled、research_model_failed、research_output_invalid、research_budget_exhausted、research_context_too_large、research_evidence_changed、research_state_conflict、research_failed。拒答为 SUCCEEDED 且 claims=[]；服务故障为 FAILED、result=null。数据库 COMMIT 结果不确定时返回 database_unavailable，不覆盖可能已成功的结果；过期 RUNNING 由 scripts.day11 reconcile 显式核对，没有周期恢复器。详细验证与能力边界见 docs/day11-walkthrough.md 和 docs/day11-results.json。

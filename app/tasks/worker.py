@@ -1,5 +1,6 @@
 """RQ adapter: fixed function, sanitized errors, own DB pool in each execution."""
 
+import asyncio
 import logging
 import os
 import subprocess
@@ -18,7 +19,7 @@ from app.services.ingestion import IngestionService
 from app.services.tasks import TaskService
 from app.storage.files import FileStore
 from app.tasks.config import load_queue_settings
-from app.tasks.queue import ParseQueue, redis_connection
+from app.tasks.queue import ParseQueue, ResearchQueue, redis_connection
 
 
 def canonical_uuid(value):
@@ -64,13 +65,47 @@ def execute_parse(value):
         queue.close()
 
 
+def execute_research(value):
+    """Compose MedEvidence at the edge; shared task services contain no medical rules."""
+    from app.domains.med.research import MedResearchWorkflow
+    from app.llm.ollama import OllamaAdapter
+    from app.services.research import ResearchService
+
+    try:
+        execution_id = canonical_uuid(value)
+    except (ValueError, TypeError, AttributeError):
+        return {"status": "ignored"}
+    settings = load_settings()
+    queue = ResearchQueue(load_queue_settings())
+    try:
+        with open_database(load_database_settings()) as database:
+            workflow = MedResearchWorkflow()
+            service = ResearchService(
+                database.sessions,
+                queue,
+                workflow_version=workflow.version,
+                timeout=settings.research_timeout_seconds,
+            )
+
+            async def run():
+                async with OllamaAdapter(settings) as model:
+                    return await service.execute(execution_id, model, workflow)
+
+            try:
+                return asyncio.run(run())
+            except DatabaseUnavailable:
+                raise RuntimeError("database_unavailable") from None
+    finally:
+        queue.close()
+
+
 class SafeSpawnWorker(SpawnWorker):
     def serialize(self):
         from app.services.readiness import service_scope
 
         return {
             **super().serialize(),
-            "traceagent_protocol": "parse-v1-json",
+            "traceagent_protocol": "tasks-v2-json",
             "traceagent_scope": service_scope(
                 load_database_settings().url.get_secret_value(), load_settings().upload_root
             ),
@@ -95,6 +130,9 @@ class SafeSpawnWorker(SpawnWorker):
             "TRACEAGENT_MAX_FILE_BYTES",
             "TRACEAGENT_MAX_PDF_PAGES",
             "TRACEAGENT_MAX_TEXT_CHARACTERS",
+            "TRACEAGENT_LOCAL_MODEL_URL",
+            "TRACEAGENT_MODEL_TIMEOUT_SECONDS",
+            "TRACEAGENT_RESEARCH_TIMEOUT_SECONDS",
         }
         child_env = {key: value for key, value in os.environ.items() if key in allowed}
         self._horse_process = subprocess.Popen(

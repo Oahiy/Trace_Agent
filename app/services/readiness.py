@@ -23,7 +23,7 @@ def fresh_worker(data, name, scope, *, now=None):
             and data.get("state") in {"idle", "busy"}
             and name in data.get("queues", "").split(",")
             and not data.get("death")
-            and data.get("traceagent_protocol") == "parse-v1-json"
+            and data.get("traceagent_protocol") == "tasks-v2-json"
             and data.get("traceagent_scope") == scope
         )
     except (KeyError, ValueError, TypeError):

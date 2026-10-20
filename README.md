@@ -1,5 +1,24 @@
 # TraceAgent
 
+## Day 11：异步研究闭环
+
+已接入经过 API Key 认证的 `POST /research` 与 `GET /research/{job_id}`，由独立 RQ worker 执行检索、上下文选择、结构化句子选择与服务端原文引用绑定。研究输入、执行权、预算与结果持久化；重复请求复用，越权 404，证据不足/医学越界拒答，模型/预算/超时失败返回安全状态。现有上传与文档状态契约保持。
+
+结果目前为研究方法学的单段摘录摘要，完整支持性、冲突识别与医学安全仍待后续验收；不把这一闭环描述成已通过全语料或临床使用门槛。任务不会自动索引尚未 READY 的资料。
+
+复现先沿用 Day 10 的环境启动命令，执行迁移至 0005 和 Redis 启动，然后串行运行：
+
+```bash
+bash scripts/dev.sh .venv/bin/python -m scripts.day11 test
+bash scripts/dev.sh .venv/bin/python -m scripts.day6 test --report-label local
+bash scripts/check.sh
+bash scripts/dev.sh .venv/bin/python -m scripts.day11 demo
+```
+
+真实 demo 自动管理自己启动的临时模型服务、API 和 worker，使用 traceagent_test/Redis DB 1；测试会清理隔离数据，保留演示状态时最后运行 demo。详细设计、故障处理、缓存、测试层次、学习路线和剩余风险见 [Day 11 讲解](docs/day11-walkthrough.md)，实际记录见 [Day 11 结果](docs/day11-results.json)。唯一缓存清单仍为被忽略的 `.cache/manifest.json`，本日缓存为 `.cache/day11/`。
+
+## 历史交付记录
+
 Day 10 已完成锁定公开 PDF 的向量入库与可追溯精确检索：74 个片段、版本化 768 维向量、持久执行权/预算、原子 READY 与摄取父任务收尾，以及用户、年份和索引条件过滤。真实检索命中第 5 页预期证据；完整测试与运行证据见 [Day 10 记录](docs/day10-results.json)，设计、逐层解释和独立开发注意事项见 [Day 10 讲解](docs/day10-walkthrough.md)。索引目前为本地显式触发，队列仍仅执行解析；没有研究回答、全语料质量或公开部署验收。
 
 ```bash

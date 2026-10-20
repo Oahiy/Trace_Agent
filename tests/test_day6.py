@@ -155,7 +155,7 @@ def worker_record(now):
         "last_heartbeat": now.isoformat(),
         "state": "idle",
         "queues": "traceagent-parse-test",
-        "traceagent_protocol": "parse-v1-json",
+        "traceagent_protocol": "tasks-v2-json",
         "traceagent_scope": "scope",
     }
 

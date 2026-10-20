@@ -27,6 +27,17 @@ class ResearchRequest(BaseModel):
     publication_year_to: int | None = Field(default=None, ge=1000, le=9999)
     idempotency_key: IdempotencyKey
 
+    @field_validator("question")
+    @classmethod
+    def safe_question(cls, value: str) -> str:
+        try:
+            value.encode("utf-8")
+        except UnicodeError:
+            raise ValueError("question must be valid Unicode") from None
+        if any(ord(c) < 32 and c not in "\t\n\r" for c in value):
+            raise ValueError("question contains invalid control characters")
+        return value
+
     @field_validator("document_ids")
     @classmethod
     def canonical_ids(cls, values: list[str] | None) -> list[str] | None:

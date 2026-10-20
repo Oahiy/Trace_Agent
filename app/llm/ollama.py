@@ -88,6 +88,20 @@ def validate_vectors(raw, count):
     return tuple(vectors)
 
 
+def generation_input(messages, schema):
+    """One serialization/estimation rule shared by context packing and inference."""
+    specification = schema.model_json_schema()
+    encoded = json.dumps(specification, ensure_ascii=False, allow_nan=False)
+    if len(encoded.encode()) > 8192:
+        raise ValueError("schema limit")
+    wire_messages = [
+        {"role": "system", "content": "Return only JSON matching this schema: " + encoded},
+        *[m.model_dump() for m in messages],
+    ]
+    estimated = len(json.dumps(wire_messages, ensure_ascii=False).encode()) + 256
+    return specification, wire_messages, estimated
+
+
 class OllamaAdapter:
     def __init__(self, settings: Settings, *, transport=None):
         self.timeout = min(settings.model_timeout_seconds, 30.0)
@@ -271,16 +285,7 @@ class OllamaAdapter:
         ):
             raise ModelFailure("invalid_model_input")
         try:
-            specification = schema.model_json_schema()
-            encoded = json.dumps(specification, ensure_ascii=False, allow_nan=False)
-            if len(encoded.encode()) > 8192:
-                raise ValueError("schema limit")
-            wire_messages = [
-                {"role": "system", "content": "Return only JSON matching this schema: " + encoded},
-                *[m.model_dump() for m in messages],
-            ]
-            # Deliberately conservative heuristic, not a claim of exact tokenizer counting.
-            estimated = len(json.dumps(wire_messages, ensure_ascii=False).encode()) + 256
+            specification, wire_messages, estimated = generation_input(messages, schema)
         except (TypeError, ValueError, UnicodeError, RecursionError):
             raise ModelFailure("invalid_model_input") from None
         if estimated > INPUT_LIMIT:

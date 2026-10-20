@@ -736,7 +736,7 @@ def test_migrate_revision_uses_migration_role_without_granting_runtime_metadata_
     )
     monkeypatch.setattr(day3, "migrate", lambda env: None)
     assert day3.main(["migrate"]) == 0
-    assert json.loads(capsys.readouterr().out)["revision"] == "0004"
+    assert json.loads(capsys.readouterr().out)["revision"] == "0005"
     with open_database(DatabaseSettings(url=runtime_url)) as database:
         with pytest.raises(ProgrammingError):
             with database.sessions() as session:

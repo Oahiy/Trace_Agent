@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-21",
+  "review_scope": "Agent inspected the observed answers and rendered original PDF pages; not developer signoff or clinical evaluation",
+  "developer_signoff": false,
+  "source_pages_inspected": {
+    "prisma-2009": [2],
+    "prisma-2020": [5],
+    "prisma-abstracts-2013": [1, 3],
+    "prisma-endorsement-2013": [1],
+    "prisma-dental-2023": [1, 18]
+  },
+  "reviews": [
+    {
+      "case_id": "dev-01",
+      "observation_sha256": "4c23c5036c30b1dd6b8a5d97329278113f4550b8cfb76448c657adc0c0f0eb67",
+      "reviewer": "agent",
+      "relevance": "failed",
+      "completeness": "failed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "引用确实来自 2009 原文第 2 页，但选中的是以残缺词开头的透明度/问责片段，没有回答组成部分。原页同一节明确列出 27 项清单和四阶段流程图。Top-5 中两个预期锚点都存在，仍发生错误句子选择；原文绑定没有检查问题相关性和句首完整性。"
+    },
+    {
+      "case_id": "dev-02",
+      "observation_sha256": "3e2a632a8a49341baafe59a795795120e931009a3286b16f07e6785ffbb3bffe",
+      "reviewer": "agent",
+      "relevance": "passed",
+      "completeness": "passed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "核对 2020 版本来源的物理第 5 页。摘录保留了不能用于评价综述实施或方法学质量的否定与对象，并说明另有相应用途工具。连带包含协议报告用途限制，未改变含义；引用元数据保留 2021 发表年份与 2020 版本标签。此通过仅针对当前问题与摘录，不代表完整语料或医学验收。"
+    },
+    {
+      "case_id": "dev-03",
+      "observation_sha256": "d4b5334aab360e472baf056662d5050ccd604bd2bacf0fb299024e5ee66ff7fb",
+      "reviewer": "agent",
+      "relevance": "failed",
+      "completeness": "failed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "实际引用在 Abstracts 2013 第 1 页，内容是制定清单的指导小组，没有回答注册信息。第 3 页 Table 1 第 12 项要求注册编号与注册平台名称。Top-5 没有该页锚点，因此检索已漏掉目标证据；模型又选择无关原句，而未保守拒答。"
+    },
+    {
+      "case_id": "dev-05",
+      "observation_sha256": "26d8549144089796519117de6e6bf34cb7d7412167c75e1c91e3683a40181394",
+      "reviewer": "agent",
+      "relevance": "passed",
+      "completeness": "failed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "核对 2009 第 2 页和 Abstracts 2013 第 1、3 页。摘录准确涉及期刊/会议摘要，但只回答摘要规范一侧，没有提供 2009 完整报告规范的对比和双方引用。Top-5 包含两个来源，输入预算只装入摘要来源一个片段；来源级 Recall=1 仍不能证明跨文档回答完整。不同报告格式是适用范围差异，不是冲突。"
+    }
+  ],
+  "condition_difference_exercise": {
+    "case_id": "dev-09",
+    "execution": "Original-page analysis only; not a real-model end-to-end run",
+    "conclusion": "GH 2013 与 dental 2023 的专业、年份、对照组和报告指标不同；显式引用与描述使用的比较口径也不同。结果差异属于异质性，不能充作第三条同条件真实冲突，不能据此推断因果或普遍受益。",
+    "limitations": "Dental 第 18 页说明期刊范围与外推限制；保留 Day 8 人工复核与冲突门槛缺口。"
+  }
+}

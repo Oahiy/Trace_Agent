@@ -10,7 +10,7 @@ from app.llm.budget import INPUT_LIMIT
 from app.llm.contracts import Message
 from app.llm.ollama import generation_input
 
-WORKFLOW_VERSION = "med-extractive-v2"
+WORKFLOW_VERSION = "med-extractive-v3"
 LIMITATIONS = [
     "Extractive research assistance only; quotations are not a clinical recommendation.",
     "Similarity and citation validity do not establish complete answer support; human review is required.",
@@ -28,7 +28,9 @@ HOSTILE = re.compile(
 
 
 def normalized(value):
-    return unicodedata.normalize("NFKC", value).casefold()
+    # PDF whitespace is formatting, not a boundary for safety comparisons.
+    # Only this comparison view changes; stored excerpts and locators stay exact.
+    return " ".join(unicodedata.normalize("NFKC", value).casefold().split())
 
 
 def refusal_reason(question):

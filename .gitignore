@@ -29,6 +29,8 @@ AGENTS.md
 /.cache/day10/
 # Day 11 research demos, isolated uploads, logs and test reports; same inventory.
 /.cache/day11/
+# Day 12 evaluation reports, PDF previews, isolated uploads and test artifacts.
+/.cache/day12/
 .env
 .env.*
 !.env.example

@@ -1,6 +1,6 @@
 # TraceAgent API 契约 v1
 
-定稿日期：2026-10-11，实施状态更新：2026-10-20。Day 11 已实现异步 POST /research、GET /research/{job_id}、受控单段摘录与持久预算，worker 支持固定解析/研究入口；具体收紧与限制见文末。本日未改变已有健康、上传和文档状态字段形状。全量 seed、公开 retry/trace、人工冻结及完整支持性/医学安全验收仍待完成。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。
+定稿日期：2026-10-11，实施状态更新：2026-10-21。Day 11 已实现异步 POST /research、GET /research/{job_id}、受控单段摘录与持久预算，worker 支持固定解析/研究入口；具体收紧与限制见文末。本日未改变已有健康、上传和文档状态字段形状。全量 seed、公开 retry/trace、人工冻结及完整支持性/医学安全验收仍待完成。下面的占位 UUID 不表示真实记录，未来接口样例不能计入已经通过的功能。
 
 ## 身份、输入与兼容性
 
@@ -201,3 +201,9 @@ CallBudget 每尝试四次生成、最多两次任务尝试，累计 24000 生�
 研究尝试最多 180 秒，可收紧；正常生成一次，适配器最多追加一次有限重试，共最多两次生成请求和两次查询 Embedding 请求；每次输出最多 512，累计生成预算仍为 24000。所有请求发送前持久化预留，失败/取消和未知用量也扣除；Embedding 独立计数。没有 RQ 自动任务重试或公开手动 retry。执行标识、输入哈希、版本、活跃用户、证据快照和截止在发布前再次检查。
 
 研究查询的 error 为 null 或固定 {code,message}，新增安全码 research_timeout、research_cancelled、research_model_failed、research_output_invalid、research_budget_exhausted、research_context_too_large、research_evidence_changed、research_state_conflict、research_failed。拒答为 SUCCEEDED 且 claims=[]；服务故障为 FAILED、result=null。数据库 COMMIT 结果不确定时返回 database_unavailable，不覆盖可能已成功的结果；过期 RUNNING 由 scripts.day11 reconcile 显式核对，没有周期恢复器。详细验证与能力边界见 docs/day11-walkthrough.md 和 docs/day11-results.json。
+
+## Day 12 评测与安全补充（2026-10-21）
+
+公开请求/响应形状、权限、预算、迁移及既有状态含义不变。安全比较视图合并 PDF 空白，避免换行绕过已有注入检查，原文及引用定位不改；workflow_version 更新为 med-extractive-v3。旧终态任务按原幂等键复用，未执行旧版本任务由既有版本检查安全失败，不自动升级或重试。
+
+新增的是内部开发集评测脚本，不是公开 API。自动引用/条件检查与代理语义复核分开；本次六题两题通过、四题质量失败，不能宣称完整支持性、冲突、医学安全或全量验收。采集完成返回 0；加 --require-quality 时，失败或待复核返回 2；采集/复核/报告故障返回 1。开发者本人复核继续 pending。设计、实际结果与复现见 docs/day12-walkthrough.md 和 docs/day12-results.json。

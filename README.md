@@ -1,5 +1,24 @@
 # TraceAgent
 
+## Day 12：证据质量评测与安全回归
+
+已交付六题开发集的真实 PDF/HTTP/独立 worker/固定模型评测、引用/条件/状态自动检查、绑定实际观察的代理语义复核和质量退出码。新增 51 项测试；完整真实依赖验证 762 passed、0 skipped。修复 PDF 换行绕过已有注入检查的问题，安全比较不改原文，工作流为 `med-extractive-v3`。
+
+**质量门槛未通过**：六题两题通过本次检查、四题失败；五道应答题只有一道完整有效。来源级 Recall@5/MRR@5 均为 0.8，不能替代相关性与完整性判断。开发者本人复核、第三条真实冲突和长文全量索引缺口继续保留。
+
+沿用下方环境准备后串行执行，最后评测以保留隔离演示状态：
+
+```bash
+bash scripts/dev.sh .venv/bin/python -m scripts.day12 test
+bash scripts/dev.sh .venv/bin/python -m scripts.day6 test --report-label local
+bash scripts/check.sh
+bash scripts/dev.sh .venv/bin/python -m scripts.day12 evaluate
+# 逐题复核并记录匹配观察哈希后；本次实际退出 2，保留质量失败。
+bash scripts/dev.sh .venv/bin/python -m scripts.day12 review --require-quality
+```
+
+新运行观察变化后，旧复核应被拒绝，不能自动改哈希取得通过。完整步骤、逐题根因、独立开发注意事项及风险见 [Day 12 讲解](docs/day12-walkthrough.md)，实际证据见 [Day 12 结果](docs/day12-results.json)。唯一被忽略的 `.cache/manifest.json` 管理 `.cache/day12/`；原应用数据、上传、凭据和卷保留。
+
 ## Day 11：异步研究闭环
 
 已接入经过 API Key 认证的 `POST /research` 与 `GET /research/{job_id}`，由独立 RQ worker 执行检索、上下文选择、结构化句子选择与服务端原文引用绑定。研究输入、执行权、预算与结果持久化；重复请求复用，越权 404，证据不足/医学越界拒答，模型/预算/超时失败返回安全状态。现有上传与文档状态契约保持。

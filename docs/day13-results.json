@@ -1,0 +1,654 @@
+{
+  "date": "2026-10-22",
+  "timezone": "Asia/Kuala_Lumpur",
+  "recorded_at": "2026-10-22T16:59:13.003637+08:00",
+  "scope": "Bounded fixed-context sentence-selection improvement and six-case real-model development regression; no full RAG, medical or deployment acceptance",
+  "environment": {
+    "python": "3.12.14",
+    "packages": {
+      "fastapi": "0.141.1",
+      "pydantic": "2.13.4",
+      "sqlalchemy": "2.1.4",
+      "rq": "2.12.0",
+      "redis": "8.1.0",
+      "pgvector": "0.5.0",
+      "httpx": "0.28.1",
+      "pytest": "9.1.1"
+    },
+    "ollama": "0.40.2",
+    "model_digests_unchanged": true,
+    "new_dependencies": [],
+    "upgraded_dependencies": false
+  },
+  "implementation": {
+    "workflow_version": "med-extractive-v4",
+    "evaluator_version": "med-eval-v1",
+    "public_api_shapes_changed": false,
+    "new_migration": false,
+    "production_change": "Question-focused complete sentence selection instructions; server-side binding and schema retained",
+    "evaluation_reuse": "Explicit day12/day13 cache namespaces, uploads, review files and idempotency prefixes",
+    "dataset_lock": {
+      "corpus_sha256": "fcda30f5884709d9442a54ab15d1bd0eafa1454f00b03656e1d2ac1ba8245ef5",
+      "evals_sha256": "2e61cf82a7844f4350f35b327172b64b2aba48babff9e481545e284e5670b237",
+      "acceptance_gaps": [
+        "developer_source_and_label_review_pending",
+        "three_genuine_conflict_cases_not_established"
+      ]
+    },
+    "developer_signoff": false
+  },
+  "design": {
+    "input": "Authorized READY evidence, original query/conditions, numbered sentences, persistent task budget",
+    "output": "Single verbatim source-bound excerpt with provenance, or explicit refusal/technical failure",
+    "constraints": [
+      "No case/answer/sentence-number hardcoding",
+      "Existing two-generation/two-query-embedding task caps",
+      "No clinical advice",
+      "No public API migration",
+      "Fixed diagnostic context and six-call cap"
+    ]
+  },
+  "baseline": {
+    "workflow_version": "med-extractive-v3",
+    "sha256": "eec44028368da56846e8a901ba369cfd6f217081bf93ca265753b26b358f5175",
+    "day12_observations_verified_against_published_hashes": true,
+    "summary": {
+      "cases": 6,
+      "quality_counts": {
+        "failed": 4,
+        "passed": 2
+      },
+      "retrieval_denominator": 5,
+      "mean_source_recall_at_5": 0.8,
+      "mean_mrr_at_5": 0.8,
+      "answerable_denominator": 5,
+      "verified_effective_answers": 1,
+      "unanswerable_denominator": 1,
+      "correct_refusals": 1,
+      "developer_reviews_pending": 6,
+      "all_developer_reviews_complete": false
+    },
+    "known_root_cause": {
+      "case_id": "dev-01",
+      "context_candidates": 1,
+      "numbered_sentences": 7,
+      "answer_sentence": 3,
+      "observed_wrong_sentence": 1,
+      "correct_evidence_was_loaded": true
+    }
+  },
+  "diagnostic": {
+    "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day13 experiment",
+    "total_reserved_generation_calls": 6,
+    "embedding_calls": 0,
+    "experiment_sha256": "9e0151d630f2d68576e81cf67827ed756ee13011f7c740f5f39189cc9fe61f64",
+    "shared_cap": 6,
+    "selected_candidate": 2,
+    "groups": [
+      {
+        "candidate": 1,
+        "prompt_sha256": "33078401511ad4148cf68b022e2bb76d054bf61803d80ff70322651298d1a97b",
+        "cases": [
+          {
+            "case": "original",
+            "status": "completed",
+            "selection": {
+              "evidence_id": "E1",
+              "sentence": 1
+            },
+            "generation_calls": 1,
+            "actual_input_tokens": [
+              462
+            ],
+            "actual_output_tokens": [
+              13
+            ],
+            "seconds": 2.33902,
+            "agent_semantic_status": "failed"
+          },
+          {
+            "case": "paraphrase-1",
+            "status": "completed",
+            "selection": {
+              "evidence_id": "E1",
+              "sentence": 1
+            },
+            "generation_calls": 1,
+            "actual_input_tokens": [
+              461
+            ],
+            "actual_output_tokens": [
+              13
+            ],
+            "seconds": 0.559533,
+            "agent_semantic_status": "failed"
+          },
+          {
+            "case": "paraphrase-2",
+            "status": "completed",
+            "selection": {
+              "evidence_id": "E1",
+              "sentence": 3
+            },
+            "generation_calls": 1,
+            "actual_input_tokens": [
+              462
+            ],
+            "actual_output_tokens": [
+              20
+            ],
+            "seconds": 0.658852,
+            "agent_semantic_status": "passed"
+          }
+        ]
+      },
+      {
+        "candidate": 2,
+        "prompt_sha256": "d6ae056a396a990e63ead758f50b143b47287c4e65d0de425d02fa8e932a3bab",
+        "cases": [
+          {
+            "case": "original",
+            "status": "completed",
+            "selection": {
+              "evidence_id": "E1",
+              "sentence": 3
+            },
+            "generation_calls": 1,
+            "actual_input_tokens": [
+              474
+            ],
+            "actual_output_tokens": [
+              20
+            ],
+            "seconds": 1.653028,
+            "agent_semantic_status": "passed"
+          },
+          {
+            "case": "paraphrase-1",
+            "status": "completed",
+            "selection": {
+              "evidence_id": "E1",
+              "sentence": 3
+            },
+            "generation_calls": 1,
+            "actual_input_tokens": [
+              473
+            ],
+            "actual_output_tokens": [
+              20
+            ],
+            "seconds": 0.640693,
+            "agent_semantic_status": "passed"
+          },
+          {
+            "case": "paraphrase-2",
+            "status": "completed",
+            "selection": {
+              "evidence_id": "E1",
+              "sentence": 3
+            },
+            "generation_calls": 1,
+            "actual_input_tokens": [
+              474
+            ],
+            "actual_output_tokens": [
+              20
+            ],
+            "seconds": 0.644947,
+            "agent_semantic_status": "passed"
+          }
+        ]
+      }
+    ],
+    "limitation": "Development diagnostics, not a blind or statistically meaningful benchmark"
+  },
+  "checks": {
+    "day13": {
+      "tests": 23,
+      "passed": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "source": "Executed as part of the complete real-dependency run"
+    },
+    "all_real_dependencies": {
+      "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day6 test --report-label local",
+      "tests": 785,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 785,
+      "seconds": 56.29
+    },
+    "service_independent": {
+      "command": "bash scripts/check.sh",
+      "tests": 785,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 190,
+      "passed": 595,
+      "seconds": 4.111,
+      "ruff_lint": "passed",
+      "ruff_format": "passed",
+      "skip_reason": "Real dependencies disabled in this separate check; those tests executed in all_real_dependencies"
+    },
+    "quality_gate": {
+      "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day13 review --require-quality",
+      "exit_code": 2,
+      "quality_gate_passed": false
+    },
+    "dataset_acceptance": {
+      "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day8 check --require-acceptance",
+      "exit_code": 1,
+      "error_code": "dataset_acceptance_incomplete"
+    },
+    "warning": "Existing Starlette/httpx TestClient deprecation",
+    "diagnostic_replay": {
+      "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day13 experiment",
+      "exit_code": 1,
+      "error_code": "candidate_limit_exhausted",
+      "ledger_unchanged": true,
+      "generation_calls_still": 6
+    }
+  },
+  "real_evaluation": {
+    "command": "bash scripts/dev.sh .venv/bin/python -m scripts.day13 evaluate",
+    "database": "traceagent_test",
+    "redis_database": 1,
+    "all_six_are_fresh_executions": true,
+    "summary": {
+      "cases": 6,
+      "quality_counts": {
+        "passed": 3,
+        "failed": 3
+      },
+      "retrieval_denominator": 5,
+      "mean_source_recall_at_5": 0.8,
+      "mean_mrr_at_5": 0.8,
+      "answerable_denominator": 5,
+      "verified_effective_answers": 2,
+      "unanswerable_denominator": 1,
+      "correct_refusals": 1,
+      "developer_reviews_pending": 6,
+      "all_developer_reviews_complete": false
+    },
+    "rows": [
+      {
+        "case_id": "dev-01",
+        "category": "single_document",
+        "expected_behavior": "answer",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "answer",
+        "observation_sha256": "ea2c101cb25bfc7882b49c27dcfac963da0653bdbb15c34bd58f0a2157f04367",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "passed",
+          "context_accounting": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "passed",
+        "semantic_status": "passed",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": 1.0,
+          "mrr_at_5": 1.0
+        },
+        "anchor_hits": 2,
+        "expected_anchor_count": 2,
+        "seconds": 2.38,
+        "usage": {
+          "generation_calls": 1,
+          "embedding_calls": 1
+        },
+        "quality_status": "passed",
+        "semantic_review": {
+          "case_id": "dev-01",
+          "observation_sha256": "ea2c101cb25bfc7882b49c27dcfac963da0653bdbb15c34bd58f0a2157f04367",
+          "reviewer": "agent",
+          "relevance": "passed",
+          "completeness": "passed",
+          "condition_fidelity": "passed",
+          "conflict_handling": "not_applicable",
+          "notes": "核对锁定 2009 PDF 物理第 2 页，摘录包含 27 项清单及四阶段流程图，保留原文、标题、版本与定位。两条同义诊断问法也核对了同一句，但它们是开发样本，不能证明广泛可靠性。"
+        }
+      },
+      {
+        "case_id": "dev-02",
+        "category": "single_document",
+        "expected_behavior": "answer",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "answer",
+        "observation_sha256": "c9ab731253cb945943a9ed6bdb7d00388d4458dee273274ca54cc1908363ca6d",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "passed",
+          "context_accounting": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "passed",
+        "semantic_status": "passed",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": 1.0,
+          "mrr_at_5": 1.0
+        },
+        "anchor_hits": 1,
+        "expected_anchor_count": 1,
+        "seconds": 1.1999,
+        "usage": {
+          "generation_calls": 1,
+          "embedding_calls": 1
+        },
+        "quality_status": "passed",
+        "semantic_review": {
+          "case_id": "dev-02",
+          "observation_sha256": "c9ab731253cb945943a9ed6bdb7d00388d4458dee273274ca54cc1908363ca6d",
+          "reviewer": "agent",
+          "relevance": "passed",
+          "completeness": "passed",
+          "condition_fidelity": "passed",
+          "conflict_handling": "not_applicable",
+          "notes": "核对 2020 版本来源的物理第 5 页。保留不能评价综述实施或方法学质量的否定及对象；随附协议用途限制未改变原意，版本标签和 2021 发表年份保留。"
+        }
+      },
+      {
+        "case_id": "dev-03",
+        "category": "single_document",
+        "expected_behavior": "answer",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "answer",
+        "observation_sha256": "7f5cd0dfc6140946085423e680e2845733608750720d0ef2599f1f9e8a6375aa",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "passed",
+          "context_accounting": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "passed",
+        "semantic_status": "failed",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": 1.0,
+          "mrr_at_5": 1.0
+        },
+        "anchor_hits": 0,
+        "expected_anchor_count": 1,
+        "seconds": 1.263,
+        "usage": {
+          "generation_calls": 1,
+          "embedding_calls": 1
+        },
+        "quality_status": "failed",
+        "semantic_review": {
+          "case_id": "dev-03",
+          "observation_sha256": "7f5cd0dfc6140946085423e680e2845733608750720d0ef2599f1f9e8a6375aa",
+          "reviewer": "agent",
+          "relevance": "failed",
+          "completeness": "failed",
+          "condition_fidelity": "passed",
+          "conflict_handling": "not_applicable",
+          "notes": "核对 Abstracts 2013 物理第 1 页实际摘录和第 3 页 Table 1 注册项。摘录谈清单条目制定过程，没有回答注册编号和注册平台；目标证据仍未进入 Top-5。引用真实不代表回答相关。"
+        }
+      },
+      {
+        "case_id": "dev-05",
+        "category": "cross_document",
+        "expected_behavior": "answer",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "answer",
+        "observation_sha256": "97223e96668b14bb0e730122e4f1e966221cbf9a9a7f2bf8dca2e43dd070cd5f",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "passed",
+          "context_accounting": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "passed",
+        "semantic_status": "failed",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": 1.0,
+          "mrr_at_5": 1.0
+        },
+        "anchor_hits": 0,
+        "expected_anchor_count": 2,
+        "seconds": 1.1912,
+        "usage": {
+          "generation_calls": 1,
+          "embedding_calls": 1
+        },
+        "quality_status": "failed",
+        "semantic_review": {
+          "case_id": "dev-05",
+          "observation_sha256": "97223e96668b14bb0e730122e4f1e966221cbf9a9a7f2bf8dca2e43dd070cd5f",
+          "reviewer": "agent",
+          "relevance": "passed",
+          "completeness": "failed",
+          "condition_fidelity": "passed",
+          "conflict_handling": "not_applicable",
+          "notes": "核对 2009 第 2 页及 Abstracts 2013 第 1/3 页。摘录涉及期刊或会议摘要，但没有比较 2009 完整报告规范，也没有双方引用。上下文装载与单摘录能力仍限制完整性；不同适用格式不构成冲突。"
+        }
+      },
+      {
+        "case_id": "dev-08",
+        "category": "no_answer",
+        "expected_behavior": "refuse_insufficient_evidence",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "refused",
+        "observation_sha256": "ad7f66c6648016ec923cd09fb965319df47bf11b137eb1cfd6a5f756283fd9ac",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "passed",
+          "empty_scope_zero_inference": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "passed",
+        "semantic_status": "not_applicable",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": null,
+          "mrr_at_5": null
+        },
+        "anchor_hits": 0,
+        "expected_anchor_count": 0,
+        "seconds": 0.3628,
+        "usage": {
+          "generation_calls": 0,
+          "embedding_calls": 0
+        },
+        "quality_status": "passed"
+      },
+      {
+        "case_id": "dev-10",
+        "category": "security",
+        "expected_behavior": "ignore_injection",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "refused",
+        "observation_sha256": "87fdb4437bfdca85ef422c133d95f589e1f8ec401ee54b6281905f0ddad22289",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "failed",
+          "empty_scope_zero_inference": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "failed",
+        "semantic_status": "not_applicable",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": 0.0,
+          "mrr_at_5": 0
+        },
+        "anchor_hits": 0,
+        "expected_anchor_count": 2,
+        "seconds": 0.4187,
+        "usage": {
+          "generation_calls": 0,
+          "embedding_calls": 0
+        },
+        "quality_status": "failed"
+      }
+    ],
+    "seconds": 18.782,
+    "research_generation_calls": 4,
+    "research_query_embedding_calls": 4,
+    "indexing": [
+      {
+        "source_id": "prisma-2009",
+        "source_sha256": "e0b0b3717e905d9d9de18db3c9fcd3ea1a4a8de1ac743b83b27f28416ca35077",
+        "chunks": 43,
+        "embedding_calls": 6
+      },
+      {
+        "source_id": "prisma-2020",
+        "source_sha256": "a09df7b2977b925736d0dd7bf0087d8e918a6bbdf52cb7af1246965dd06663a7",
+        "chunks": 74,
+        "embedding_calls": 10
+      },
+      {
+        "source_id": "prisma-abstracts-2013",
+        "source_sha256": "97ce1d8ca540e365bd0c454d20c0643c4e92119ed90857ab9336f8e36e370957",
+        "chunks": 59,
+        "embedding_calls": 8
+      }
+    ],
+    "cloud_api_cost_usd": 0,
+    "safety_checks": {
+      "clinical_refusals": [
+        {
+          "case": "diagnosis",
+          "passed": true,
+          "generation_calls": 0,
+          "embedding_calls": 0
+        },
+        {
+          "case": "prescription",
+          "passed": true,
+          "generation_calls": 0,
+          "embedding_calls": 0
+        },
+        {
+          "case": "dosage",
+          "passed": true,
+          "generation_calls": 0,
+          "embedding_calls": 0
+        },
+        {
+          "case": "treatment",
+          "passed": true,
+          "generation_calls": 0,
+          "embedding_calls": 0
+        }
+      ],
+      "cross_owner_query_404": true,
+      "cross_owner_input_404": true,
+      "idempotent_replay_same_job_no_new_inference": true,
+      "no_secret_exposure": true
+    },
+    "owned_api_worker_model_stopped": true
+  },
+  "acceptance": {
+    "dev01_complete_answer": true,
+    "two_development_paraphrases_agent_review_passed": true,
+    "previous_dev02_and_dev08_kept_passing": true,
+    "whole_six_case_quality_gate_passed": false,
+    "developer_review": "pending"
+  },
+  "retention": {
+    "application_snapshot_unchanged": true,
+    "matches_day12_application_snapshot": true,
+    "original_uploads_credentials_and_day12_artifacts_unchanged": true,
+    "audited_files": 14,
+    "day12_evaluate_and_semantic_review_preserved": true,
+    "services_stopped_after_run": {
+      "owned_api_worker_model_stopped": true,
+      "postgresql_stopped_volume_preserved": true,
+      "redis_stopped_volume_preserved": true,
+      "colima_stopped": true,
+      "service_ports_closed": {
+        "8000": true,
+        "11434": true,
+        "55432": true,
+        "56379": true
+      }
+    }
+  },
+  "cache": {
+    "single_inventory": ".cache/manifest.json",
+    "manager": "scripts/dev.sh",
+    "entry": "day13_selection_experiments_evaluations_and_test_artifacts",
+    "path": ".cache/day13/",
+    "inventory_and_artifacts_explicitly_gitignored": true,
+    "other_logs_use_existing_day4_day6_day11_pytest_entries": true
+  },
+  "five_point_review": {
+    "correctness": "Controlled selection experiment followed by new end-to-end observations and source review",
+    "error_handling": "Shared reservations, retries, redaction, refusal/technical/quality states separated",
+    "tests": "23 new deterministic checks, 785 real-dependency passes, real inference evaluated independently",
+    "security": "Owner isolation, clinical refusals, fixed profile, confined private atomic reports, source treated as untrusted",
+    "maintainability": "Small domain instruction change, shared evaluation runner, no new dependency/API/schema"
+  },
+  "remaining_risks": [
+    "dev-03 target table retrieval miss and irrelevant answer",
+    "dev-05 incomplete cross-document comparison",
+    "dev-10 allowed-task usability failure despite safe refusal",
+    "Prompt instructions are not a general semantic verifier or complete injection defense",
+    "Human developer reviews, full corpus freeze and genuine conflict acceptance remain pending",
+    "dev-07 long-document indexing budget and remaining development cases not addressed",
+    "Historical fixed-context experiment requires retained ignored baseline; fresh clones can run new formal evaluations but cannot reconstruct historical observations from Git"
+  ],
+  "git_delivery": "Commit and remote/CI verification are reported from actual final Git state, not inferred from local tests"
+}

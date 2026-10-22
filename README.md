@@ -1,5 +1,23 @@
 # TraceAgent
 
+## Day 13：选句质量改进与真实回归
+
+已修复固定开发题 dev-01 的已观察选句问题：正确证据原本已装入，模型却选中块首残片。两组固定上下文诊断共六次真实生成，第一组 1/3、第二组 3/3 经代理原页复核通过；采用第二组指令并版本化为 med-extractive-v4。真实六题重新执行后，完整有效应答由 1/5 提升到 2/5，六题三通过、三失败，原先 dev-02 和年份拒答保持通过。来源级 Recall@5/MRR@5 仍为 0.8；这不是总体可靠率或完整 RAG 验收。
+
+本次全量真实依赖测试 785 passed、0 skipped；基础检查 595 passed、190 skipped（另在全量中执行）；新增 23 项检查。无新依赖、数据库迁移或公开 API 形状变化。dev-03 检索漏检、dev-05 跨文档完整性、dev-10 允许任务可用性及本人冻结仍待完成，质量门禁实际退出 2。
+
+先沿用 Day 12 讲解启动依赖，数据库测试与演示串行，演示最后执行：
+
+```bash
+bash scripts/dev.sh .venv/bin/python -m scripts.day6 test --report-label local
+bash scripts/check.sh
+bash scripts/dev.sh .venv/bin/python -m scripts.day13 evaluate
+# 对新观察和原页实际复核后更新本日复核文件；禁止只改哈希取得通过。
+bash scripts/dev.sh .venv/bin/python -m scripts.day13 review --require-quality
+```
+
+设计、逐层解释、复现限制、故障行为和独立开发注意事项见 [Day 13 讲解](docs/day13-walkthrough.md)，实际记录见 [Day 13 结果](docs/day13-results.json)。旧 Day 12 观察/复核保持，Day 13 单独保存；诊断需保留原本地基线，已用满六次后拒绝重跑。新增缓存继续归唯一 `.cache/manifest.json` 管理，清单和 `.cache/day13/` 明确忽略。
+
 ## Day 12：证据质量评测与安全回归
 
 已交付六题开发集的真实 PDF/HTTP/独立 worker/固定模型评测、引用/条件/状态自动检查、绑定实际观察的代理语义复核和质量退出码。新增 51 项测试；完整真实依赖验证 762 passed、0 skipped。修复 PDF 换行绕过已有注入检查的问题，安全比较不改原文，工作流为 `med-extractive-v3`。

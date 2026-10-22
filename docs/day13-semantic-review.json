@@ -1,0 +1,128 @@
+{
+  "date": "2026-10-22",
+  "review_scope": "Agent checked actual fixed-context outputs, new HTTP/worker observations and four rendered original PDF pages; not developer signoff or clinical evaluation",
+  "developer_signoff": false,
+  "source_pages_inspected": {
+    "prisma-2009": [
+      2
+    ],
+    "prisma-2020": [
+      5
+    ],
+    "prisma-abstracts-2013": [
+      1,
+      3
+    ]
+  },
+  "reviews": [
+    {
+      "case_id": "dev-01",
+      "observation_sha256": "ea2c101cb25bfc7882b49c27dcfac963da0653bdbb15c34bd58f0a2157f04367",
+      "reviewer": "agent",
+      "relevance": "passed",
+      "completeness": "passed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "核对锁定 2009 PDF 物理第 2 页，摘录包含 27 项清单及四阶段流程图，保留原文、标题、版本与定位。两条同义诊断问法也核对了同一句，但它们是开发样本，不能证明广泛可靠性。"
+    },
+    {
+      "case_id": "dev-02",
+      "observation_sha256": "c9ab731253cb945943a9ed6bdb7d00388d4458dee273274ca54cc1908363ca6d",
+      "reviewer": "agent",
+      "relevance": "passed",
+      "completeness": "passed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "核对 2020 版本来源的物理第 5 页。保留不能评价综述实施或方法学质量的否定及对象；随附协议用途限制未改变原意，版本标签和 2021 发表年份保留。"
+    },
+    {
+      "case_id": "dev-03",
+      "observation_sha256": "7f5cd0dfc6140946085423e680e2845733608750720d0ef2599f1f9e8a6375aa",
+      "reviewer": "agent",
+      "relevance": "failed",
+      "completeness": "failed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "核对 Abstracts 2013 物理第 1 页实际摘录和第 3 页 Table 1 注册项。摘录谈清单条目制定过程，没有回答注册编号和注册平台；目标证据仍未进入 Top-5。引用真实不代表回答相关。"
+    },
+    {
+      "case_id": "dev-05",
+      "observation_sha256": "97223e96668b14bb0e730122e4f1e966221cbf9a9a7f2bf8dca2e43dd070cd5f",
+      "reviewer": "agent",
+      "relevance": "passed",
+      "completeness": "failed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "核对 2009 第 2 页及 Abstracts 2013 第 1/3 页。摘录涉及期刊或会议摘要，但没有比较 2009 完整报告规范，也没有双方引用。上下文装载与单摘录能力仍限制完整性；不同适用格式不构成冲突。"
+    }
+  ],
+  "diagnostic_experiment_sha256": "9e0151d630f2d68576e81cf67827ed756ee13011f7c740f5f39189cc9fe61f64",
+  "diagnostic_reviews": [
+    {
+      "candidate": 1,
+      "prompt_sha256": "33078401511ad4148cf68b022e2bb76d054bf61803d80ff70322651298d1a97b",
+      "reviews": [
+        {
+          "case": "original",
+          "observation_sha256": "04c20a0d8f21112f623c6ae190ed9a1aca4ffb53fd40653abc19e78a699634fc",
+          "relevance": "failed",
+          "completeness": "failed",
+          "condition_fidelity": "passed",
+          "notes": "仍选择块首残缺片段，没有回答组成部分。"
+        },
+        {
+          "case": "paraphrase-1",
+          "observation_sha256": "67142f8b8302d26af8020ee469f1c59af3b890b423f8c25e4caee890328b149b",
+          "relevance": "failed",
+          "completeness": "failed",
+          "condition_fidelity": "passed",
+          "notes": "仍选择块首残缺片段，没有回答组成部分。"
+        },
+        {
+          "case": "paraphrase-2",
+          "observation_sha256": "22ff142ccbb9582da45d443b07b05f606fcb03cb949586daeaa5ec0bcfe85280",
+          "relevance": "passed",
+          "completeness": "passed",
+          "condition_fidelity": "passed",
+          "notes": "核对原页：完整列出两个组成部分。"
+        }
+      ]
+    },
+    {
+      "candidate": 2,
+      "prompt_sha256": "d6ae056a396a990e63ead758f50b143b47287c4e65d0de425d02fa8e932a3bab",
+      "reviews": [
+        {
+          "case": "original",
+          "observation_sha256": "89f868dfa9bb867d8f426066747cab2a46b01eb4de5d1c2ad0fd7b11e5f67e14",
+          "relevance": "passed",
+          "completeness": "passed",
+          "condition_fidelity": "passed",
+          "notes": "核对原页：完整列出两个组成部分。"
+        },
+        {
+          "case": "paraphrase-1",
+          "observation_sha256": "51249fe29716f098991303b32290064f355a296c8bb35378289c2c6fa33466f6",
+          "relevance": "passed",
+          "completeness": "passed",
+          "condition_fidelity": "passed",
+          "notes": "核对原页：完整列出两个组成部分。"
+        },
+        {
+          "case": "paraphrase-2",
+          "observation_sha256": "60d1f51b860c5f40224c281fc874bd482e272b4522f9c78ee1b88270b58afbb9",
+          "relevance": "passed",
+          "completeness": "passed",
+          "condition_fidelity": "passed",
+          "notes": "核对原页：完整列出两个组成部分。"
+        }
+      ]
+    }
+  ],
+  "selected_candidate": 2,
+  "limitations": [
+    "Only the six existing development cases plus two development paraphrases; no blind benchmark",
+    "Prompt instructions improve these observations but do not provide a semantic validity guarantee",
+    "All developer reviews and full corpus acceptance remain pending"
+  ]
+}

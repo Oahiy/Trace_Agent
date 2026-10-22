@@ -31,6 +31,8 @@ AGENTS.md
 /.cache/day11/
 # Day 12 evaluation reports, PDF previews, isolated uploads and test artifacts.
 /.cache/day12/
+# Day 13 bounded selection experiments, preserved baseline, evaluations and tests.
+/.cache/day13/
 .env
 .env.*
 !.env.example

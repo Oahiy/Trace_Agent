@@ -1,5 +1,25 @@
 # TraceAgent
 
+## Day 14：检索漏检诊断与第二周复盘
+
+完成 dev-03 原页→片段→索引→排序→上下文诊断，以及一次固定的 PostgreSQL 全文检索/向量等权 RRF 对照。目标表格已正确解析和入库，但向量/词法排名分别为 26/25，均未进入预设各 20 个候选；融合仍未命中，因此保留当前生产检索。实验三次查询 Embedding、零生成，无新依赖、迁移或公开 API 改动。
+
+重新执行真实六题后，代理复核仍为三通过、三失败，五道应答题两道完整有效；质量门禁退出 2。新增 34 项检查，全量真实依赖 **819 passed、0 skipped**；基础 **620 passed、199 skipped**（跳过项另在全量执行）。本人复核与完整数据冻结仍待完成。
+
+环境准备沿用 Day 13，真实数据库测试与演示串行，演示最后执行：
+
+```bash
+bash scripts/dev.sh .venv/bin/python -m scripts.day6 test --report-label local
+bash scripts/check.sh
+bash scripts/dev.sh .venv/bin/python -m scripts.day14 evaluate
+# 每份新评测只做一次固定对照；本机已记录的实验会拒绝重跑。
+bash scripts/dev.sh .venv/bin/python -m scripts.day14 experiment
+# 核对新观察和原页后更新本日复核；本次质量退出 2。
+bash scripts/dev.sh .venv/bin/python -m scripts.day14 review --require-quality
+```
+
+完整设计、失败行为、知识解释及独立开发注意事项见 [Day 14 讲解](docs/day14-walkthrough.md)，实际结果见 [验证记录](docs/day14-results.json)，[第二周复盘](docs/week2-review.md) 包含岗位对照和剩余问题，[本人复核表](docs/day14-developer-review.md) 保留待签状态。新增缓存继续归唯一被忽略的 `.cache/manifest.json` 管理，`.cache/day14/` 明确忽略；原应用及 33 个受保护文件指纹保持，Day 12/13 历史未覆盖。
+
 ## Day 13：选句质量改进与真实回归
 
 已修复固定开发题 dev-01 的已观察选句问题：正确证据原本已装入，模型却选中块首残片。两组固定上下文诊断共六次真实生成，第一组 1/3、第二组 3/3 经代理原页复核通过；采用第二组指令并版本化为 med-extractive-v4。真实六题重新执行后，完整有效应答由 1/5 提升到 2/5，六题三通过、三失败，原先 dev-02 和年份拒答保持通过。来源级 Recall@5/MRR@5 仍为 0.8；这不是总体可靠率或完整 RAG 验收。

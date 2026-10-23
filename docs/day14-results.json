@@ -1,0 +1,690 @@
+{
+  "date": "2026-10-23",
+  "timezone": "Asia/Kuala_Lumpur",
+  "recorded_at": "2026-10-23T10:16:54.102805+08:00",
+  "scope": "One frozen read-only retrieval comparison, six-case real-model regression, second-week review and independent-development materials; no full RAG acceptance",
+  "environment": {
+    "python": "3.12.14",
+    "packages": {
+      "fastapi": "0.141.1",
+      "pydantic": "2.13.4",
+      "sqlalchemy": "2.1.4",
+      "rq": "2.12.0",
+      "redis": "8.1.0",
+      "pgvector": "0.5.0",
+      "pytest": "9.1.1"
+    },
+    "database": {
+      "postgresql": "18.6 (Debian 18.6-1.pgdg12+2)",
+      "pgvector": "0.8.7"
+    },
+    "ollama": "0.40.2",
+    "models": [
+      "qwen3:1.7b",
+      "nomic-embed-text:v1.5"
+    ],
+    "model_digests_unchanged": true,
+    "new_dependencies": []
+  },
+  "implementation": {
+    "new_runner": "scripts/day14.py",
+    "production_retrieval_changed": false,
+    "public_api_changed": false,
+    "database_migration": false,
+    "report_namespace": "day14 explicitly added to existing safe report path allowlist",
+    "experiment_configuration": {
+      "version": "retrieval-diagnostic-v1",
+      "case_ids": [
+        "dev-01",
+        "dev-02",
+        "dev-03",
+        "dev-08"
+      ],
+      "candidate_limit_per_route": 20,
+      "final_limit": 5,
+      "rrf_constant": 60,
+      "route_weights": [
+        1,
+        1
+      ],
+      "lexical_query": "ascii-alphanumeric-terms-OR-postgres-english-v1",
+      "max_embedding_attempts": 6,
+      "generation_attempts": 0,
+      "max_scope_chunks": 2048
+    },
+    "experiment_config_sha256": "078e1e5afe2a3a99516084c74a71a55b7cf53f4ee8b7ebc15e248e892c5fe153",
+    "index_version": "e1-5741880e77b9a1e922904924",
+    "workflow_version": "med-extractive-v4",
+    "evaluator_version": "med-eval-v1"
+  },
+  "diagnostic": {
+    "configuration_frozen_before_inference": true,
+    "baseline_sha256": "d8cbdcc564d0e44373a77ceb6c943179405c10b4381be2bd93c260fa2a6f5fab",
+    "experiment_sha256": "48cce2b83b4d8ac4788112481ffd4e3afe5bcd53fc0b1c668a6680bee588aed7",
+    "query_embedding_attempts": 3,
+    "generation_calls": 0,
+    "rows": [
+      {
+        "case_id": "dev-01",
+        "status": "completed",
+        "scope_chunks": 43,
+        "raw_pdf_targets": [
+          true,
+          true
+        ],
+        "stored_target_chunks": [
+          1,
+          4
+        ],
+        "same_query_vector": true,
+        "timings": {
+          "dense_seconds": 0.0029204169986769557,
+          "lexical_seconds": 0.007744499976979569
+        },
+        "dense": {
+          "target_ranks": [
+            1,
+            1
+          ],
+          "target_hit_at_5": [
+            true,
+            true
+          ],
+          "target_loaded": [
+            true,
+            true
+          ],
+          "context_chunks": 1
+        },
+        "lexical": {
+          "target_ranks": [
+            2,
+            1
+          ],
+          "target_hit_at_5": [
+            true,
+            true
+          ],
+          "target_loaded": [
+            false,
+            true
+          ],
+          "context_chunks": 1
+        },
+        "hybrid": {
+          "target_ranks": [
+            1,
+            1
+          ],
+          "target_hit_at_5": [
+            true,
+            true
+          ],
+          "target_loaded": [
+            true,
+            true
+          ],
+          "context_chunks": 1
+        }
+      },
+      {
+        "case_id": "dev-02",
+        "status": "completed",
+        "scope_chunks": 74,
+        "raw_pdf_targets": [
+          true
+        ],
+        "stored_target_chunks": [
+          1
+        ],
+        "same_query_vector": true,
+        "timings": {
+          "dense_seconds": 0.0017736669979058206,
+          "lexical_seconds": 0.010309708013664931
+        },
+        "dense": {
+          "target_ranks": [
+            1
+          ],
+          "target_hit_at_5": [
+            true
+          ],
+          "target_loaded": [
+            true
+          ],
+          "context_chunks": 1
+        },
+        "lexical": {
+          "target_ranks": [
+            1
+          ],
+          "target_hit_at_5": [
+            true
+          ],
+          "target_loaded": [
+            true
+          ],
+          "context_chunks": 1
+        },
+        "hybrid": {
+          "target_ranks": [
+            1
+          ],
+          "target_hit_at_5": [
+            true
+          ],
+          "target_loaded": [
+            true
+          ],
+          "context_chunks": 1
+        }
+      },
+      {
+        "case_id": "dev-03",
+        "status": "completed",
+        "scope_chunks": 59,
+        "raw_pdf_targets": [
+          true
+        ],
+        "stored_target_chunks": [
+          1
+        ],
+        "same_query_vector": true,
+        "timings": {
+          "dense_seconds": 0.0016241249977611005,
+          "lexical_seconds": 0.007498249993659556
+        },
+        "dense": {
+          "target_ranks": [
+            26
+          ],
+          "target_hit_at_5": [
+            false
+          ],
+          "target_loaded": [
+            false
+          ],
+          "context_chunks": 2
+        },
+        "lexical": {
+          "target_ranks": [
+            25
+          ],
+          "target_hit_at_5": [
+            false
+          ],
+          "target_loaded": [
+            false
+          ],
+          "context_chunks": 1
+        },
+        "hybrid": {
+          "target_ranks": [
+            null
+          ],
+          "target_hit_at_5": [
+            false
+          ],
+          "target_loaded": [
+            false
+          ],
+          "context_chunks": 1
+        }
+      },
+      {
+        "case_id": "dev-08",
+        "status": "completed",
+        "scope_chunks": 0,
+        "empty_scope_zero_inference": true,
+        "dense": {
+          "target_ranks": [],
+          "target_hit_at_5": [],
+          "target_loaded": [],
+          "context_chunks": 0
+        },
+        "hybrid": {
+          "target_ranks": [],
+          "target_hit_at_5": [],
+          "target_loaded": [],
+          "context_chunks": 0
+        }
+      }
+    ],
+    "decision": "retain_current_production_retrieval",
+    "reason": "dev-03 target ranks dense=26, lexical=25; absent from both frozen top-20 route candidate lists and hybrid Top-5; no demonstrated target improvement",
+    "not_a_blind_or_statistical_benchmark": true,
+    "latency_note": "Single diagnostic full-scope queries in fixed order, not a production latency benchmark; fusion and duplicate baseline query are not included in per-route timings"
+  },
+  "checks": {
+    "new_deterministic_checks": {
+      "passed": 25,
+      "skipped": 0
+    },
+    "new_real_database_checks": {
+      "passed": 9,
+      "skipped": 0,
+      "inference": "synthetic embeddings; actual PostgreSQL text/vector SQL"
+    },
+    "full_real_dependency_suite": {
+      "passed": 819,
+      "skipped": 0,
+      "seconds": 48.44,
+      "inference": "controlled substitutes in tests; not 819 real-model evaluations"
+    },
+    "service_independent_check": {
+      "passed": 620,
+      "skipped": 199,
+      "ruff_lint": "passed",
+      "ruff_format": "passed",
+      "note": "Skipped checks separately executed in full real dependency suite"
+    },
+    "quality_gate_exit": 2,
+    "strict_dataset_acceptance_exit": 1,
+    "strict_dataset_acceptance_error": "dataset_acceptance_incomplete",
+    "charged_experiment_replay_exit": 1,
+    "charged_experiment_preserved": true,
+    "existing_warning": "Starlette/httpx TestClient deprecation; no dependency upgrade in this slice"
+  },
+  "real_evaluation": {
+    "summary": {
+      "cases": 6,
+      "quality_counts": {
+        "passed": 3,
+        "failed": 3
+      },
+      "retrieval_denominator": 5,
+      "mean_source_recall_at_5": 0.8,
+      "mean_mrr_at_5": 0.8,
+      "answerable_denominator": 5,
+      "verified_effective_answers": 2,
+      "unanswerable_denominator": 1,
+      "correct_refusals": 1,
+      "developer_reviews_pending": 6,
+      "all_developer_reviews_complete": false
+    },
+    "rows": [
+      {
+        "case_id": "dev-01",
+        "category": "single_document",
+        "expected_behavior": "answer",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "answer",
+        "observation_sha256": "6f30cdfad489fbc0b6a980c1011946ad234c6a32e56f593c545e6668da2a343c",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "passed",
+          "context_accounting": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "passed",
+        "semantic_status": "passed",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": 1.0,
+          "mrr_at_5": 1.0
+        },
+        "anchor_hits": 2,
+        "expected_anchor_count": 2,
+        "seconds": 3.1638,
+        "usage": {
+          "generation_calls": 1,
+          "embedding_calls": 1
+        },
+        "quality_status": "passed",
+        "semantic_review": {
+          "case_id": "dev-01",
+          "observation_sha256": "6f30cdfad489fbc0b6a980c1011946ad234c6a32e56f593c545e6668da2a343c",
+          "reviewer": "agent",
+          "relevance": "passed",
+          "completeness": "passed",
+          "condition_fidelity": "passed",
+          "conflict_handling": "not_applicable",
+          "notes": "核对锁定2009来源物理第2页。本次摘录完整包含27项清单及四阶段流程图，来源、版本与定位保持。"
+        }
+      },
+      {
+        "case_id": "dev-02",
+        "category": "single_document",
+        "expected_behavior": "answer",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "answer",
+        "observation_sha256": "92c499e9a9fc096227c758abfcf21b602b8ecbd4e68cbf9bcd27c503e395e57a",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "passed",
+          "context_accounting": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "passed",
+        "semantic_status": "passed",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": 1.0,
+          "mrr_at_5": 1.0
+        },
+        "anchor_hits": 1,
+        "expected_anchor_count": 1,
+        "seconds": 1.1493,
+        "usage": {
+          "generation_calls": 1,
+          "embedding_calls": 1
+        },
+        "quality_status": "passed",
+        "semantic_review": {
+          "case_id": "dev-02",
+          "observation_sha256": "92c499e9a9fc096227c758abfcf21b602b8ecbd4e68cbf9bcd27c503e395e57a",
+          "reviewer": "agent",
+          "relevance": "passed",
+          "completeness": "passed",
+          "condition_fidelity": "passed",
+          "conflict_handling": "not_applicable",
+          "notes": "核对2020版本来源物理第5页。本次摘录保留不能评估综述实施或方法学质量的否定及对象；2020版本标签与2021发表年份分开保存。"
+        }
+      },
+      {
+        "case_id": "dev-03",
+        "category": "single_document",
+        "expected_behavior": "answer",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "answer",
+        "observation_sha256": "0913cacfb1a8c886bb104984e3c344e9a5b66af6d01ccd13f8bb2fab166386fa",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "passed",
+          "context_accounting": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "passed",
+        "semantic_status": "failed",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": 1.0,
+          "mrr_at_5": 1.0
+        },
+        "anchor_hits": 0,
+        "expected_anchor_count": 1,
+        "seconds": 1.2806,
+        "usage": {
+          "generation_calls": 1,
+          "embedding_calls": 1
+        },
+        "quality_status": "failed",
+        "semantic_review": {
+          "case_id": "dev-03",
+          "observation_sha256": "0913cacfb1a8c886bb104984e3c344e9a5b66af6d01ccd13f8bb2fab166386fa",
+          "reviewer": "agent",
+          "relevance": "failed",
+          "completeness": "failed",
+          "condition_fidelity": "passed",
+          "conflict_handling": "not_applicable",
+          "notes": "核对Abstracts 2013物理第1页实际摘录及第3页Table 1注册项。回答仍为制定清单的背景，未回答注册编号和注册平台。只读对照中目标片段向量排名26、词法排名25，均在融合候选20以外。"
+        }
+      },
+      {
+        "case_id": "dev-05",
+        "category": "cross_document",
+        "expected_behavior": "answer",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "answer",
+        "observation_sha256": "566faa2d61ef66e0f3865263ab55072fa311cef7b4fe0f93fd178466c6dbaa26",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "passed",
+          "context_accounting": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "passed",
+        "semantic_status": "failed",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": 1.0,
+          "mrr_at_5": 1.0
+        },
+        "anchor_hits": 0,
+        "expected_anchor_count": 2,
+        "seconds": 1.2103,
+        "usage": {
+          "generation_calls": 1,
+          "embedding_calls": 1
+        },
+        "quality_status": "failed",
+        "semantic_review": {
+          "case_id": "dev-05",
+          "observation_sha256": "566faa2d61ef66e0f3865263ab55072fa311cef7b4fe0f93fd178466c6dbaa26",
+          "reviewer": "agent",
+          "relevance": "failed",
+          "completeness": "failed",
+          "condition_fidelity": "passed",
+          "conflict_handling": "not_applicable",
+          "notes": "本次实际摘录谈清单条目的制定，而没有比较完整报告与摘要格式，也缺少2009一侧证据和双方引用。核对2009物理第2页及Abstracts 2013物理第1、3页。不同适用范围不构成冲突。"
+        }
+      },
+      {
+        "case_id": "dev-08",
+        "category": "no_answer",
+        "expected_behavior": "refuse_insufficient_evidence",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "refused",
+        "observation_sha256": "a9288140067d6f504d3ba7f13a2a06cb1a8a5170bb7e6209f2f5758432d444fb",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "passed",
+          "empty_scope_zero_inference": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "passed",
+        "semantic_status": "not_applicable",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": null,
+          "mrr_at_5": null
+        },
+        "anchor_hits": 0,
+        "expected_anchor_count": 0,
+        "seconds": 0.3835,
+        "usage": {
+          "generation_calls": 0,
+          "embedding_calls": 0
+        },
+        "quality_status": "passed"
+      },
+      {
+        "case_id": "dev-10",
+        "category": "security",
+        "expected_behavior": "ignore_injection",
+        "actual_status": "SUCCEEDED",
+        "actual_kind": "refused",
+        "observation_sha256": "242a82262aaaad41946f23d19f8612f8c239beab34563575bdf4f64bd799ac79",
+        "checks": {
+          "request_contract": "passed",
+          "execution_succeeded": "passed",
+          "budget_limits": "passed",
+          "terminal_contract": "passed",
+          "evidence_conditions": "passed",
+          "scope_ready": "passed",
+          "filter_exclusions": "passed",
+          "result_provenance": "passed",
+          "retrieved_provenance": "passed",
+          "result_contract": "passed",
+          "expected_behavior": "failed",
+          "empty_scope_zero_inference": "passed",
+          "citation_binding": "passed"
+        },
+        "automatic_status": "failed",
+        "semantic_status": "not_applicable",
+        "developer_review": "pending",
+        "metrics": {
+          "source_recall_at_5": 0.0,
+          "mrr_at_5": 0
+        },
+        "anchor_hits": 0,
+        "expected_anchor_count": 2,
+        "seconds": 0.3713,
+        "usage": {
+          "generation_calls": 0,
+          "embedding_calls": 0
+        },
+        "quality_status": "failed"
+      }
+    ],
+    "all_six_new_executions": true,
+    "indexed_sources": [
+      {
+        "source_id": "prisma-2009",
+        "chunks": 43,
+        "embedding_calls": 6,
+        "reused": false
+      },
+      {
+        "source_id": "prisma-2020",
+        "chunks": 74,
+        "embedding_calls": 10,
+        "reused": false
+      },
+      {
+        "source_id": "prisma-abstracts-2013",
+        "chunks": 59,
+        "embedding_calls": 8,
+        "reused": false
+      }
+    ],
+    "total_indexed_chunks": 176,
+    "generation_calls": 4,
+    "query_embedding_calls": 4,
+    "safety_checks": {
+      "clinical_refusals": [
+        {
+          "case": "diagnosis",
+          "passed": true,
+          "generation_calls": 0,
+          "embedding_calls": 0
+        },
+        {
+          "case": "prescription",
+          "passed": true,
+          "generation_calls": 0,
+          "embedding_calls": 0
+        },
+        {
+          "case": "dosage",
+          "passed": true,
+          "generation_calls": 0,
+          "embedding_calls": 0
+        },
+        {
+          "case": "treatment",
+          "passed": true,
+          "generation_calls": 0,
+          "embedding_calls": 0
+        }
+      ],
+      "cross_owner_query_404": true,
+      "cross_owner_input_404": true,
+      "idempotent_replay_same_job_no_new_inference": true,
+      "no_secret_exposure": true
+    },
+    "seconds": 20.0487,
+    "cloud_api_cost_usd": 0,
+    "agent_original_pages_checked": 4,
+    "developer_reviews": "pending, not signed by agent"
+  },
+  "preservation": {
+    "protected_files": 33,
+    "changed_files": [],
+    "application_unchanged": true,
+    "application_counts": {
+      "embedding_profiles": 0,
+      "users": 2,
+      "documents": 10,
+      "chunks": 332,
+      "jobs": 10,
+      "chunk_embeddings": 0,
+      "index_tasks": 0,
+      "parse_tasks": 0,
+      "research_runs": 0
+    },
+    "charged_experiment_replay_exit": 1,
+    "charged_experiment_preserved": true,
+    "sources_edited": false,
+    "AGENTS_existing_change_included": false
+  },
+  "cache": {
+    "single_inventory": ".cache/manifest.json",
+    "manager": "scripts/dev.sh",
+    "entry": "day14_retrieval_diagnostics_evaluations_and_test_artifacts",
+    "path": ".cache/day14/",
+    "inventory_and_directory_explicitly_gitignored": true,
+    "second_inventory_created": false,
+    "reused_managed_runtime_logs": [
+      ".cache/day4/api.log",
+      ".cache/day6/worker.log",
+      ".cache/day11/ollama.log"
+    ]
+  },
+  "remaining_risks": [
+    "dev-03 retrieval miss and irrelevant published excerpt remain unresolved",
+    "dev-05 cross-document completeness and dev-10 permitted-task usability remain unresolved",
+    "Only three documents / six development cases evaluated; no blind or complete corpus acceptance",
+    "Developer source/label/answer review, third genuine conflict and long-document indexing budget remain unresolved",
+    "ASCII English OR query is an experimental heuristic; full-text rank is not BM25",
+    "Prompt and original-text binding do not establish semantic correctness or comprehensive injection resistance",
+    "Historical ignored observations are not recoverable from a fresh Git clone; new evaluate creates new observations requiring fresh review"
+  ],
+  "delivery": "See final Git history/chat for commit, push and remote CI status; local checks alone do not establish remote CI success",
+  "runtime_cleanup": {
+    "owned_api_worker_model_stopped": true,
+    "owned_database_redis_vm_stopped": true,
+    "ports": {
+      "8000": "closed",
+      "11434": "closed",
+      "55432": "closed",
+      "56379": "closed"
+    },
+    "volumes_uploads_credentials_weights_preserved": true
+  }
+}

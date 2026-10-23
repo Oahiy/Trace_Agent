@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-23",
+  "review_scope": "Agent checked all six new observations and four previously rendered original PDF pages; no developer signoff or clinical evaluation",
+  "developer_signoff": false,
+  "source_pages_inspected": {
+    "prisma-2009": [
+      2
+    ],
+    "prisma-2020": [
+      5
+    ],
+    "prisma-abstracts-2013": [
+      1,
+      3
+    ]
+  },
+  "reviews": [
+    {
+      "case_id": "dev-01",
+      "observation_sha256": "6f30cdfad489fbc0b6a980c1011946ad234c6a32e56f593c545e6668da2a343c",
+      "reviewer": "agent",
+      "relevance": "passed",
+      "completeness": "passed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "核对锁定2009来源物理第2页。本次摘录完整包含27项清单及四阶段流程图，来源、版本与定位保持。"
+    },
+    {
+      "case_id": "dev-02",
+      "observation_sha256": "92c499e9a9fc096227c758abfcf21b602b8ecbd4e68cbf9bcd27c503e395e57a",
+      "reviewer": "agent",
+      "relevance": "passed",
+      "completeness": "passed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "核对2020版本来源物理第5页。本次摘录保留不能评估综述实施或方法学质量的否定及对象；2020版本标签与2021发表年份分开保存。"
+    },
+    {
+      "case_id": "dev-03",
+      "observation_sha256": "0913cacfb1a8c886bb104984e3c344e9a5b66af6d01ccd13f8bb2fab166386fa",
+      "reviewer": "agent",
+      "relevance": "failed",
+      "completeness": "failed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "核对Abstracts 2013物理第1页实际摘录及第3页Table 1注册项。回答仍为制定清单的背景，未回答注册编号和注册平台。只读对照中目标片段向量排名26、词法排名25，均在融合候选20以外。"
+    },
+    {
+      "case_id": "dev-05",
+      "observation_sha256": "566faa2d61ef66e0f3865263ab55072fa311cef7b4fe0f93fd178466c6dbaa26",
+      "reviewer": "agent",
+      "relevance": "failed",
+      "completeness": "failed",
+      "condition_fidelity": "passed",
+      "conflict_handling": "not_applicable",
+      "notes": "本次实际摘录谈清单条目的制定，而没有比较完整报告与摘要格式，也缺少2009一侧证据和双方引用。核对2009物理第2页及Abstracts 2013物理第1、3页。不同适用范围不构成冲突。"
+    }
+  ],
+  "retrieval_experiment_sha256": "48cce2b83b4d8ac4788112481ffd4e3afe5bcd53fc0b1c668a6680bee588aed7",
+  "limitations": [
+    "One frozen retrieval configuration on development data; no blind or statistical benchmark",
+    "The candidate does not retrieve the target and is not adopted",
+    "Developer reviews, full corpus freeze and genuine conflict acceptance remain pending"
+  ]
+}

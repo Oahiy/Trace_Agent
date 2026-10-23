@@ -54,7 +54,7 @@ def require(condition, code):
 def report_directory(cache=None):
     cache = CACHE if cache is None else cache
     require(
-        cache in {ROOT / ".cache/day12", ROOT / ".cache/day13"}
+        cache in {ROOT / ".cache/day12", ROOT / ".cache/day13", ROOT / ".cache/day14"}
         and (ROOT / ".cache").resolve() == ROOT / ".cache"
         and cache.resolve() == cache,
         "unsafe_report_path",

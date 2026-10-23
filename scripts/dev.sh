@@ -31,6 +31,7 @@ mkdir -p "$TRACEAGENT_CACHE/day10"
 mkdir -p "$TRACEAGENT_CACHE/day11"
 mkdir -p "$TRACEAGENT_CACHE/day12"
 mkdir -p "$TRACEAGENT_CACHE/day13"
+mkdir -p "$TRACEAGENT_CACHE/day14"
 chmod 700 "$TRACEAGENT_CACHE"
 cat > "$TRACEAGENT_CACHE/manifest.$$.tmp" <<'JSON'
 {
@@ -67,6 +68,7 @@ cat > "$TRACEAGENT_CACHE/manifest.$$.tmp" <<'JSON'
   "day11_research_reports_logs_and_test_artifacts": {"path": "day11/", "disposable": true, "recovery": "scripts.day11 demo/test; isolated evidence and uploads belong to traceagent_test; preserve application credentials and data volumes"},
   "day12_evaluation_reports_previews_and_test_artifacts": {"path": "day12/", "disposable": true, "recovery": "scripts.day12 evaluate/test; isolated uploads belong to traceagent_test; model weights, application credentials and data volumes are retained separately"},
   "day13_selection_experiments_evaluations_and_test_artifacts": {"path": "day13/", "disposable": true, "recovery": "scripts.day13 experiment/evaluate/review; includes preserved Day 12 baseline, bounded experiment ledger, previews and isolated uploads; preserve model weights, application credentials and data volumes separately"},
+  "day14_retrieval_diagnostics_evaluations_and_test_artifacts": {"path": "day14/", "disposable": true, "recovery": "scripts.day14 experiment/evaluate/review; frozen retrieval comparison, observations, audit records and test artifacts; preserve Day 12/13 history, application credentials, uploads and data volumes"},
   "runtime_ipc": {"location": "OS temporary Colima/Lima sockets", "lifecycle": "released when local VM and services stop"},
   "upload_files": {"path": "day4/uploads/", "disposable_with_existing_database": false, "sharing": "Only this directory is mounted into Colima; consumers bind it at /data/uploads"},
   "api_key_credentials": {"path": "day4/auth.env", "contains_secrets": true, "disposable_with_existing_database": false},

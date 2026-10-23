@@ -33,6 +33,8 @@ AGENTS.md
 /.cache/day12/
 # Day 13 bounded selection experiments, preserved baseline, evaluations and tests.
 /.cache/day13/
+# Day 14 retrieval comparison, evaluations and verification; same inventory.
+/.cache/day14/
 .env
 .env.*
 !.env.example
